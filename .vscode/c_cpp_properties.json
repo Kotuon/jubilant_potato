@@ -6,7 +6,7 @@
             "cStandard": "c17",
             "cppStandard": "c++20",
             "intelliSenseMode": "msvc-x64",
-            "compileCommands": "C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato.json"
+            "compileCommands": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato.json"
         },
         {
             "name": "Win32",
@@ -14,7 +14,7 @@
             "cStandard": "c17",
             "cppStandard": "c++20",
             "intelliSenseMode": "msvc-x64",
-            "compileCommands": "C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\.vscode\\compileCommands_Default.json"
+            "compileCommands": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default.json"
         }
     ],
     "version": 4

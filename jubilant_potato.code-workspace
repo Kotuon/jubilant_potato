@@ -30,7 +30,7 @@
 					"jubilant_potato",
 					"Win64",
 					"Debug",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -47,7 +47,7 @@
 					"jubilant_potato",
 					"Win64",
 					"Debug",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -67,7 +67,7 @@
 					"jubilant_potato",
 					"Win64",
 					"Debug",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -84,7 +84,7 @@
 					"jubilant_potato",
 					"Win64",
 					"DebugGame",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -101,7 +101,7 @@
 					"jubilant_potato",
 					"Win64",
 					"DebugGame",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -121,7 +121,7 @@
 					"jubilant_potato",
 					"Win64",
 					"DebugGame",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -138,7 +138,7 @@
 					"jubilant_potato",
 					"Win64",
 					"Development",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -155,7 +155,7 @@
 					"jubilant_potato",
 					"Win64",
 					"Development",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -175,7 +175,7 @@
 					"jubilant_potato",
 					"Win64",
 					"Development",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -192,7 +192,7 @@
 					"jubilant_potato",
 					"Win64",
 					"Test",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -209,7 +209,7 @@
 					"jubilant_potato",
 					"Win64",
 					"Test",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -229,7 +229,7 @@
 					"jubilant_potato",
 					"Win64",
 					"Test",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -246,7 +246,7 @@
 					"jubilant_potato",
 					"Win64",
 					"Shipping",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -263,7 +263,7 @@
 					"jubilant_potato",
 					"Win64",
 					"Shipping",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -283,7 +283,7 @@
 					"jubilant_potato",
 					"Win64",
 					"Shipping",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -300,7 +300,7 @@
 					"jubilant_potatoEditor",
 					"Win64",
 					"Debug",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -317,7 +317,7 @@
 					"jubilant_potatoEditor",
 					"Win64",
 					"Debug",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -337,7 +337,7 @@
 					"jubilant_potatoEditor",
 					"Win64",
 					"Debug",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -354,7 +354,7 @@
 					"jubilant_potatoEditor",
 					"Win64",
 					"DebugGame",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -371,7 +371,7 @@
 					"jubilant_potatoEditor",
 					"Win64",
 					"DebugGame",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -391,7 +391,7 @@
 					"jubilant_potatoEditor",
 					"Win64",
 					"DebugGame",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -408,7 +408,7 @@
 					"jubilant_potatoEditor",
 					"Win64",
 					"Development",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -425,7 +425,7 @@
 					"jubilant_potatoEditor",
 					"Win64",
 					"Development",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -445,7 +445,7 @@
 					"jubilant_potatoEditor",
 					"Win64",
 					"Development",
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -462,7 +462,7 @@
 			{
 				"name": "Launch jubilant_potato (Debug)",
 				"request": "launch",
-				"program": "C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\Binaries\\Win64\\UnrealGame-Win64-Debug.exe",
+				"program": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Binaries\\Win64\\UnrealGame-Win64-Debug.exe",
 				"preLaunchTask": "jubilant_potato Win64 Debug Build",
 				"args": [
 				],
@@ -478,7 +478,7 @@
 			{
 				"name": "Launch jubilant_potato (DebugGame)",
 				"request": "launch",
-				"program": "C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\Binaries\\Win64\\UnrealGame-Win64-DebugGame.exe",
+				"program": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Binaries\\Win64\\UnrealGame-Win64-DebugGame.exe",
 				"preLaunchTask": "jubilant_potato Win64 DebugGame Build",
 				"args": [
 				],
@@ -494,7 +494,7 @@
 			{
 				"name": "Launch jubilant_potato (Development)",
 				"request": "launch",
-				"program": "C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\Binaries\\Win64\\UnrealGame.exe",
+				"program": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Binaries\\Win64\\UnrealGame.exe",
 				"preLaunchTask": "jubilant_potato Win64 Development Build",
 				"args": [
 				],
@@ -510,7 +510,7 @@
 			{
 				"name": "Launch jubilant_potato (Test)",
 				"request": "launch",
-				"program": "C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\Binaries\\Win64\\UnrealGame-Win64-Test.exe",
+				"program": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Binaries\\Win64\\UnrealGame-Win64-Test.exe",
 				"preLaunchTask": "jubilant_potato Win64 Test Build",
 				"args": [
 				],
@@ -526,7 +526,7 @@
 			{
 				"name": "Launch jubilant_potato (Shipping)",
 				"request": "launch",
-				"program": "C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\Binaries\\Win64\\UnrealGame-Win64-Shipping.exe",
+				"program": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Binaries\\Win64\\UnrealGame-Win64-Shipping.exe",
 				"preLaunchTask": "jubilant_potato Win64 Shipping Build",
 				"args": [
 				],
@@ -545,7 +545,7 @@
 				"program": "E:\\UE_5.3\\Engine\\Binaries\\Win64\\UnrealEditor-Win64-Debug.exe",
 				"preLaunchTask": "jubilant_potatoEditor Win64 Debug Build",
 				"args": [
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject"
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject"
 				],
 				"cwd": "E:\\UE_5.3",
 				"stopAtEntry": false,
@@ -562,7 +562,7 @@
 				"program": "E:\\UE_5.3\\Engine\\Binaries\\Win64\\UnrealEditor-Win64-DebugGame.exe",
 				"preLaunchTask": "jubilant_potatoEditor Win64 DebugGame Build",
 				"args": [
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject"
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject"
 				],
 				"cwd": "E:\\UE_5.3",
 				"stopAtEntry": false,
@@ -579,7 +579,7 @@
 				"program": "E:\\UE_5.3\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
 				"preLaunchTask": "jubilant_potatoEditor Win64 Development Build",
 				"args": [
-					"C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject"
+					"C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject"
 				],
 				"cwd": "E:\\UE_5.3",
 				"stopAtEntry": false,
@@ -599,7 +599,7 @@
 				"args": [
 					"-projectfiles",
 					"-vscode",
-					"-project=C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\jubilant_potato.uproject",
+					"-project=C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\jubilant_potato.uproject",
 					"-game",
 					"-engine",
 					"-dotnet"

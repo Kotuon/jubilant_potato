@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "jubilant_potatoEditor Editor Win64 Development (jubilant_potato)",
+            "compilerPath": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "msvc-x64",
+            "compileCommands": "C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato.json"
+        },
+        {
+            "name": "Win32",
+            "compilerPath": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "msvc-x64",
+            "compileCommands": "C:\\Users\\Kelson\\Documents\\Unreal Projects\\jubilant_potato\\.vscode\\compileCommands_Default.json"
+        }
+    ],
+    "version": 4
+}

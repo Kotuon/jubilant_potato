@@ -67,6 +67,8 @@ void APlayerCharacter::SetupPlayerInputComponent( UInputComponent *PlayerInputCo
     TArray< UAction * > action_components;
     GetComponents< UAction >( action_components );
     for ( UAction *action : action_components ) {
+        action->RegisterComponent();
+        
         if ( IsValid( action->input_action ) )
             PEI->BindAction( action->input_action, ETriggerEvent::Triggered, action, &UAction::Start );
     }

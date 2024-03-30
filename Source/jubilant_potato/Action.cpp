@@ -3,8 +3,8 @@
 #include "PlayerCharacter.h" // APlayerCharacter class
 
 // Sets default values for this component's properties
-UAction::UAction() {
-    PrimaryComponentTick.bCanEverTick = false;
+UAction::UAction() : UActorComponent() {
+    PrimaryComponentTick.bCanEverTick = true;
     // ...
 }
 
@@ -32,7 +32,6 @@ void UAction::EndNotifyWindow() {
 // Called every frame
 void UAction::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction ) {
     Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
-
     // ...
 }
 

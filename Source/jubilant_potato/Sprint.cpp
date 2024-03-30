@@ -4,12 +4,15 @@
 #include "PlayerCharacter.h"                          // APlayerCharacter class
 #include "GameFramework/CharacterMovementComponent.h" // UCharacterMovementComponent class
 
-USprint::USprint() {
+USprint::USprint() : UAction() {
     type = EAction::A_Sprint;
 }
 
 void USprint::BeginPlay() {
     Super::BeginPlay();
+    //...
+
+    SetComponentTickEnabled( true );
 
     character_movement = parent->GetCharacterMovement();
 
@@ -22,9 +25,11 @@ void USprint::Start( const FInputActionValue &value ) {
     }
 
     if ( is_sprinting ) {
+        GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "Stop sprinting." );
         is_sprinting = false;
         character_movement->MaxWalkSpeed = original_walk_speed;
     } else {
+        GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "Start sprinting." );
         is_sprinting = true;
         character_movement->MaxWalkSpeed = sprint_speed;
     }
@@ -36,8 +41,17 @@ void USprint::End() {
 
 void USprint::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction ) {
     Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
+    //...
 
-    if ( character_movement->Velocity.Size2D() <= 0.f ) {
+    if ( !is_sprinting ) {
+        GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "Not sprinting." );
+        return;
+    }
+
+    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "Sprinting." );
+
+    const FVector last_input = parent->GetLastMovementInput();
+    if ( last_input.X + last_input.Y <= 0.f ) {
         is_sprinting = false;
         character_movement->MaxWalkSpeed = original_walk_speed;
     }

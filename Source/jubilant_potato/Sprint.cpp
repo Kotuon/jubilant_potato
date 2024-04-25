@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Sprint.h"
+#include "ActionManager.h"                            // UActionManager class
 #include "PlayerCharacter.h"                          // APlayerCharacter class
 #include "GameFramework/CharacterMovementComponent.h" // UCharacterMovementComponent class
 
@@ -24,10 +25,13 @@ void USprint::Start( const FInputActionValue &value ) {
         return;
     }
 
+    if ( !manager->StartAction( type ) && !is_sprinting ) {
+        return;
+    }
+
     if ( is_sprinting ) {
         GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "Stop sprinting." );
-        is_sprinting = false;
-        character_movement->MaxWalkSpeed = original_walk_speed;
+        End();
     } else {
         GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "Start sprinting." );
         is_sprinting = true;
@@ -37,22 +41,17 @@ void USprint::Start( const FInputActionValue &value ) {
 
 void USprint::End() {
     Super::End();
+
+    is_sprinting = false;
+    character_movement->MaxWalkSpeed = original_walk_speed;
 }
 
 void USprint::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction ) {
     Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
     //...
 
-    if ( !is_sprinting ) {
-        GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "Not sprinting." );
-        return;
-    }
-
-    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "Sprinting." );
-
     const FVector last_input = parent->GetLastMovementInput();
-    if ( last_input.X + last_input.Y <= 0.f ) {
-        is_sprinting = false;
-        character_movement->MaxWalkSpeed = original_walk_speed;
+    if ( abs( last_input.X ) + abs( last_input.Y ) <= 0.f ) {
+        End();
     }
 }

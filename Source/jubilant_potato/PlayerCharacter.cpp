@@ -44,6 +44,8 @@ void APlayerCharacter::BeginPlay() {
 void APlayerCharacter::Tick( float DeltaTime ) {
     Super::Tick( DeltaTime );
     //...
+
+    // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green, GetVelocity().ToString() );
 }
 
 // Called to bind functionality to input
@@ -68,7 +70,7 @@ void APlayerCharacter::SetupPlayerInputComponent( UInputComponent *PlayerInputCo
     GetComponents< UAction >( action_components );
     for ( UAction *action : action_components ) {
         action->RegisterComponent();
-        
+
         if ( IsValid( action->input_action ) )
             PEI->BindAction( action->input_action, ETriggerEvent::Triggered, action, &UAction::Start );
     }

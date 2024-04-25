@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h" // UCharacterMovementComponent class
 #include "Components/CapsuleComponent.h"              // UCapsuleComponent class
 #include "Kismet/KismetMathLibrary.h"                 // MapRangeClamped
+#include "Animation/AnimMontage.h"                    // UAnimMontage class
 
 UJump::UJump() {
     type = EAction::A_Jump;
@@ -36,11 +37,13 @@ void UJump::Start( const FInputActionValue &value ) {
     }
     has_jumped = true;
 
-    if ( !manager->StartAction( type ) ) {
-        return;
-    }
+    // if ( !manager->StartAction( type ) ) {
+    //     return;
+    // }
 
-    JumpTakeOff();
+    parent->PlayAnimMontage( jump_montage );
+
+    // JumpTakeOff();
 }
 
 void UJump::End() {
@@ -56,6 +59,7 @@ void UJump::JumpTakeOff() {
     character_movement->JumpZVelocity = UKismetMathLibrary::MapRangeClamped( velocity_xy, 400.f, 800.f, 700.f, 900.f );
 
     parent->Jump();
+
     character_movement->bNotifyApex = true;
 }
 

@@ -7,6 +7,7 @@
 #include "Jump.generated.h"
 
 class UCharacterMovementComponent;
+class UAnimMontage;
 
 UCLASS( ClassGroup = ( Custom ), meta = ( BlueprintSpawnableComponent ) )
 class JUBILANT_POTATO_API UJump : public UAction {
@@ -40,6 +41,8 @@ public: // Functions
     bool GetHasPlayedAnimation() const;
 
 public: // Variables
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Animation" )
+    UAnimMontage * jump_montage;
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "General|Jump Memory" )
     float jump_memory_time = 0.25f;
 

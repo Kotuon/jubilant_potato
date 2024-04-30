@@ -7,6 +7,7 @@
 #include "Enemy.generated.h"
 
 class UUserWidget;
+class UBehaviorTree;
 
 UCLASS()
 class JUBILANT_POTATO_API AEnemy : public ACharacter {
@@ -38,12 +39,19 @@ public: // Functions
     UFUNCTION( BlueprintCallable )
     void StartRagdoll();
 
+    UFUNCTION(BlueprintCallable)
+    bool IsDead() const;
+
 private: // Functions
 public:  // Variables
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Behaviors" )
+    UBehaviorTree *enemy_behavior_tree;
+
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "General" )
     int health = 10;
 
 private: // Variables
     UUserWidget *target_marker;
     bool is_targeted = false;
+    bool is_dead = false;
 };

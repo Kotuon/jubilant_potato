@@ -54,6 +54,8 @@ void AEnemy::ApplyDamage( int DamageAmount ) {
 }
 
 void AEnemy::Kill() {
+    is_dead = true;
+
     EndTarget();
 
     AAIController *controller = Cast< AAIController >( GetController() );
@@ -78,4 +80,8 @@ void AEnemy::StartRagdoll() {
     mesh->SetCollisionEnabled( ECollisionEnabled::QueryAndPhysics );
     mesh->SetSimulatePhysics( true );
     mesh->SetAllBodiesSimulatePhysics( true );
+}
+
+bool AEnemy::IsDead() const {
+    return is_dead;
 }

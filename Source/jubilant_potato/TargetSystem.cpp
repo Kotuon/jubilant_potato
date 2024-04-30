@@ -46,7 +46,7 @@ TArray< AEnemy * > &UTargetSystem::UpdateTarget( float Width, float Range, bool 
 
         float distance = FVector::Distance( enemy->GetActorLocation(), parent->GetActorLocation() );
 
-        if ( distance > Range ) {
+        if ( distance > Range || enemy->IsDead() ) {
             if ( enemy->GetIsTargeted() ) {
                 enemy->EndTarget();
             }

@@ -22,20 +22,16 @@ public: // Functions
     virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction ) override;
 
     UFUNCTION( BlueprintCallable )
-    void UpdateTarget();
+    TArray< AEnemy * > &UpdateTarget( float Width = 0.1f, float Range = 500.f, bool SingleTarget = true );
+
+    UFUNCTION( BlueprintCallable )
+    void ClearTargets();
 
 private: // Functions
 public:  // Variables
-    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "General" )
-    float detection_size = 5.f;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "General" )
-    float detection_range = 500.f;
-
 private: // Variables
-    AEnemy *curr_target = nullptr;
+    TArray< AEnemy * > curr_targets;
     APlayerCharacter *parent;
 
     UWorld *world;
-
-    float search_value;
 };

@@ -26,8 +26,24 @@ public: // Functions
     UFUNCTION( BlueprintCallable )
     void EndTarget();
 
+    UFUNCTION( BlueprintCallable )
+    bool GetIsTargeted() const;
+
+    UFUNCTION( BlueprintCallable )
+    void ApplyDamage( int DamageAmount );
+
+    UFUNCTION( BlueprintCallable )
+    void Kill();
+
+    UFUNCTION( BlueprintCallable )
+    void StartRagdoll();
+
 private: // Functions
 public:  // Variables
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "General" )
+    int health = 10;
+
 private: // Variables
     UUserWidget *target_marker;
+    bool is_targeted = false;
 };

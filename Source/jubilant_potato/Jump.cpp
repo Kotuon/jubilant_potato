@@ -37,13 +37,7 @@ void UJump::Start( const FInputActionValue &value ) {
     }
     has_jumped = true;
 
-    // if ( !manager->StartAction( type ) ) {
-    //     return;
-    // }
-
     parent->PlayAnimMontage( jump_montage );
-
-    // JumpTakeOff();
 }
 
 void UJump::End() {

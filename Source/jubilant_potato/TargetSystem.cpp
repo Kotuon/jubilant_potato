@@ -15,7 +15,6 @@ void UTargetSystem::BeginPlay() {
 
     parent = Cast< APlayerCharacter >( GetOwner() );
     world = GetWorld();
-    search_value = 1.f - detection_size;
 }
 
 void UTargetSystem::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction ) {
@@ -23,7 +22,8 @@ void UTargetSystem::TickComponent( float DeltaTime, ELevelTick TickType, FActorC
     // ...
 }
 
-void UTargetSystem::UpdateTarget() {
+TArray< AEnemy * > &UTargetSystem::UpdateTarget( float Width, float Range, bool SingleTarget ) {
+    float search_value = 1.f - Width;
     FVector input = parent->GetLastMovementInput();
 
     FVector search_direction;
@@ -31,47 +31,74 @@ void UTargetSystem::UpdateTarget() {
     if ( abs( input.X ) + abs( input.Y ) > 0.f ) {
         search_direction = ( ( parent->gimbal->GetForwardVector() * input.Y ) + ( parent->gimbal->GetRightVector() * input.X ) ).GetSafeNormal();
     } else {
-        search_direction = parent->gimbal->GetForwardVector();
+        search_direction = parent->GetActorForwardVector(); // parent->gimbal->GetForwardVector();
     }
 
     TArray< AActor * > found_enemies;
     UGameplayStatics::GetAllActorsOfClass( world, AEnemy::StaticClass(), found_enemies );
 
-    float found_dot_result = -1.f;
-    int found_enemy_index = -1;
+    TArray< float > found_dot_result;
+    found_dot_result.Init( -1.f, 1 );
+    TArray< int > found_enemy_index;
+    found_enemy_index.Init( -1, 1 );
     for ( int i = 0; i < found_enemies.Num(); ++i ) {
-        AActor *enemy = found_enemies[i];
+        AEnemy *enemy = Cast< AEnemy >( found_enemies[i] );
+
+        float distance = FVector::Distance( enemy->GetActorLocation(), parent->GetActorLocation() );
+
+        if ( distance > Range ) {
+            if ( enemy->GetIsTargeted() ) {
+                enemy->EndTarget();
+            }
+
+            continue;
+        }
+
         FVector enemy_direction = ( enemy->GetActorLocation() - parent->GetActorLocation() ).GetSafeNormal();
 
         float dot_result = FVector::DotProduct( search_direction, enemy_direction );
         if ( dot_result > search_value ) {
-            if ( dot_result > found_dot_result ) {
-                found_dot_result = dot_result;
-                found_enemy_index = i;
+            if ( SingleTarget ) {
+                if ( dot_result > found_dot_result[0] ) {
+                    found_dot_result[0] = dot_result;
+                    found_enemy_index[0] = i;
+                }
+                if ( curr_targets.Num() > 0 && enemy == curr_targets[0] ) {
+                    found_dot_result[0] = dot_result;
+                    found_enemy_index[0] = i;
+                    break;
+                }
+            } else if ( i == 0 ) {
+                found_dot_result[0] = dot_result;
+                found_enemy_index[0] = i;
+            } else {
+                found_dot_result.Emplace( dot_result );
+                found_enemy_index.Emplace( i );
             }
-            if ( enemy == curr_target ) {
-                found_dot_result = dot_result;
-                found_enemy_index = i;
-                break;
+        } else {
+            if ( enemy->GetIsTargeted() ) {
+                enemy->EndTarget();
             }
         }
     }
 
-    if ( found_enemy_index == -1 ) {
-        if ( curr_target ) {
-            curr_target->EndTarget();
-        }
-        curr_target = nullptr;
-
-        return;
+    curr_targets.Empty();
+    if ( found_enemy_index[0] == -1 ) {
+        return curr_targets;
     }
 
-    if ( curr_target != found_enemies[found_enemy_index] ) {
-        if ( curr_target ) {
-            curr_target->EndTarget();
-        }
-
-        curr_target = Cast< AEnemy >( found_enemies[found_enemy_index] );
-        curr_target->StartTarget();
+    for ( int index : found_enemy_index ) {
+        curr_targets.Add( Cast< AEnemy >( found_enemies[index] ) );
+        curr_targets.Last()->StartTarget();
     }
+
+    return curr_targets;
+}
+
+void UTargetSystem::ClearTargets() {
+    for ( AEnemy *target : curr_targets ) {
+        target->EndTarget();
+    }
+
+    curr_targets.Empty();
 }

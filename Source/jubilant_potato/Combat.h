@@ -8,6 +8,7 @@
 
 class UAnimMontage;
 struct FTimerHandle;
+class UTargetSystem;
 
 UCLASS( ClassGroup = ( Custom ), meta = ( BlueprintSpawnableComponent ) )
 class JUBILANT_POTATO_API UCombat : public UAction {
@@ -19,12 +20,12 @@ protected: // Functions
 
 public: // Functions
     UCombat();
-    virtual void Start( const FInputActionValue &value );
+    virtual void Start( const FInputActionValue &Value );
     virtual void End();
     virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction ) override;
 
     UFUNCTION( BlueprintCallable )
-    void SetCanCombo( bool canCombo );
+    void SetCanCombo( bool CanCombo );
 
     UFUNCTION( BlueprintCallable )
     int GetAttackCount() const;
@@ -38,11 +39,17 @@ private: // Functions
 public: // Variables
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Animation" )
     TArray< UAnimMontage * > attack_montages;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Animation" )
+    UAnimMontage *jump_attack_montage;
 
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "General" )
     float cooldown = 0.5f;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "General" )
+    int damage_amount = 1;
 
 private: // Variables
+    UTargetSystem *target_system;
+
     FTimerHandle cooldown_timer;
 
     int attack_count = 0;

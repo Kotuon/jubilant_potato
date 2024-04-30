@@ -11,7 +11,14 @@
 	],
 	"settings": {
 		"typescript.tsc.autoDetect": "off",
-		"npm.autoDetect": "off"
+        "npm.autoDetect": "off",
+        "files.associations": {
+            "ranges": "cpp",
+            "xiosbase": "cpp",
+            "ios": "cpp",
+            "algorithm": "cpp",
+            "*.ipp": "cpp"
+        }
 	},
 	"extensions": {
 		"recommendations": [

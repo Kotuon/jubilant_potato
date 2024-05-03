@@ -25,6 +25,8 @@ APlayerCharacter::APlayerCharacter( const FObjectInitializer &ObjectInitializer 
     spring_arm->SetupAttachment( gimbal );
     camera = CreateDefaultSubobject< UCameraComponent >( FName( "Camera" ) );
     camera->SetupAttachment( spring_arm );
+
+    Tags.Add( FName( "Player" ) );
 }
 
 // Called when the game starts or when spawned

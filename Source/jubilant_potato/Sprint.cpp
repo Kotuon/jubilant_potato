@@ -4,6 +4,7 @@
 #include "ActionManager.h"                            // UActionManager class
 #include "PlayerCharacter.h"                          // APlayerCharacter class
 #include "GameFramework/CharacterMovementComponent.h" // UCharacterMovementComponent class
+#include "Aim.h"                                      // UAim class
 
 USprint::USprint() : UAction() {
     type = EAction::A_Sprint;
@@ -18,9 +19,17 @@ void USprint::BeginPlay() {
     character_movement = parent->GetCharacterMovement();
 
     original_walk_speed = character_movement->MaxWalkSpeed;
+
+    TArray< UAction* > action_components;
+    parent->GetComponents< UAction >( action_components );
+    for ( UAction* action : action_components ) {
+        if ( action->type == EAction::A_Aim ) {
+            aim_action = Cast< UAim >( action );
+        }
+    }
 }
 
-void USprint::Start( const FInputActionValue &value ) {
+void USprint::Start( const FInputActionValue& value ) {
     if ( !value.Get< bool >() ) {
         return;
     }
@@ -46,12 +55,12 @@ void USprint::End() {
     character_movement->MaxWalkSpeed = original_walk_speed;
 }
 
-void USprint::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction ) {
+void USprint::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) {
     Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
     //...
 
     const FVector last_input = parent->GetLastMovementInput();
-    if ( abs( last_input.X ) + abs( last_input.Y ) <= 0.f ) {
+    if ( ( abs( last_input.X ) + abs( last_input.Y ) <= 0.f ) || aim_action->GetIsAiming() ) {
         End();
     }
 }

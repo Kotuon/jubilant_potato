@@ -16,21 +16,36 @@ protected:
     virtual void BeginPlay() override;
 
 public:
-    virtual void TickComponent( float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction ) override;
+    virtual void TickComponent( float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
+
+    void SetIsAiming( bool IsAiming );
+
+private: // Functions
+    void UpdateFromVelocity( float DeltaTime );
+
+    bool UpdateFromAiming( float DeltaTime );
 
 public:
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Arm Lerp" )
-    TArray< float > lerpPoints{ 50, 50, 50, 200 };
+    float default_length = 300.f;
 
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Arm Lerp" )
-    float lerpTime = 1.f;
+    float length_multiplier_velocity = 1.5f;
 
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Arm Lerp" )
-    float startVelocity = 600.f;
+    float length_multiplier_aiming = 0.5f;
+
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Arm Lerp" )
+    float lerp_time = 0.25f;
+
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Arm Lerp" )
+    float start_velocity = 601.f;
 
 private:
-    ACharacter *parent;
-    USceneComponent *gimbal;
-    float lastT;
-    float currTime;
+    ACharacter* parent;
+    USceneComponent* gimbal;
+    float curr_time_velocity = 0.f;
+    float curr_time_aiming = 0.f;
+
+    bool is_aiming = false;
 };

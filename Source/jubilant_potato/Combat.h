@@ -9,6 +9,7 @@
 class UAnimMontage;
 struct FTimerHandle;
 class UTargetSystem;
+class UAim;
 
 UCLASS( ClassGroup = ( Custom ), meta = ( BlueprintSpawnableComponent ) )
 class JUBILANT_POTATO_API UCombat : public UAction {
@@ -20,9 +21,9 @@ protected: // Functions
 
 public: // Functions
     UCombat();
-    virtual void Start( const FInputActionValue &Value );
+    virtual void Start( const FInputActionValue& Value );
     virtual void End();
-    virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction ) override;
+    virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
 
     UFUNCTION( BlueprintCallable )
     void SetCanCombo( bool CanCombo );
@@ -36,11 +37,18 @@ public: // Functions
 private: // Functions
     void EndCooldown();
 
+    void SpawnProjectile();
+
 public: // Variables
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Animation" )
-    TArray< UAnimMontage * > attack_montages;
+    TArray< UAnimMontage* > attack_montages;
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Animation" )
-    UAnimMontage *jump_attack_montage;
+    UAnimMontage* jump_attack_montage;
+
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Projectile" )
+    TSubclassOf< class ABase_Projectile > projectile_class;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category ="Projectile")
+    float start_distance_projectile = 100.f;
 
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "General" )
     float cooldown = 0.5f;
@@ -48,7 +56,10 @@ public: // Variables
     int damage_amount = 1;
 
 private: // Variables
-    UTargetSystem *target_system;
+    UTargetSystem* target_system;
+
+    UAim* aim_action;
+    UWorld* world;
 
     FTimerHandle cooldown_timer;
 

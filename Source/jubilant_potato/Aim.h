@@ -8,7 +8,7 @@
 
 class USmartSpringArm;
 
-UCLASS()
+UCLASS( ClassGroup = ( Custom ), meta = ( BlueprintSpawnableComponent ) )
 class JUBILANT_POTATO_API UAim : public UAction {
     GENERATED_BODY()
 
@@ -17,12 +17,16 @@ protected: // Functions
 
 public: // Functions
     UAim();
-    virtual void Start( const FInputActionValue &value );
+    virtual void Start( const FInputActionValue& value );
     virtual void End();
 
-    virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction ) override;
+    virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
+
+    bool GetIsAiming() const;
 
 public:  // Variables
 private: // Variables
-    USmartSpringArm *spring_arm;
+    USmartSpringArm* spring_arm;
+
+    bool is_aiming = false;
 };

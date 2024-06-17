@@ -9,7 +9,7 @@ void USmartSpringArm::BeginPlay() {
 
     parent = Cast< ACharacter >( GetOwner() );
 
-    TArray< USceneComponent * > parents;
+    TArray< USceneComponent* > parents;
 
     GetParentComponents( parents );
 
@@ -17,28 +17,59 @@ void USmartSpringArm::BeginPlay() {
 
     gimbal->SetWorldRotation( parent->GetActorRotation() );
 
-    TargetArmLength = lerpPoints[0];
+    TargetArmLength = default_length;
 }
 
-void USmartSpringArm::TickComponent( float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction ) {
+void USmartSpringArm::UpdateFromVelocity( float DeltaTime ) {
+    // Updating length from velocity
+    if ( parent->GetVelocity().Length() > start_velocity ) {
+        curr_time_velocity = FMath::Clamp( curr_time_velocity + DeltaTime, 0, lerp_time );
+    } else {
+        curr_time_velocity = FMath::Clamp( curr_time_velocity - DeltaTime, 0, lerp_time );
+    }
+
+    float t = FMath::Clamp( curr_time_velocity / lerp_time, 0.f, 1.f );
+
+    float new_length = FMath::Lerp( TargetArmLength,
+                                    default_length + default_length * ( length_multiplier_velocity * t ),
+                                    0.25f );
+
+    TargetArmLength = new_length;
+}
+
+bool USmartSpringArm::UpdateFromAiming( float DeltaTime ) {
+    if ( !is_aiming && curr_time_aiming <= 0.f ) {
+        return false;
+    }
+
+    if ( !is_aiming ) {
+        curr_time_aiming = FMath::Clamp( curr_time_aiming - DeltaTime, 0, lerp_time );
+    } else {
+        curr_time_aiming = FMath::Clamp( curr_time_aiming + DeltaTime, 0, lerp_time );
+    }
+
+    float t = FMath::Clamp( curr_time_aiming / lerp_time, 0.f, 1.f );
+
+    float new_length = FMath::Lerp( TargetArmLength,
+                                    default_length - default_length * ( length_multiplier_aiming * t ),
+                                    0.25f );
+
+    TargetArmLength = new_length;
+
+    return true;
+}
+
+void USmartSpringArm::TickComponent( float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) {
     Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
     if ( !IsValid( parent ) )
         return;
 
-    if ( parent->GetVelocity().Length() > startVelocity ) {
-        currTime = FMath::Clamp( currTime + DeltaTime, 0, lerpTime );
-    } else {
-        currTime = FMath::Clamp( currTime - DeltaTime, 0, lerpTime );
+    if ( !UpdateFromAiming( DeltaTime ) ) {
+        // UpdateFromVelocity( DeltaTime );
     }
+}
 
-    float t = FMath::Clamp( currTime / lerpTime, 0.f, 1.f );
-
-    // Cubic bezier curve
-    float new_length = FMath::Pow( 1 - t, 3 ) * lerpPoints[0] +
-                       3 * FMath::Pow( 1 - t, 2 ) * t * lerpPoints[1] +
-                       3 * ( 1 - t ) * FMath::Pow( t, 2 ) * lerpPoints[2] +
-                       FMath::Pow( t, 3 ) * lerpPoints[3];
-
-    TargetArmLength = new_length;
+void USmartSpringArm::SetIsAiming( bool IsAiming ) {
+    is_aiming = IsAiming;
 }

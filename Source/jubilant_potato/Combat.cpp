@@ -8,6 +8,8 @@
 #include "TargetSystem.h"                             // UTargetSystem class
 #include "Enemy.h"                                    // AEnemy class
 #include "GameFramework/CharacterMovementComponent.h" // UCharacterMovementComponent class
+#include "Aim.h"                                      // UAim class
+#include "Base_Projectile.h"                          // ABase_Projectile class
 
 // Sets default values for this component's properties
 UCombat::UCombat() {
@@ -21,9 +23,18 @@ void UCombat::BeginPlay() {
     // ...
 
     target_system = parent->FindComponentByClass< UTargetSystem >();
+    world = GetWorld();
+
+    TArray< UAction* > action_components;
+    parent->GetComponents< UAction >( action_components );
+    for ( UAction* action : action_components ) {
+        if ( action->type == EAction::A_Aim ) {
+            aim_action = Cast< UAim >( action );
+        }
+    }
 }
 
-void UCombat::Start( const FInputActionValue &Value ) {
+void UCombat::Start( const FInputActionValue& Value ) {
     if ( on_cooldown ) {
         return;
     }
@@ -41,16 +52,23 @@ void UCombat::Start( const FInputActionValue &Value ) {
         return;
     }
 
+    if ( aim_action->GetIsAiming() ) {
+        SpawnProjectile();
+
+        End();
+        return;
+    }
+
     if ( attack_count == 0 || can_combo ) {
         attack_count += 1;
         can_combo = false;
         is_attacking = true;
 
-        TArray< AEnemy * > targets = target_system->UpdateTarget( 0.1f, 1000.f, true );
+        TArray< AEnemy* > targets = target_system->UpdateTarget( 0.1f, 1000.f, true );
         int target_num = targets.Num();
         if ( target_num > 0 ) {
             FVector average_position = FVector( 0 );
-            for ( AEnemy *target : targets ) {
+            for ( AEnemy* target : targets ) {
                 average_position += target->GetActorLocation();
                 target->ApplyDamage( damage_amount );
             }
@@ -85,7 +103,7 @@ void UCombat::End() {
     GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "End attack." );
 }
 
-void UCombat::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction ) {
+void UCombat::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) {
     Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
     // ...
 }
@@ -116,4 +134,34 @@ void UCombat::EndCooldown() {
     on_cooldown = false;
 
     GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "End cooldown." );
+}
+
+void UCombat::SpawnProjectile() {
+    FVector player_position = parent->GetActorLocation() + FVector{ 0.f, 0.f, 40.f };
+    FVector player_forward = parent->GetActorForwardVector();
+    FRotator player_rotation = parent->GetActorRotation();
+
+    FVector initial_location = FVector( 100000000000, 10000000000000, 10000000000 );
+
+    FVector shot_location = player_position + ( player_forward * start_distance_projectile );
+
+    FActorSpawnParameters spawn_params;
+    spawn_params.Owner = parent;
+    spawn_params.Instigator = parent->GetInstigator();
+    spawn_params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+    ABase_Projectile* new_projectile = world->SpawnActor< ABase_Projectile >( projectile_class,
+                                                                              initial_location,
+                                                                              player_rotation,
+                                                                              spawn_params );
+    if ( !new_projectile ) {
+        return;
+    }
+    new_projectile->parent = parent;
+    new_projectile->Tags.Add( parent->Tags[0] );
+    new_projectile->start_location = shot_location;
+
+    new_projectile->SetActorLocation( shot_location );
+    FVector launch_direction = player_rotation.Vector();
+    new_projectile->FireInDirection( launch_direction );
 }

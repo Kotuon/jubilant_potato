@@ -11,7 +11,7 @@
 #include "GameFramework/MovementComponent.h"          //
 
 // Sets default values
-APlayerCharacter::APlayerCharacter( const FObjectInitializer &ObjectInitializer ) : ACharacter( ObjectInitializer ) {
+APlayerCharacter::APlayerCharacter( const FObjectInitializer& ObjectInitializer ) : ACharacter( ObjectInitializer ) {
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
 
@@ -33,9 +33,9 @@ APlayerCharacter::APlayerCharacter( const FObjectInitializer &ObjectInitializer 
 void APlayerCharacter::BeginPlay() {
     Super::BeginPlay();
 
-    UWorld *world = GetWorld();
+    UWorld* world = GetWorld();
 
-    APlayerController *pc = world->GetFirstPlayerController();
+    APlayerController* pc = world->GetFirstPlayerController();
     if ( !pc )
         return;
 
@@ -48,29 +48,32 @@ void APlayerCharacter::Tick( float DeltaTime ) {
     //...
 
     // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green, GetVelocity().ToString() );
+    if ( !character_movement->bOrientRotationToMovement ) {
+        SetActorRotation( gimbal->GetRelativeRotation() );
+    }
 }
 
 // Called to bind functionality to input
-void APlayerCharacter::SetupPlayerInputComponent( UInputComponent *PlayerInputComponent ) {
+void APlayerCharacter::SetupPlayerInputComponent( UInputComponent* PlayerInputComponent ) {
     // Get the player controller
-    const APlayerController *pc = Cast< APlayerController >( GetController() );
+    const APlayerController* pc = Cast< APlayerController >( GetController() );
 
     // Get the local player subsystem
-    UEnhancedInputLocalPlayerSubsystem *Subsystem = ULocalPlayer::GetSubsystem< UEnhancedInputLocalPlayerSubsystem >( pc->GetLocalPlayer() );
+    UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem< UEnhancedInputLocalPlayerSubsystem >( pc->GetLocalPlayer() );
     // Clear out existing mapping, and add our mapping
     Subsystem->ClearAllMappings();
     Subsystem->AddMappingContext( input_mapping, 0 );
 
     // Get the EnhancedInputComponent
-    UEnhancedInputComponent *PEI = Cast< UEnhancedInputComponent >( PlayerInputComponent );
+    UEnhancedInputComponent* PEI = Cast< UEnhancedInputComponent >( PlayerInputComponent );
 
     // Bind the actions
     PEI->BindAction( input_move, ETriggerEvent::Triggered, this, &APlayerCharacter::Move );
     PEI->BindAction( input_look, ETriggerEvent::Triggered, this, &APlayerCharacter::Look );
 
-    TArray< UAction * > action_components;
+    TArray< UAction* > action_components;
     GetComponents< UAction >( action_components );
-    for ( UAction *action : action_components ) {
+    for ( UAction* action : action_components ) {
         action->RegisterComponent();
 
         if ( IsValid( action->input_action ) )
@@ -78,7 +81,7 @@ void APlayerCharacter::SetupPlayerInputComponent( UInputComponent *PlayerInputCo
     }
 }
 
-void APlayerCharacter::Move( const FInputActionValue &value ) {
+void APlayerCharacter::Move( const FInputActionValue& value ) {
     const FVector2D input_value = value.Get< FVector2D >();
     last_movement_input = FVector( input_value.X, input_value.Y, 0.f );
 
@@ -95,7 +98,7 @@ void APlayerCharacter::Move( const FInputActionValue &value ) {
     AddMovementInput( world_right, input_value.X, false );
 }
 
-void APlayerCharacter::Look( const FInputActionValue &value ) {
+void APlayerCharacter::Look( const FInputActionValue& value ) {
     const FVector2D input_value = value.Get< FVector2D >();
 
     const FRotator new_yaw{ 0.0, input_value.X * sensitivity, 0.0 };
@@ -116,7 +119,7 @@ bool APlayerCharacter::GetCanWalk() const {
     return can_walk;
 }
 
-const FVector &APlayerCharacter::GetLastMovementInput() const {
+const FVector& APlayerCharacter::GetLastMovementInput() const {
     return last_movement_input;
 }
 

@@ -5,7 +5,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
 		],
-		"directory": "E:\\UE_5.3\\Engine\\Source"
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\Action.h",
@@ -13,7 +13,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
 		],
-		"directory": "E:\\UE_5.3\\Engine\\Source"
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionManager.cpp",
@@ -21,7 +21,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
 		],
-		"directory": "E:\\UE_5.3\\Engine\\Source"
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionManager.h",
@@ -29,7 +29,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
 		],
-		"directory": "E:\\UE_5.3\\Engine\\Source"
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionTypes.h",
@@ -37,7 +37,71 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
 		],
-		"directory": "E:\\UE_5.3\\Engine\\Source"
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\Aim.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
+		],
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\Aim.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
+		],
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\Combat.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
+		],
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\Combat.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
+		],
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\Enemy.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
+		],
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\Enemy.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
+		],
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\EnemyController.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
+		],
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\EnemyController.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
+		],
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\Jump.cpp",
@@ -45,7 +109,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
 		],
-		"directory": "E:\\UE_5.3\\Engine\\Source"
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\Jump.h",
@@ -53,7 +117,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
 		],
-		"directory": "E:\\UE_5.3\\Engine\\Source"
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\PlayerCharacter.cpp",
@@ -61,7 +125,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
 		],
-		"directory": "E:\\UE_5.3\\Engine\\Source"
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\PlayerCharacter.h",
@@ -69,7 +133,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
 		],
-		"directory": "E:\\UE_5.3\\Engine\\Source"
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\SmartSpringArm.cpp",
@@ -77,7 +141,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
 		],
-		"directory": "E:\\UE_5.3\\Engine\\Source"
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\SmartSpringArm.h",
@@ -85,7 +149,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
 		],
-		"directory": "E:\\UE_5.3\\Engine\\Source"
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\Sprint.cpp",
@@ -93,7 +157,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
 		],
-		"directory": "E:\\UE_5.3\\Engine\\Source"
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\Sprint.h",
@@ -101,7 +165,23 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
 		],
-		"directory": "E:\\UE_5.3\\Engine\\Source"
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\TargetSystem.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
+		],
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\TargetSystem.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
+		],
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\jubilant_potato.Build.cs",
@@ -109,7 +189,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
 		],
-		"directory": "E:\\UE_5.3\\Engine\\Source"
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\jubilant_potato.cpp",
@@ -117,7 +197,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
 		],
-		"directory": "E:\\UE_5.3\\Engine\\Source"
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\jubilant_potato.h",
@@ -125,6 +205,6 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
 		],
-		"directory": "E:\\UE_5.3\\Engine\\Source"
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
 	}
 ]

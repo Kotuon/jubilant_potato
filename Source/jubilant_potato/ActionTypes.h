@@ -9,5 +9,5 @@ enum class EAction : uint8 {
     A_Sprint = 1 UMETA( DisplayName = "Sprint" ),
     A_Attack = 3 UMETA( DisplayName = "Attack" ),
     A_Jump = 2 UMETA( DisplayName = "Jump" ),
-    A_Aim = 0 UMETA( DisplayName = "Aim" ),
+    A_Aim = 2 UMETA( DisplayName = "Aim" ),
 };

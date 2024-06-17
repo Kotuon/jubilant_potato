@@ -18,21 +18,21 @@ protected: // Functions
 
 public: // Functions
     UJump();
-    virtual void Start( const FInputActionValue &value );
+    virtual void Start( const FInputActionValue& value );
     virtual void End();
 
     UFUNCTION( BlueprintCallable )
     void JumpTakeOff();
 
     UFUNCTION()
-    void MovementModeChanged( ACharacter *Character, EMovementMode PrevMovementMode, uint8 PrevCustomMode );
+    void MovementModeChanged( ACharacter* Character, EMovementMode PrevMovementMode, uint8 PrevCustomMode );
 
     UFUNCTION()
     void ResetJumpMemory();
 
     // Landing
     UFUNCTION()
-    void OnLanded( const FHitResult &Hit );
+    void OnLanded( const FHitResult& Hit );
 
     UFUNCTION( BlueprintCallable )
     void SetHasPlayedAnimation();
@@ -42,12 +42,12 @@ public: // Functions
 
 public: // Variables
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Animation" )
-    UAnimMontage * jump_montage;
+    UAnimMontage* jump_montage;
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "General|Jump Memory" )
     float jump_memory_time = 0.25f;
 
 private: // Variables
-    UCharacterMovementComponent *character_movement;
+    UCharacterMovementComponent* character_movement;
 
     FTimerHandle jump_memory_handle;
 

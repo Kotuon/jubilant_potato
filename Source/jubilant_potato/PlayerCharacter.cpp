@@ -19,8 +19,10 @@ APlayerCharacter::APlayerCharacter( const FObjectInitializer& ObjectInitializer 
 
     action_manager = Cast< UActionManager >( CreateDefaultSubobject< UActionManager >( FName( "ActionManager" ) ) );
 
+    camera_root = Cast< USceneComponent >( CreateDefaultSubobject< USceneComponent >( FName( "CameraRoot" ) ) );
+    camera_root->SetupAttachment( GetRootComponent() );
     gimbal = Cast< USceneComponent >( CreateDefaultSubobject< USceneComponent >( FName( "Gimbal" ) ) );
-    gimbal->SetupAttachment( GetRootComponent() );
+    gimbal->SetupAttachment( camera_root );
     spring_arm = Cast< USmartSpringArm >( CreateDefaultSubobject< USmartSpringArm >( FName( "SpringArm" ) ) );
     spring_arm->SetupAttachment( gimbal );
     camera = CreateDefaultSubobject< UCameraComponent >( FName( "Camera" ) );
@@ -75,9 +77,7 @@ void APlayerCharacter::SetupPlayerInputComponent( UInputComponent* PlayerInputCo
     GetComponents< UAction >( action_components );
     for ( UAction* action : action_components ) {
         action->RegisterComponent();
-
-        if ( IsValid( action->input_action ) )
-            PEI->BindAction( action->input_action, ETriggerEvent::Triggered, action, &UAction::Start );
+        action->BindAction( PEI );
     }
 }
 
@@ -89,23 +89,19 @@ void APlayerCharacter::Move( const FInputActionValue& value ) {
         return;
     }
 
-    const FRotator gimbal_rotation_yaw = FRotator{ 0.0, gimbal->GetComponentRotation().Yaw, 0.0 };
-
-    const FVector world_forward = UKismetMathLibrary::GetForwardVector( gimbal_rotation_yaw );
-    const FVector world_right = UKismetMathLibrary::GetRightVector( gimbal_rotation_yaw );
-
-    AddMovementInput( world_forward, input_value.Y, false );
-    AddMovementInput( world_right, input_value.X, false );
+    AddMovementInput( gimbal->GetForwardVector(), input_value.Y, false );
+    AddMovementInput( gimbal->GetRightVector(), input_value.X, false );
 }
 
 void APlayerCharacter::Look( const FInputActionValue& value ) {
     const FVector2D input_value = value.Get< FVector2D >();
 
-    const FRotator new_yaw{ 0.0, input_value.X * sensitivity, 0.0 };
-    gimbal->AddWorldRotation( new_yaw );
+    const float input_yaw = gimbal->GetRelativeRotation().Yaw + ( input_value.X * sensitivity );
+    const FRotator new_yaw{ 0.0, input_yaw, 0.0 };
+    gimbal->SetRelativeRotation( new_yaw );
 
     const float input_pitch = spring_arm->GetRelativeRotation().Pitch + ( input_value.Y * sensitivity );
-    const float clamped_pitch = FMath::Clamp( input_pitch, -89, 90 );
+    const float clamped_pitch = FMath::Clamp( input_pitch, -80, 80 );
 
     const FRotator new_pitch{ clamped_pitch, 0.0, 0.0 };
     spring_arm->SetRelativeRotation( new_pitch );

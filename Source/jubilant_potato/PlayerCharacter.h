@@ -52,6 +52,8 @@ public: // Variables
 
     // Camera components
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
+    USceneComponent *camera_root;
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
     USceneComponent *gimbal;
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
     USmartSpringArm *spring_arm;

@@ -55,7 +55,7 @@ void AEnemyController::FindTarget() {
 
 void AEnemyController::OnPerceptionTargetUpdate( AActor *actor, FAIStimulus stimulus ) {
 
-    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "Updating perception." );
+    // GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "Updating perception." );
 
     if ( actor->ActorHasTag( "Player" ) && stimulus.WasSuccessfullySensed() ) {
         world->GetTimerManager().ClearTimer( check_los_countdown );

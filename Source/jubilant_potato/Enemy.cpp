@@ -48,7 +48,7 @@ bool AEnemy::GetIsTargeted() const {
 
 void AEnemy::ApplyDamage( int DamageAmount ) {
     health -= DamageAmount;
-    if ( health <= 0 ) {
+    if ( !is_dead && health <= 0 ) {
         Kill();
     }
 }

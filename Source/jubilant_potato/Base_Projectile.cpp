@@ -7,6 +7,7 @@
 #include "NiagaraComponent.h"                          // UNiagaraComponent class
 #include "PlayerCharacter.h"                           // APlayerCharacter class
 #include "Kismet/KismetMathLibrary.h"                  // MakeRotFromX()
+#include "Enemy.h"                                     // AEnemy class
 
 // Sets default values
 ABase_Projectile::ABase_Projectile() {
@@ -77,10 +78,11 @@ void ABase_Projectile::FireInDirection( const FVector& ShootDirection ) {
 
 void ABase_Projectile::OnHit( UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit ) {
 
-    if ( OtherActor == this || OtherActor == parent || ActorHasTag( OtherActor->Tags[0] ) || OtherActor->ActorHasTag( "Projectile" ) || OtherComp->ComponentHasTag( "AI" ) )
+    if ( OtherActor == this || OtherActor == parent ) {
         return;
+    }
 
-    // GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, OtherActor->GetName());
+    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, OtherActor->GetName() );
 
     // TArray< UAudioComponent* > audioComponents;
     // GetComponents< UAudioComponent >( audioComponents );
@@ -89,14 +91,14 @@ void ABase_Projectile::OnHit( UPrimitiveComponent* HitComponent, AActor* OtherAc
     //     audioComponents[i]->FadeOut( 1.f, 0.f, EAudioFaderCurve::Linear );
     // }
 
-    // APlayerCharacter* cBase = Cast< APlayerCharacter >( OtherActor );
-    // if ( !OtherActor->ActorHasTag( "Wall" ) && cBase ) {
-    //     cBase->ApplyDamage( Damage );
-    // }
-
     UWorld* world = GetWorld();
     if ( !world )
         return;
+
+    AEnemy* enemy = Cast< AEnemy >( OtherActor );
+    if ( IsValid( enemy ) ) {
+        enemy->ApplyDamage( 1 );
+    }
 
     UNiagaraComponent* newEffect = UNiagaraFunctionLibrary::SpawnSystemAtLocation( world, hit_VFX,
                                                                                    Hit.ImpactPoint,

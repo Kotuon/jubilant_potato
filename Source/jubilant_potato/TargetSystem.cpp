@@ -17,12 +17,12 @@ void UTargetSystem::BeginPlay() {
     world = GetWorld();
 }
 
-void UTargetSystem::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction ) {
+void UTargetSystem::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) {
     Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
     // ...
 }
 
-TArray< AEnemy * > &UTargetSystem::UpdateTarget( float Width, float Range, bool SingleTarget ) {
+TArray< AEnemy* >& UTargetSystem::UpdateTarget( float Width, float Range, bool SingleTarget ) {
     float search_value = 1.f - Width;
     FVector input = parent->GetLastMovementInput();
 
@@ -31,10 +31,18 @@ TArray< AEnemy * > &UTargetSystem::UpdateTarget( float Width, float Range, bool 
     if ( abs( input.X ) + abs( input.Y ) > 0.f ) {
         search_direction = ( ( parent->gimbal->GetForwardVector() * input.Y ) + ( parent->gimbal->GetRightVector() * input.X ) ).GetSafeNormal();
     } else {
-        search_direction = parent->GetActorForwardVector(); // parent->gimbal->GetForwardVector();
+        search_direction = parent->GetActorForwardVector();
     }
 
-    TArray< AActor * > found_enemies;
+    DrawDebugDirectionalArrow( GetWorld(), parent->GetActorLocation(),
+                               parent->GetActorLocation() + ( search_direction * 200.f ), 10.f,
+                               FColor::Green, false, 1.f, ( uint8 )0U, 2.f );
+
+    // DrawDebugDirectionalArrow( GetWorld(), parent->GetActorLocation(),
+    //                            parent->GetActorLocation() + ( search_direction * 200.f ),
+    //                            2.f, );
+
+    TArray< AActor* > found_enemies;
     UGameplayStatics::GetAllActorsOfClass( world, AEnemy::StaticClass(), found_enemies );
 
     TArray< float > found_dot_result;
@@ -42,7 +50,7 @@ TArray< AEnemy * > &UTargetSystem::UpdateTarget( float Width, float Range, bool 
     TArray< int > found_enemy_index;
     found_enemy_index.Init( -1, 1 );
     for ( int i = 0; i < found_enemies.Num(); ++i ) {
-        AEnemy *enemy = Cast< AEnemy >( found_enemies[i] );
+        AEnemy* enemy = Cast< AEnemy >( found_enemies[i] );
 
         float distance = FVector::Distance( enemy->GetActorLocation(), parent->GetActorLocation() );
 
@@ -57,7 +65,7 @@ TArray< AEnemy * > &UTargetSystem::UpdateTarget( float Width, float Range, bool 
         FVector enemy_direction = ( enemy->GetActorLocation() - parent->GetActorLocation() ).GetSafeNormal();
 
         float dot_result = FVector::DotProduct( search_direction, enemy_direction );
-        if ( dot_result > search_value ) {
+        if ( abs( dot_result ) > search_value ) {
             if ( SingleTarget ) {
                 if ( dot_result > found_dot_result[0] ) {
                     found_dot_result[0] = dot_result;
@@ -68,7 +76,7 @@ TArray< AEnemy * > &UTargetSystem::UpdateTarget( float Width, float Range, bool 
                     found_enemy_index[0] = i;
                     break;
                 }
-            } else if ( i == 0 ) {
+            } else if ( found_enemy_index[0] == -1 ) {
                 found_dot_result[0] = dot_result;
                 found_enemy_index[0] = i;
             } else {
@@ -96,7 +104,7 @@ TArray< AEnemy * > &UTargetSystem::UpdateTarget( float Width, float Range, bool 
 }
 
 void UTargetSystem::ClearTargets() {
-    for ( AEnemy *target : curr_targets ) {
+    for ( AEnemy* target : curr_targets ) {
         target->EndTarget();
     }
 

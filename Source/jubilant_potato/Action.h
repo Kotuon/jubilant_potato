@@ -10,6 +10,7 @@
 class UActionManager;
 class UInputAction;
 class APlayerCharacter;
+class UEnhancedInputComponent;
 
 UCLASS( ClassGroup = ( Custom ), meta = ( BlueprintSpawnableComponent ) )
 class JUBILANT_POTATO_API UAction : public UActorComponent {
@@ -35,6 +36,8 @@ public: // Functions
     void Print() const;
 
     virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction ) override;
+
+    virtual void BindAction( UEnhancedInputComponent* PEI );
 
 public: // Variables
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )

@@ -51,7 +51,7 @@ public: // Variables
     float start_distance_projectile = 100.f;
 
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "General" )
-    float cooldown = 0.5f;
+    float cooldown = 0.1f;
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "General" )
     int damage_amount = 1;
 

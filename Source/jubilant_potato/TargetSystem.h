@@ -19,10 +19,10 @@ protected: // Functions
 public: // Functions
     UTargetSystem();
 
-    virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction ) override;
+    virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
 
     UFUNCTION( BlueprintCallable )
-    TArray< AEnemy * > &UpdateTarget( float Width = 0.1f, float Range = 500.f, bool SingleTarget = true );
+    TArray< AEnemy* >& UpdateTarget( float Width = 0.1f, float Range = 500.f, bool SingleTarget = true );
 
     UFUNCTION( BlueprintCallable )
     void ClearTargets();
@@ -30,8 +30,8 @@ public: // Functions
 private: // Functions
 public:  // Variables
 private: // Variables
-    TArray< AEnemy * > curr_targets;
-    APlayerCharacter *parent;
+    TArray< AEnemy* > curr_targets;
+    APlayerCharacter* parent;
 
-    UWorld *world;
+    UWorld* world;
 };

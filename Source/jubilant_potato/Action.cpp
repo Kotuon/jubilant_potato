@@ -1,6 +1,8 @@
 #include "Action.h"
-#include "ActionManager.h"   // UActionManager class
-#include "PlayerCharacter.h" // APlayerCharacter class
+#include "ActionManager.h"           // UActionManager class
+#include "PlayerCharacter.h"         // APlayerCharacter class
+#include "EnhancedInputSubsystems.h" // UEnhancedInputLocalPlayerSubsystem class
+#include "EnhancedInputComponent.h"  // UEnhancedInputComponent class
 
 // Sets default values for this component's properties
 UAction::UAction() : UActorComponent() {
@@ -16,7 +18,7 @@ void UAction::BeginPlay() {
     parent = Cast< APlayerCharacter >( GetOwner() );
 }
 
-void UAction::Start( const FInputActionValue &value ) {
+void UAction::Start( const FInputActionValue& value ) {
 }
 void UAction::Update() {
 }
@@ -30,7 +32,7 @@ void UAction::EndNotifyWindow() {
 }
 
 // Called every frame
-void UAction::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction ) {
+void UAction::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) {
     Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
     // ...
 }
@@ -44,4 +46,10 @@ void UAction::Print() const {
         name += "Jump";
 
     GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Cyan, FString( "Found: " + name + " : " + FString::FromInt( uint8( type ) ) ) );
+}
+
+void UAction::BindAction( UEnhancedInputComponent* PEI ) {
+    if ( IsValid( input_action ) ) {
+        PEI->BindAction( input_action, ETriggerEvent::Triggered, this, &UAction::Start );
+    }
 }

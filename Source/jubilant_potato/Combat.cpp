@@ -10,6 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h" // UCharacterMovementComponent class
 #include "Aim.h"                                      // UAim class
 #include "Base_Projectile.h"                          // ABase_Projectile class
+#include "Camera/CameraComponent.h"                   // UCameraComponent class
 
 // Sets default values for this component's properties
 UCombat::UCombat() {
@@ -35,7 +36,7 @@ void UCombat::BeginPlay() {
 }
 
 void UCombat::Start( const FInputActionValue& Value ) {
-    if ( on_cooldown ) {
+    if ( on_cooldown || parent->GetCharacterMovement()->IsFalling() ) {
         return;
     }
 
@@ -43,14 +44,14 @@ void UCombat::Start( const FInputActionValue& Value ) {
         return;
     }
 
-    if ( parent->GetCharacterMovement()->IsFalling() ) {
-        can_combo = false;
-        is_attacking = true;
+    // if ( parent->GetCharacterMovement()->IsFalling() ) {
+    //     can_combo = false;
+    //     is_attacking = true;
 
-        parent->SetCanWalk( false );
+    //     parent->SetCanWalk( false );
 
-        return;
-    }
+    //     return;
+    // }
 
     if ( aim_action->GetIsAiming() ) {
         SpawnProjectile();
@@ -64,7 +65,7 @@ void UCombat::Start( const FInputActionValue& Value ) {
         can_combo = false;
         is_attacking = true;
 
-        TArray< AEnemy* > targets = target_system->UpdateTarget( 0.1f, 1000.f, true );
+        TArray< AEnemy* > targets = target_system->UpdateTarget( 0.15f, 500.f, false );
         int target_num = targets.Num();
         if ( target_num > 0 ) {
             FVector average_position = FVector( 0 );
@@ -137,31 +138,48 @@ void UCombat::EndCooldown() {
 }
 
 void UCombat::SpawnProjectile() {
-    FVector player_position = parent->GetActorLocation() + FVector{ 0.f, 0.f, 40.f };
-    FVector player_forward = parent->GetActorForwardVector();
-    FRotator player_rotation = parent->GetActorRotation();
+    FVector playerPosition = parent->GetActorLocation() + FVector{ 0.f, 0.f, 40.f };
+    FVector cameraForward = Cast< USceneComponent >( parent->camera )->GetForwardVector();
+    FRotator playerRotation = parent->GetActorRotation();
 
-    FVector initial_location = FVector( 100000000000, 10000000000000, 10000000000 );
+    FVector initialLocation = FVector( 100000000000, 10000000000000, 10000000000 );
 
-    FVector shot_location = player_position + ( player_forward * start_distance_projectile );
+    FVector traceStart = parent->camera->GetComponentLocation();
+    FVector traceEnd = traceStart + ( cameraForward * 10000.f );
 
-    FActorSpawnParameters spawn_params;
-    spawn_params.Owner = parent;
-    spawn_params.Instigator = parent->GetInstigator();
-    spawn_params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+    // DrawDebugLine( world, traceStart, traceEnd, FColor::Green, false, 2.f );
 
-    ABase_Projectile* new_projectile = world->SpawnActor< ABase_Projectile >( projectile_class,
-                                                                              initial_location,
-                                                                              player_rotation,
-                                                                              spawn_params );
-    if ( !new_projectile ) {
+    FCollisionShape sphere;
+    sphere.SetSphere( 20.f );
+
+    FHitResult hitResult;
+    world->SweepSingleByChannel( hitResult, traceStart, traceEnd, FQuat::Identity,
+                                 ECollisionChannel::ECC_PhysicsBody, sphere );
+
+    if ( hitResult.IsValidBlockingHit() ) {
+        GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Yellow, hitResult.GetActor()->GetName() );
+        traceEnd = hitResult.ImpactPoint;
+    }
+
+    FVector shotLocation = playerPosition + ( cameraForward * start_distance_projectile );
+    FVector launchDirection = ( traceEnd - shotLocation ).GetSafeNormal();
+
+    FActorSpawnParameters spawnParams;
+    spawnParams.Owner = parent;
+    spawnParams.Instigator = parent->GetInstigator();
+    spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+    ABase_Projectile* newProjectile = world->SpawnActor< ABase_Projectile >( projectile_class,
+                                                                             initialLocation,
+                                                                             FRotationMatrix::MakeFromX( launchDirection ).Rotator(),
+                                                                             spawnParams );
+    if ( !newProjectile ) {
         return;
     }
-    new_projectile->parent = parent;
-    new_projectile->Tags.Add( parent->Tags[0] );
-    new_projectile->start_location = shot_location;
+    newProjectile->parent = parent;
+    newProjectile->Tags.Add( parent->Tags[0] );
+    newProjectile->start_location = shotLocation;
 
-    new_projectile->SetActorLocation( shot_location );
-    FVector launch_direction = player_rotation.Vector();
-    new_projectile->FireInDirection( launch_direction );
+    newProjectile->SetActorLocation( shotLocation );
+    newProjectile->FireInDirection( launchDirection );
 }

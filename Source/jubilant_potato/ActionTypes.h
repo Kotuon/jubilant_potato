@@ -10,4 +10,5 @@ enum class EAction : uint8 {
     A_Attack = 3 UMETA( DisplayName = "Attack" ),
     A_Jump = 2 UMETA( DisplayName = "Jump" ),
     A_Aim = 2 UMETA( DisplayName = "Aim" ),
+    A_GravRush = 3 UMETA( DisplayName = "GravRush" ),
 };

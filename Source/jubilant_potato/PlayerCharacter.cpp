@@ -9,6 +9,8 @@
 #include "Action.h"                                   // UAction class
 #include "ActionManager.h"                            // UActionManager class
 #include "GameFramework/MovementComponent.h"          //
+#include "Math/UnrealMathUtility.h"                   // Lerp
+#include "Math/UnrealMathUtility.h"                   // Lerp
 
 // Sets default values
 APlayerCharacter::APlayerCharacter( const FObjectInitializer& ObjectInitializer ) : ACharacter( ObjectInitializer ) {
@@ -51,7 +53,16 @@ void APlayerCharacter::Tick( float DeltaTime ) {
 
     // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green, GetVelocity().ToString() );
     if ( !character_movement->bOrientRotationToMovement ) {
-        SetActorRotation( gimbal->GetRelativeRotation() );
+        SetActorRotation( camera_root->GetRelativeRotation() );
+    }
+
+    if ( is_running ) {
+        time_running = FMath::Clamp( time_running + DeltaTime, 0.f, time_to_reach_max_run );
+
+        character_movement->MaxWalkSpeed = FMath::Lerp( norm_run_speed, fast_run_speed,
+                                                        time_running / time_to_reach_max_run );
+        GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green, FString::SanitizeFloat( character_movement->MaxWalkSpeed ) );
+        GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red, FString::SanitizeFloat( time_running ) );
     }
 }
 
@@ -86,7 +97,18 @@ void APlayerCharacter::Move( const FInputActionValue& value ) {
     last_movement_input = FVector( input_value.X, input_value.Y, 0.f );
 
     if ( !can_walk ) {
+        is_running = false;
+        character_movement->MaxWalkSpeed = norm_run_speed;
+        time_running = 0.f;
         return;
+    }
+
+    if ( input_value.SquaredLength() <= 0.f ) {
+        is_running = false;
+        character_movement->MaxWalkSpeed = norm_run_speed;
+        time_running = 0.f;
+    } else {
+        is_running = true;
     }
 
     AddMovementInput( gimbal->GetForwardVector(), input_value.Y, false );

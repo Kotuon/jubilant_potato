@@ -76,5 +76,12 @@ private: // Variables
 
     FVector last_movement_input;
 
+    float time_running;
+
+    float norm_run_speed = 600.f;
+    float fast_run_speed = 2400.f;
+    const float time_to_reach_max_run = 5.f;
+
     bool can_walk = true;
+    bool is_running = false;
 };

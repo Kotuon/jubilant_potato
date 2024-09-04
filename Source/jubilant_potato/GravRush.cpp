@@ -29,7 +29,7 @@ void UGravRush::Start( const FInputActionValue& Value ) {
         return;
     }
 
-    if ( is_floating ) {
+    // if ( is_floating ) {
         has_moved = true;
         const FVector last_grav = movement->GetGravityDirection();
         const FVector next_grav = parent->camera->GetForwardVector();
@@ -38,18 +38,18 @@ void UGravRush::Start( const FInputActionValue& Value ) {
         movement->SetMovementMode( MOVE_Falling );
         parent->SetCanWalk( true );
 
-        // parent->camera_root->SetWorldRotation( ( next_grav - last_grav ).GetSafeNormal().Rotation() * 2.f );
-        return;
-    }
+        // return;
+    // }
 
-    if ( movement->MovementMode != MOVE_Falling ) {
-        const FVector up = parent->GetActorUpVector() * 800.f;
-        movement->Velocity += up;
-    }
+    // if ( movement->MovementMode != MOVE_Falling ) {
+    //     const FVector up = parent->GetActorUpVector() * 800.f;
+    //     movement->Velocity += up;
+    // }
 
     is_floating = true;
-    movement->SetMovementMode( MOVE_Flying );
-    parent->SetCanWalk( false );
+    // movement->SetMovementMode( MOVE_Flying );
+    // parent->SetCanWalk( false );
+    // GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "Start grav rush." );
     GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "Start grav rush." );
 }
 
@@ -73,11 +73,11 @@ void UGravRush::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
     //...
 
     const float result = FVector::DotProduct( parent->GetActorUpVector(), parent->gimbal->GetUpVector() );
-    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, FString::SanitizeFloat( result ) );
+    // GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, FString::SanitizeFloat( result ) );
     if ( result < 0.999f ) {
         parent->camera_root->SetWorldRotation(
             FMath::RInterpTo( parent->camera_root->GetComponentRotation(), parent->GetActorRotation(),
-                              DeltaTime, 1.f ) );
+                              DeltaTime, 1.0f ) );
     }
 
     if ( !is_floating ) {
@@ -87,18 +87,17 @@ void UGravRush::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
     if ( !has_moved ) {
         if ( movement->Velocity.Length() > 0.f ) {
             movement->Velocity = FMath::Lerp( movement->Velocity, FVector::ZeroVector, 0.05f );
-            if ( movement->Velocity.Length() < 0.5f ) {
+            if ( movement->Velocity.Length() < 5.f ) {
                 movement->Velocity = FVector::ZeroVector;
             }
-            GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Yellow, movement->Velocity.ToString() );
         }
     }
 }
 
 void UGravRush::MovementModeChanged( ACharacter* Character, EMovementMode PrevMovementMode, uint8 PrevCustomMode ) {
-    if ( PrevMovementMode == MOVE_Falling && parent->GetCharacterMovement()->MovementMode == MOVE_Walking ) {
-        // parent->camera_root->SetWorldRotation( parent->GetActorRotation() );
-    }
+    // if ( PrevMovementMode == MOVE_Falling && parent->GetCharacterMovement()->MovementMode == MOVE_Walking ) {
+    // parent->camera_root->SetWorldRotation( parent->GetActorRotation() );
+    // }
 }
 
 void UGravRush::BindAction( UEnhancedInputComponent* PEI ) {

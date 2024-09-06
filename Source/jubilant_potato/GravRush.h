@@ -28,9 +28,6 @@ public: // Functions
 
     virtual void BindAction( UEnhancedInputComponent* PEI ) override;
 
-    UFUNCTION( BlueprintCallable )
-    bool GetIsFloating() const;
-
 private: // Functions
 public:  // Variables
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
@@ -39,6 +36,6 @@ public:  // Variables
 private: // Variables
     UCharacterMovementComponent* movement;
     FVector original_grav;
-    bool is_floating = false;
-    bool has_moved = false;
+
+    bool has_clicked = false;
 };

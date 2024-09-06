@@ -1,7 +1,6 @@
 
 #include "PlayerCharacter.h"
 #include "SmartSpringArm.h"                           // USmartSpringArm class
-#include "Camera/CameraComponent.h"                   // UCameraComponent class
 #include "EnhancedInputSubsystems.h"                  // UEnhancedInputLocalPlayerSubsystem class
 #include "EnhancedInputComponent.h"                   // UEnhancedInputComponent class
 #include "Kismet/KismetMathLibrary.h"                 // GetForwardVector(), GetRightVector()
@@ -10,25 +9,16 @@
 #include "ActionManager.h"                            // UActionManager class
 #include "GameFramework/MovementComponent.h"          //
 #include "Math/UnrealMathUtility.h"                   // Lerp
-#include "Math/UnrealMathUtility.h"                   // Lerp
 
 // Sets default values
-APlayerCharacter::APlayerCharacter( const FObjectInitializer& ObjectInitializer ) : ACharacter( ObjectInitializer ) {
+APlayerCharacter::APlayerCharacter( const FObjectInitializer& ObjectInitializer )
+    : AGravPlayerCharacter( ObjectInitializer ) {
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
 
     character_movement = GetCharacterMovement();
 
     action_manager = Cast< UActionManager >( CreateDefaultSubobject< UActionManager >( FName( "ActionManager" ) ) );
-
-    camera_root = Cast< USceneComponent >( CreateDefaultSubobject< USceneComponent >( FName( "CameraRoot" ) ) );
-    camera_root->SetupAttachment( GetRootComponent() );
-    gimbal = Cast< USceneComponent >( CreateDefaultSubobject< USceneComponent >( FName( "Gimbal" ) ) );
-    gimbal->SetupAttachment( camera_root );
-    spring_arm = Cast< USmartSpringArm >( CreateDefaultSubobject< USmartSpringArm >( FName( "SpringArm" ) ) );
-    spring_arm->SetupAttachment( gimbal );
-    camera = CreateDefaultSubobject< UCameraComponent >( FName( "Camera" ) );
-    camera->SetupAttachment( spring_arm );
 
     Tags.Add( FName( "Player" ) );
 }

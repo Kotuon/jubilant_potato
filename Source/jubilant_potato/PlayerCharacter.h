@@ -61,8 +61,6 @@ private: // Functions
     void Look( const FInputActionValue &value );
 
 private: // Variables
-    UCharacterMovementComponent *character_movement;
-
     FVector last_movement_input;
 
     float time_running;

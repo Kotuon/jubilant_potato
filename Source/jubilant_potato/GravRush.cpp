@@ -25,11 +25,11 @@ void UGravRush::BeginPlay() {
 }
 
 void UGravRush::Start( const FInputActionValue& Value ) {
-    if ( !has_clicked && !manager->StartAction( type ) ) {
-        return;
-    }
+    // if ( !has_clicked && !manager->StartAction( type ) ) {
+    //     return;
+    // }
 
-    has_clicked = true;
+    // has_clicked = true;
 
     const FVector last_grav = movement->GetGravityDirection();
     const FVector next_grav = parent->camera->GetForwardVector();
@@ -45,7 +45,7 @@ void UGravRush::End() {
     Super::End();
     //...
 
-    has_clicked = false;
+    // has_clicked = false;
     movement->SetGravityDirection( original_grav );
     movement->SetMovementMode( MOVE_Falling );
     parent->SetCanWalk( true );
@@ -55,15 +55,35 @@ void UGravRush::End() {
 void UGravRush::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) {
     Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
     //...
-
 }
 
 void UGravRush::MovementModeChanged( ACharacter* Character, EMovementMode PrevMovementMode, uint8 PrevCustomMode ) {
 }
 
+void UGravRush::InvertGrav() {
+    movement->SetGravityDirection( movement->GetGravityDirection() * -1.f );
+}
+
+void UGravRush::LeftGrav() {
+    movement->SetGravityDirection( parent->camera->GetRightVector() * -1.f );
+}
+
+void UGravRush::RightGrav() {
+    movement->SetGravityDirection( parent->camera->GetRightVector() );
+}
+
 void UGravRush::BindAction( UEnhancedInputComponent* PEI ) {
     Super::BindAction( PEI );
 
+    if ( invert_action ) {
+        PEI->BindAction( invert_action, ETriggerEvent::Triggered, this, &UGravRush::InvertGrav );
+    }
+    if ( left_action ) {
+        PEI->BindAction( left_action, ETriggerEvent::Triggered, this, &UGravRush::LeftGrav );
+    }
+    if ( right_action ) {
+        PEI->BindAction( right_action, ETriggerEvent::Triggered, this, &UGravRush::RightGrav );
+    }
     if ( cancel_action ) {
         PEI->BindAction( cancel_action, ETriggerEvent::Triggered, this, &UAction::End );
     }

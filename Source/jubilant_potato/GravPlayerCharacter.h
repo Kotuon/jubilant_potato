@@ -8,6 +8,7 @@
 
 class USmartSpringArm;
 class UCameraComponent;
+class UGravMovementComponent;
 
 UCLASS()
 class JUBILANT_POTATO_API AGravPlayerCharacter : public ACharacter {
@@ -23,8 +24,11 @@ public: // Functions
 
     virtual void SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent ) override;
 
-private: // Functions
-public:  // Variables
+private:   // Functions
+protected: // Variables
+    UGravMovementComponent* movement;
+
+public: // Variables
     // Camera components
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
     USceneComponent* camera_root;
@@ -36,4 +40,7 @@ public:  // Variables
     UCameraComponent* camera;
 
 private: // Variables
+    FRotator target_rot;
+    FVector target_up;
+    bool has_started;
 };

@@ -26,10 +26,20 @@ public: // Functions
     UFUNCTION()
     void MovementModeChanged( ACharacter* Character, EMovementMode PrevMovementMode, uint8 PrevCustomMode );
 
+    virtual void InvertGrav();
+    virtual void LeftGrav();
+    virtual void RightGrav();
+
     virtual void BindAction( UEnhancedInputComponent* PEI ) override;
 
 private: // Functions
 public:  // Variables
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
+    UInputAction* invert_action;
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
+    UInputAction* left_action;
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
+    UInputAction* right_action;
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
     UInputAction* cancel_action;
 

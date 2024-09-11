@@ -13,8 +13,14 @@ UCLASS()
 class JUBILANT_POTATO_API UGravMovementComponent : public UCharacterMovementComponent {
     GENERATED_BODY()
 
+protected: // Functions
+    virtual void BeginPlay() override;
+
 public:
     virtual void OnMovementUpdated( float DeltaSeconds, const FVector& OldLocation, const FVector& OldVelocity ) override;
 
     virtual void UpdateGravity();
+
+    UFUNCTION()
+    void MovementModeChanged( ACharacter* Character, EMovementMode PrevMovementMode, uint8 PrevCustomMode );
 };

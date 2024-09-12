@@ -72,6 +72,10 @@ void UGravRush::RightGrav() {
     movement->SetGravityDirection( parent->camera->GetRightVector() );
 }
 
+void UGravRush::BackGrav() {
+    movement->SetGravityDirection( parent->camera->GetForwardVector() * -1.f );
+}
+
 void UGravRush::BindAction( UEnhancedInputComponent* PEI ) {
     Super::BindAction( PEI );
 
@@ -83,6 +87,9 @@ void UGravRush::BindAction( UEnhancedInputComponent* PEI ) {
     }
     if ( right_action ) {
         PEI->BindAction( right_action, ETriggerEvent::Triggered, this, &UGravRush::RightGrav );
+    }
+    if ( back_action ) {
+        PEI->BindAction( back_action, ETriggerEvent::Triggered, this, &UGravRush::BackGrav );
     }
     if ( cancel_action ) {
         PEI->BindAction( cancel_action, ETriggerEvent::Triggered, this, &UAction::End );

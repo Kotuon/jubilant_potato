@@ -27,9 +27,6 @@ public: // Functions
     UFUNCTION()
     void MovementModeChanged( ACharacter* Character, EMovementMode PrevMovementMode, uint8 PrevCustomMode );
 
-    UFUNCTION()
-    void ResetJumpMemory();
-
     // Landing
     UFUNCTION()
     void OnLanded( const FHitResult& Hit );
@@ -45,13 +42,18 @@ public: // Variables
     UAnimMontage* jump_montage;
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "General|Jump Memory" )
     float jump_memory_time = 0.25f;
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "General|Coyote Time" )
+    float coyote_time = 0.25f;
 
 private: // Variables
-    UCharacterMovementComponent* character_movement;
+    UCharacterMovementComponent* movement;
+    FTimerManager* timer_manager;
 
     FTimerHandle jump_memory_handle;
+    FTimerHandle coyote_time_handle;
 
     bool has_jumped = false;
     bool jump_memory = false;
+    bool can_coyote = false;
     bool has_played_jump_animation = false;
 };

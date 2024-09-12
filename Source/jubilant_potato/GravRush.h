@@ -29,6 +29,7 @@ public: // Functions
     virtual void InvertGrav();
     virtual void LeftGrav();
     virtual void RightGrav();
+    virtual void BackGrav();
 
     virtual void BindAction( UEnhancedInputComponent* PEI ) override;
 
@@ -40,6 +41,8 @@ public:  // Variables
     UInputAction* left_action;
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
     UInputAction* right_action;
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
+    UInputAction* back_action;
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
     UInputAction* cancel_action;
 

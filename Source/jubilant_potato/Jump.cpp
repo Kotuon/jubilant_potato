@@ -15,13 +15,14 @@ UJump::UJump() {
 void UJump::BeginPlay() {
     Super::BeginPlay();
 
-    character_movement = parent->GetCharacterMovement();
+    movement = parent->GetCharacterMovement();
+    timer_manager = &( parent->GetWorldTimerManager() );
 
     parent->MovementModeChangedDelegate.AddUniqueDynamic( this, &UJump::MovementModeChanged );
     parent->LandedDelegate.AddUniqueDynamic( this, &UJump::OnLanded );
 }
 
-void UJump::Start( const FInputActionValue &value ) {
+void UJump::Start( const FInputActionValue& value ) {
     if ( value.Get< bool >() ) {
         parent->SetLastMovementZInput( 1.f );
     } else {
@@ -30,13 +31,18 @@ void UJump::Start( const FInputActionValue &value ) {
         return;
     }
 
-    if ( character_movement->IsFalling() && !jump_memory ) {
+    if ( movement->IsFalling() && can_coyote ) {
+        can_coyote = false;
+        GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Purple, "Has used Coyote" );
+    } else if ( movement->IsFalling() && !jump_memory ) {
         jump_memory = true;
-        parent->GetWorldTimerManager().SetTimer( jump_memory_handle, this, &UJump::ResetJumpMemory, 0.1f, false, jump_memory_time );
+        timer_manager->SetTimer( jump_memory_handle,
+                                 FTimerDelegate::CreateLambda( [this] { jump_memory = false; } ),
+                                 0.1f, false, jump_memory_time );
         return;
     }
     has_jumped = true;
-
+    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "JUMP!" );
     parent->PlayAnimMontage( jump_montage );
 }
 
@@ -47,27 +53,31 @@ void UJump::End() {
 }
 
 void UJump::JumpTakeOff() {
-    const FVector velocity = character_movement->Velocity;
+    const FVector velocity = movement->Velocity;
     const float velocity_xy = velocity.Size2D();
 
-    character_movement->JumpZVelocity = UKismetMathLibrary::MapRangeClamped( velocity_xy, 400.f, 800.f, 700.f, 900.f );
-
+    movement->JumpZVelocity = UKismetMathLibrary::MapRangeClamped( velocity_xy,
+                                                                   400.f, 800.f, 700.f, 900.f );
+    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red, "JUMPING" );
     parent->Jump();
 
-    character_movement->bNotifyApex = true;
+    movement->bNotifyApex = true;
 }
 
-void UJump::MovementModeChanged( ACharacter *Character, EMovementMode PrevMovementMode, uint8 PrevCustomMode ) {
-    if ( PrevMovementMode == MOVE_Falling && parent->GetCharacterMovement()->MovementMode == MOVE_Walking ) {
+void UJump::MovementModeChanged( ACharacter* Character, EMovementMode PrevMovementMode,
+                                 uint8 PrevCustomMode ) {
+    if ( PrevMovementMode == MOVE_Falling && movement->MovementMode == MOVE_Walking ) {
         has_jumped = false;
         End();
         if ( jump_memory )
             Start( FInputActionValue() );
+    } else if ( PrevMovementMode == MOVE_Walking && movement->MovementMode == MOVE_Falling ) {
+        can_coyote = true;
+        timer_manager->SetTimer( coyote_time_handle,
+                                 FTimerDelegate::CreateLambda( [this] { can_coyote = false;GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red, "Can not Coyote" ); } ),
+                                 0.1f, false, coyote_time );
+        GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "Can Coyote" );
     }
-}
-
-void UJump::ResetJumpMemory() {
-    jump_memory = false;
 }
 
 void UJump::SetHasPlayedAnimation() {
@@ -79,6 +89,6 @@ bool UJump::GetHasPlayedAnimation() const {
 }
 
 // Landing
-void UJump::OnLanded( const FHitResult &Hit ) {
+void UJump::OnLanded( const FHitResult& Hit ) {
     has_played_jump_animation = false;
 }

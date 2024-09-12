@@ -26,19 +26,26 @@ public: // Functions
     UFUNCTION()
     void MovementModeChanged( ACharacter* Character, EMovementMode PrevMovementMode, uint8 PrevCustomMode );
 
-    virtual void BindAction( UEnhancedInputComponent* PEI ) override;
+    virtual void InvertGrav();
+    virtual void LeftGrav();
+    virtual void RightGrav();
 
-    UFUNCTION( BlueprintCallable )
-    bool GetIsFloating() const;
+    virtual void BindAction( UEnhancedInputComponent* PEI ) override;
 
 private: // Functions
 public:  // Variables
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
+    UInputAction* invert_action;
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
+    UInputAction* left_action;
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
+    UInputAction* right_action;
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
     UInputAction* cancel_action;
 
 private: // Variables
     UCharacterMovementComponent* movement;
     FVector original_grav;
-    bool is_floating = false;
-    bool has_moved = false;
+
+    bool has_clicked = false;
 };

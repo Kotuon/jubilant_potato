@@ -120,6 +120,38 @@
 		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
 	},
 	{
+		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\GravMovementComponent.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
+		],
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\GravMovementComponent.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
+		],
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\GravPlayerCharacter.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
+		],
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\GravPlayerCharacter.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
+		],
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\GravRush.cpp",
 		"arguments": [
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
@@ -145,6 +177,22 @@
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\Jump.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
+		],
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\NoRestrictPlayerCameraManager.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"
+		],
+		"directory": "C:\\Program Files (x86)\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\NoRestrictPlayerCameraManager.h",
 		"arguments": [
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_jubilant_potato\\jubilant_potato.1.rsp"

@@ -1,34 +1,22 @@
 
 #include "PlayerCharacter.h"
-#include "SmartSpringArm.h"                           // USmartSpringArm class
-#include "Camera/CameraComponent.h"                   // UCameraComponent class
-#include "EnhancedInputSubsystems.h"                  // UEnhancedInputLocalPlayerSubsystem class
-#include "EnhancedInputComponent.h"                   // UEnhancedInputComponent class
-#include "Kismet/KismetMathLibrary.h"                 // GetForwardVector(), GetRightVector()
-#include "GameFramework/CharacterMovementComponent.h" // UCharacterMovementComponent class
-#include "Action.h"                                   // UAction class
-#include "ActionManager.h"                            // UActionManager class
-#include "GameFramework/MovementComponent.h"          //
-#include "Math/UnrealMathUtility.h"                   // Lerp
-#include "Math/UnrealMathUtility.h"                   // Lerp
+#include "SmartSpringArm.h"                  // USmartSpringArm class
+#include "EnhancedInputSubsystems.h"         // UEnhancedInputLocalPlayerSubsystem class
+#include "EnhancedInputComponent.h"          // UEnhancedInputComponent class
+#include "Kismet/KismetMathLibrary.h"        // GetForwardVector(), GetRightVector()
+#include "GravMovementComponent.h"           // UGravMovementComponent
+#include "Action.h"                          // UAction class
+#include "ActionManager.h"                   // UActionManager class
+#include "GameFramework/MovementComponent.h" //
+#include "Math/UnrealMathUtility.h"          // Lerp
 
 // Sets default values
-APlayerCharacter::APlayerCharacter( const FObjectInitializer& ObjectInitializer ) : ACharacter( ObjectInitializer ) {
+APlayerCharacter::APlayerCharacter( const FObjectInitializer& ObjectInitializer )
+    : AGravPlayerCharacter( ObjectInitializer ) {
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
 
-    character_movement = GetCharacterMovement();
-
     action_manager = Cast< UActionManager >( CreateDefaultSubobject< UActionManager >( FName( "ActionManager" ) ) );
-
-    camera_root = Cast< USceneComponent >( CreateDefaultSubobject< USceneComponent >( FName( "CameraRoot" ) ) );
-    camera_root->SetupAttachment( GetRootComponent() );
-    gimbal = Cast< USceneComponent >( CreateDefaultSubobject< USceneComponent >( FName( "Gimbal" ) ) );
-    gimbal->SetupAttachment( camera_root );
-    spring_arm = Cast< USmartSpringArm >( CreateDefaultSubobject< USmartSpringArm >( FName( "SpringArm" ) ) );
-    spring_arm->SetupAttachment( gimbal );
-    camera = CreateDefaultSubobject< UCameraComponent >( FName( "Camera" ) );
-    camera->SetupAttachment( spring_arm );
 
     Tags.Add( FName( "Player" ) );
 }
@@ -52,16 +40,16 @@ void APlayerCharacter::Tick( float DeltaTime ) {
     //...
 
     // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green, GetVelocity().ToString() );
-    if ( !character_movement->bOrientRotationToMovement ) {
+    if ( !movement->bOrientRotationToMovement ) {
         SetActorRotation( camera_root->GetRelativeRotation() );
     }
 
     if ( is_running ) {
         time_running = FMath::Clamp( time_running + DeltaTime, 0.f, time_to_reach_max_run );
 
-        character_movement->MaxWalkSpeed = FMath::Lerp( norm_run_speed, fast_run_speed,
-                                                        time_running / time_to_reach_max_run );
-        GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green, FString::SanitizeFloat( character_movement->MaxWalkSpeed ) );
+        movement ->MaxWalkSpeed = FMath::Lerp( norm_run_speed, fast_run_speed,
+                                              time_running / time_to_reach_max_run );
+        GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green, FString::SanitizeFloat( movement->MaxWalkSpeed ) );
         GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red, FString::SanitizeFloat( time_running ) );
     }
 }
@@ -98,14 +86,14 @@ void APlayerCharacter::Move( const FInputActionValue& value ) {
 
     if ( !can_walk ) {
         is_running = false;
-        character_movement->MaxWalkSpeed = norm_run_speed;
+        movement->MaxWalkSpeed = norm_run_speed;
         time_running = 0.f;
         return;
     }
 
     if ( input_value.SquaredLength() <= 0.f ) {
         is_running = false;
-        character_movement->MaxWalkSpeed = norm_run_speed;
+        movement->MaxWalkSpeed = norm_run_speed;
         time_running = 0.f;
     } else {
         is_running = true;

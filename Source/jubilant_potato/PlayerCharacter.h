@@ -4,17 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GravPlayerCharacter.h"
 #include "PlayerCharacter.generated.h"
 
 struct FInputActionValue;
 class UInputAction;
-class USmartSpringArm;
-class UCameraComponent;
 class UAction;
 class UActionManager;
 
 UCLASS()
-class JUBILANT_POTATO_API APlayerCharacter : public ACharacter {
+class JUBILANT_POTATO_API APlayerCharacter : public AGravPlayerCharacter {
     GENERATED_BODY()
 
 protected: // Functions
@@ -50,16 +49,6 @@ public: // Variables
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Actions" )
     UInputAction *input_look;
 
-    // Camera components
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
-    USceneComponent *camera_root;
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
-    USceneComponent *gimbal;
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
-    USmartSpringArm *spring_arm;
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
-    UCameraComponent *camera;
-
     // Running
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Jump" )
     UAnimMontage *run_to_stop_animation;
@@ -72,8 +61,6 @@ private: // Functions
     void Look( const FInputActionValue &value );
 
 private: // Variables
-    UCharacterMovementComponent *character_movement;
-
     FVector last_movement_input;
 
     float time_running;

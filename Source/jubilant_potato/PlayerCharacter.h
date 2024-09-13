@@ -20,48 +20,62 @@ protected: // Functions
     virtual void BeginPlay() override;
 
 public: // Functions
-    APlayerCharacter( const FObjectInitializer &ObjectInitializer );
+    APlayerCharacter( const FObjectInitializer& ObjectInitializer );
 
     virtual void Tick( float DeltaTime ) override;
 
-    virtual void SetupPlayerInputComponent( class UInputComponent *PlayerInputComponent ) override;
+    virtual void SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent ) override;
 
     UFUNCTION( BlueprintCallable )
-    void SetCanWalk( bool canWalk );
+    void SetCanWalk( bool canWalk ) {
+        can_walk = canWalk;
+    }
 
-    bool GetCanWalk() const;
+    bool GetCanWalk() const {
+        return can_walk;
+    }
 
     UFUNCTION( BlueprintCallable )
-    const FVector &GetLastMovementInput() const;
+    const FVector& GetLastMovementInput() const {
+        return last_movement_input;
+    }
 
-    void SetLastMovementZInput( const float input_value );
+    UFUNCTION( BlueprintCallable )
+    const FVector2D& GetLastCameraInput() const {
+        return last_camera_input;
+    }
+
+    void SetLastMovementZInput( const float input_value ) {
+        last_movement_input.Z = input_value;
+    }
 
 public: // Variables
     UPROPERTY( VisibleDefaultsOnly, BlueprintReadOnly, Category = "Actions" )
-    UActionManager *action_manager;
+    UActionManager* action_manager;
 
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
-    class UInputMappingContext *input_mapping;
+    class UInputMappingContext* input_mapping;
 
     // Input Actions
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Actions" )
-    UInputAction *input_move;
+    UInputAction* input_move;
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Actions" )
-    UInputAction *input_look;
+    UInputAction* input_look;
 
     // Running
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Jump" )
-    UAnimMontage *run_to_stop_animation;
+    UAnimMontage* run_to_stop_animation;
 
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
     float sensitivity = 1.f;
 
 private: // Functions
-    void Move( const FInputActionValue &value );
-    void Look( const FInputActionValue &value );
+    void Move( const FInputActionValue& value );
+    void Look( const FInputActionValue& value );
 
 private: // Variables
     FVector last_movement_input;
+    FVector2D last_camera_input;
 
     float time_running;
 

@@ -4,14 +4,14 @@
 #include "GameFramework/Character.h" // ACharacter class
 
 void UGravMovementComponent::BeginPlay() {
-    CharacterOwner->MovementModeChangedDelegate.AddUniqueDynamic( this, &UGravMovementComponent::MovementModeChanged );
+    CharacterOwner->MovementModeChangedDelegate.AddUniqueDynamic(
+        this, &UGravMovementComponent::MovementModeChanged );
 }
 
-void UGravMovementComponent::OnMovementUpdated( float DeltaSeconds, const FVector& OldLocation, const FVector& OldVelocity ) {
+void UGravMovementComponent::OnMovementUpdated( float DeltaSeconds, const FVector& OldLocation,
+                                                const FVector& OldVelocity ) {
     Super::OnMovementUpdated( DeltaSeconds, OldLocation, OldVelocity );
     //...
-
-    // UpdateGravity();
 }
 
 void UGravMovementComponent::UpdateGravity() {
@@ -20,9 +20,10 @@ void UGravMovementComponent::UpdateGravity() {
     }
 }
 
-void UGravMovementComponent::MovementModeChanged( ACharacter* Character, EMovementMode PrevMovementMode, uint8 PrevCustomMode ) {
+void UGravMovementComponent::MovementModeChanged( ACharacter* Character,
+                                                  EMovementMode PrevMovementMode,
+                                                  uint8 PrevCustomMode ) {
     if ( PrevMovementMode == MOVE_Falling && MovementMode == MOVE_Walking ) {
         UpdateGravity();
-        GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "FALLING TO WALKING" );
     }
 }

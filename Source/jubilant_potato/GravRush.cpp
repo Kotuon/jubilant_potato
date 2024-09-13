@@ -25,12 +25,6 @@ void UGravRush::BeginPlay() {
 }
 
 void UGravRush::Start( const FInputActionValue& Value ) {
-    // if ( !has_clicked && !manager->StartAction( type ) ) {
-    //     return;
-    // }
-
-    // has_clicked = true;
-
     const FVector last_grav = movement->GetGravityDirection();
     const FVector next_grav = parent->camera->GetForwardVector();
 
@@ -44,20 +38,21 @@ void UGravRush::Start( const FInputActionValue& Value ) {
 void UGravRush::End() {
     Super::End();
     //...
-
-    // has_clicked = false;
     movement->SetGravityDirection( original_grav );
     movement->SetMovementMode( MOVE_Falling );
     parent->SetCanWalk( true );
+
     GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red, "End grav rush." );
 }
 
-void UGravRush::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) {
+void UGravRush::TickComponent( float DeltaTime, ELevelTick TickType,
+                               FActorComponentTickFunction* ThisTickFunction ) {
     Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
     //...
 }
 
-void UGravRush::MovementModeChanged( ACharacter* Character, EMovementMode PrevMovementMode, uint8 PrevCustomMode ) {
+void UGravRush::MovementModeChanged( ACharacter* Character, EMovementMode PrevMovementMode,
+                                     uint8 PrevCustomMode ) {
 }
 
 void UGravRush::InvertGrav() {

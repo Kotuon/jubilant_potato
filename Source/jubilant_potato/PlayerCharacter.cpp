@@ -10,18 +10,16 @@
 #include "GameFramework/MovementComponent.h" //
 #include "Math/UnrealMathUtility.h"          // Lerp
 
-// Sets default values
 APlayerCharacter::APlayerCharacter( const FObjectInitializer& ObjectInitializer )
     : AGravPlayerCharacter( ObjectInitializer ) {
-    // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
 
-    action_manager = Cast< UActionManager >( CreateDefaultSubobject< UActionManager >( FName( "ActionManager" ) ) );
+    action_manager = Cast< UActionManager >(
+        CreateDefaultSubobject< UActionManager >( FName( "ActionManager" ) ) );
 
     Tags.Add( FName( "Player" ) );
 }
 
-// Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay() {
     Super::BeginPlay();
 
@@ -34,7 +32,6 @@ void APlayerCharacter::BeginPlay() {
     pc->bShowMouseCursor = false;
 }
 
-// Called every frame
 void APlayerCharacter::Tick( float DeltaTime ) {
     Super::Tick( DeltaTime );
     //...
@@ -47,10 +44,12 @@ void APlayerCharacter::Tick( float DeltaTime ) {
     if ( is_running ) {
         time_running = FMath::Clamp( time_running + DeltaTime, 0.f, time_to_reach_max_run );
 
-        movement ->MaxWalkSpeed = FMath::Lerp( norm_run_speed, fast_run_speed,
+        movement->MaxWalkSpeed = FMath::Lerp( norm_run_speed, fast_run_speed,
                                               time_running / time_to_reach_max_run );
-        GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green, FString::SanitizeFloat( movement->MaxWalkSpeed ) );
-        GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red, FString::SanitizeFloat( time_running ) );
+        GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
+                                          FString::SanitizeFloat( movement->MaxWalkSpeed ) );
+        GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red,
+                                          FString::SanitizeFloat( time_running ) );
     }
 }
 
@@ -60,7 +59,8 @@ void APlayerCharacter::SetupPlayerInputComponent( UInputComponent* PlayerInputCo
     const APlayerController* pc = Cast< APlayerController >( GetController() );
 
     // Get the local player subsystem
-    UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem< UEnhancedInputLocalPlayerSubsystem >( pc->GetLocalPlayer() );
+    UEnhancedInputLocalPlayerSubsystem* Subsystem =
+        ULocalPlayer::GetSubsystem< UEnhancedInputLocalPlayerSubsystem >( pc->GetLocalPlayer() );
     // Clear out existing mapping, and add our mapping
     Subsystem->ClearAllMappings();
     Subsystem->AddMappingContext( input_mapping, 0 );
@@ -105,30 +105,16 @@ void APlayerCharacter::Move( const FInputActionValue& value ) {
 
 void APlayerCharacter::Look( const FInputActionValue& value ) {
     const FVector2D input_value = value.Get< FVector2D >();
+    last_camera_input = input_value;
 
     const float input_yaw = gimbal->GetRelativeRotation().Yaw + ( input_value.X * sensitivity );
     const FRotator new_yaw{ 0.0, input_yaw, 0.0 };
     gimbal->SetRelativeRotation( new_yaw );
 
-    const float input_pitch = spring_arm->GetRelativeRotation().Pitch + ( input_value.Y * sensitivity );
+    const float input_pitch = spring_arm->GetRelativeRotation().Pitch +
+                              ( input_value.Y * sensitivity );
     const float clamped_pitch = FMath::Clamp( input_pitch, -80, 80 );
 
     const FRotator new_pitch{ clamped_pitch, 0.0, 0.0 };
     spring_arm->SetRelativeRotation( new_pitch );
-}
-
-void APlayerCharacter::SetCanWalk( bool canWalk ) {
-    can_walk = canWalk;
-}
-
-bool APlayerCharacter::GetCanWalk() const {
-    return can_walk;
-}
-
-const FVector& APlayerCharacter::GetLastMovementInput() const {
-    return last_movement_input;
-}
-
-void APlayerCharacter::SetLastMovementZInput( const float input_value ) {
-    last_movement_input.Z = input_value;
 }

@@ -24,6 +24,9 @@ public: // Functions
 
     virtual void SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent ) override;
 
+    UFUNCTION()
+    void MovementModeChanged( ACharacter* Character, EMovementMode PrevMovementMode, uint8 PrevCustomMode );
+
 private:   // Functions
 protected: // Variables
     UGravMovementComponent* movement;
@@ -42,5 +45,10 @@ public: // Variables
 private: // Variables
     FRotator target_rot;
     FVector target_up;
-    bool has_started;
+
+    FRotator last_gimbal_rot;
+    FRotator last_sa_rot;
+    
+    bool updating_camera;
+    bool can_update_camera = false;
 };

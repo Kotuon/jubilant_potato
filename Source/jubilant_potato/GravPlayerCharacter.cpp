@@ -35,6 +35,8 @@ void AGravPlayerCharacter::Tick( float DeltaTime ) {
     Super::Tick( DeltaTime );
     //...
 
+    movement->UpdateRotation( DeltaTime );
+
     if ( !can_update_camera ) return;
 
     const FVector gravity = movement->GetGravityDirection() * -1.f;

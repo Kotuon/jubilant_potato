@@ -21,6 +21,10 @@ public:
 
     virtual void UpdateGravity();
 
+    virtual bool ShouldRemainVertical() const;
+
+    void UpdateRotation( float DeltaTime );
+
     UFUNCTION()
     void MovementModeChanged( ACharacter* Character, EMovementMode PrevMovementMode, uint8 PrevCustomMode );
 };

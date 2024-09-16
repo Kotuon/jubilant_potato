@@ -41,16 +41,16 @@ void APlayerCharacter::Tick( float DeltaTime ) {
         SetActorRotation( camera_root->GetRelativeRotation() );
     }
 
-    if ( is_running ) {
-        time_running = FMath::Clamp( time_running + DeltaTime, 0.f, time_to_reach_max_run );
+    // if ( is_running ) {
+    //     time_running = FMath::Clamp( time_running + DeltaTime, 0.f, time_to_reach_max_run );
 
-        movement->MaxWalkSpeed = FMath::Lerp( norm_run_speed, fast_run_speed,
-                                              time_running / time_to_reach_max_run );
-        GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
-                                          FString::SanitizeFloat( movement->MaxWalkSpeed ) );
-        GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red,
-                                          FString::SanitizeFloat( time_running ) );
-    }
+    //     movement->MaxWalkSpeed = FMath::Lerp( norm_run_speed, fast_run_speed,
+    //                                           time_running / time_to_reach_max_run );
+    //     GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
+    //                                       FString::SanitizeFloat( movement->MaxWalkSpeed ) );
+    //     GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red,
+    //                                       FString::SanitizeFloat( time_running ) );
+    // }
 }
 
 // Called to bind functionality to input

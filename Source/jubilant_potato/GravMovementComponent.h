@@ -16,8 +16,9 @@ class JUBILANT_POTATO_API UGravMovementComponent : public UCharacterMovementComp
 protected: // Functions
     virtual void BeginPlay() override;
 
-public:
-    virtual void OnMovementUpdated( float DeltaSeconds, const FVector& OldLocation, const FVector& OldVelocity ) override;
+public: // Functions
+    virtual void OnMovementUpdated( float DeltaSeconds, const FVector& OldLocation,
+                                    const FVector& OldVelocity ) override;
 
     virtual void UpdateGravity();
 
@@ -26,5 +27,22 @@ public:
     void UpdateRotation( float DeltaTime );
 
     UFUNCTION()
-    void MovementModeChanged( ACharacter* Character, EMovementMode PrevMovementMode, uint8 PrevCustomMode );
+    void MovementModeChanged( ACharacter* Character, EMovementMode PrevMovementMode,
+                              uint8 PrevCustomMode );
+
+    virtual void SetGravityDirection( const FVector& GravityDir );
+
+private: // Variables
+    FQuat LastGravityToWorldTransform;
+    FQuat LastWorldToGravityTransform;
+
+    FRotator currentLastGravRotation;
+    FRotator currentRotation;
+    FRotator desiredRotation;
+
+    float startDistance;
+
+    bool gravIsDirty = false;
+    bool hasUpdatedRotationForNewGravity = true;
+    bool currentlyUpdatingRotation = false;
 };

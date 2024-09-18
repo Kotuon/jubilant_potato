@@ -24,7 +24,7 @@ public: // Functions
     // Sets default values for this component's properties
     UAction();
 
-    virtual void Start( const FInputActionValue &value );
+    virtual void Start( const FInputActionValue& value );
     virtual void Update();
 
     UFUNCTION( BlueprintCallable )
@@ -35,16 +35,17 @@ public: // Functions
 
     void Print() const;
 
-    virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction ) override;
+    virtual void TickComponent( float DeltaTime, ELevelTick TickType,
+                                FActorComponentTickFunction* ThisTickFunction ) override;
 
     virtual void BindAction( UEnhancedInputComponent* PEI );
 
 public: // Variables
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
-    UInputAction *input_action;
+    UInputAction* input_action;
 
-    UActionManager *manager;
-    APlayerCharacter *parent;
+    UActionManager* manager;
+    APlayerCharacter* parent;
 
     UPROPERTY( VisibleAnywhere )
     EAction type;

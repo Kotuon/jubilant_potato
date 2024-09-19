@@ -18,17 +18,14 @@ void UGravMovementComponent::OnMovementUpdated( float DeltaSeconds, const FVecto
 }
 
 void UGravMovementComponent::UpdateGravity() {
-    if ( !gravIsDirty ) {
+    if ( !gravIsDirty )
         return;
-    }
 
     if ( !CurrentFloor.HitResult.ImpactNormal.IsNearlyZero() ) {
         SetGravityDirection( CurrentFloor.HitResult.ImpactNormal * -1.f );
-        desiredRotation.DiagnosticCheckNaN(
-            TEXT( "CharacterMovementComponent::PhysicsRotation(): DesiredRotation" ) );
-        MoveUpdatedComponent( FVector::ZeroVector, desiredRotation, true );
 
         hasUpdatedRotationForNewGravity = true;
+        currentlyUpdatingRotation = false;
     }
 
     gravIsDirty = false;
@@ -37,9 +34,8 @@ void UGravMovementComponent::UpdateGravity() {
 void UGravMovementComponent::MovementModeChanged( ACharacter* Character,
                                                   EMovementMode PrevMovementMode,
                                                   uint8 PrevCustomMode ) {
-    if ( PrevMovementMode == MOVE_Falling && MovementMode == MOVE_Walking ) {
+    if ( PrevMovementMode == MOVE_Falling && MovementMode == MOVE_Walking )
         UpdateGravity();
-    }
 }
 
 bool UGravMovementComponent::ShouldRemainVertical() const {
@@ -58,18 +54,11 @@ void UGravMovementComponent::UpdateRotation( float DeltaTime ) {
         if ( overLand ) {
             DrawDebugLine( GetWorld(), start, end, FColor::Red, false, 0.f, ( uint8 )0U, 2.f );
 
-            if ( !currentlyUpdatingRotation ) {
-                startDistance = hitResult.Distance;
-            }
-
             FRotator newRotation = FMath::Lerp(
                 currentRotation, desiredRotation,
                 1.f - FMath::Clamp(
                           ( hitResult.Distance / ( 400.f ) ), 0.f, 1.f ) );
 
-            newRotation.DiagnosticCheckNaN(
-                TEXT( "CharacterMovementComponent::PhysicsRotation(): DesiredRotation" ) );
-            // MoveUpdatedComponent( FVector::ZeroVector, newRotation, false );
             CharacterOwner->SetActorRotation( newRotation );
 
             if ( !hasUpdatedRotationForNewGravity ) {
@@ -77,14 +66,9 @@ void UGravMovementComponent::UpdateRotation( float DeltaTime ) {
                 currentlyUpdatingRotation = true;
             }
 
-            if ( ( hitResult.Distance / ( 400.f ) ) <= 0.f ) {
+            if ( ( hitResult.Distance / ( 400.f ) ) <= 0.f )
                 currentlyUpdatingRotation = false;
-            }
 
-            GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, desiredRotation.ToString() );
-            // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red, currentRotation.ToString() );
-
-            // CharacterOwner->SetActorRotation( FMath::Lerp( CharacterOwner->GetActorRotation(), ) )
         } else {
             DrawDebugLine( GetWorld(), start, end, FColor::Green, false, 0.f, ( uint8 )0U, 2.f );
         }
@@ -92,6 +76,9 @@ void UGravMovementComponent::UpdateRotation( float DeltaTime ) {
 }
 
 void UGravMovementComponent::SetGravityDirection( const FVector& GravityDir ) {
+    if ( FMath::IsNearlyZero( 1.f - FVector::DotProduct( GravityDir, GetGravityDirection() ) ) )
+        return;
+
     GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "Set gravity" );
 
     const FQuat WorldToNegativeGravityTransform = FQuat::FindBetweenNormals(
@@ -106,8 +93,9 @@ void UGravMovementComponent::SetGravityDirection( const FVector& GravityDir ) {
     }
 
     desiredRotation = ( NegativeGravityToWorldTransform *
-                        currentLastGravRotation.Quaternion() )
+                        ( currentLastGravRotation + FRotator( 0.f, 0.f, 0.f ) ).Quaternion() )
                           .Rotator();
+    GEngine->AddOnScreenDebugMessage( -1, 20.f, FColor::Green, desiredRotation.ToString() );
 
     hasUpdatedRotationForNewGravity = false;
 

@@ -35,20 +35,6 @@ public: // Functions
         return can_walk;
     }
 
-    UFUNCTION( BlueprintCallable )
-    const FVector& GetLastMovementInput() const {
-        return last_movement_input;
-    }
-
-    UFUNCTION( BlueprintCallable )
-    const FVector2D& GetLastCameraInput() const {
-        return last_camera_input;
-    }
-
-    void SetLastMovementZInput( const float input_value ) {
-        last_movement_input.Z = input_value;
-    }
-
 public: // Variables
     UPROPERTY( VisibleDefaultsOnly, BlueprintReadOnly, Category = "Actions" )
     UActionManager* action_manager;
@@ -74,15 +60,5 @@ private: // Functions
     void Look( const FInputActionValue& value );
 
 private: // Variables
-    FVector last_movement_input;
-    FVector2D last_camera_input;
-
-    float time_running;
-
-    float norm_run_speed = 600.f;
-    float fast_run_speed = 2400.f;
-    const float time_to_reach_max_run = 5.f;
-
     bool can_walk = true;
-    bool is_running = false;
 };

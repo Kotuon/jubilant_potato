@@ -1,9 +1,12 @@
 
 #include "MotionMatchingCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "KismetAnimationLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 
-#include "EnhancedInputSubsystems.h" // UEnhancedInputLocalPlayerSubsystem class
-#include "EnhancedInputComponent.h"  // UEnhancedInputComponent class
-AMotionMatchingCharacter::AMotionMatchingCharacter() {
+AMotionMatchingCharacter::AMotionMatchingCharacter(
+    const FObjectInitializer& ObjectInitializer )
+    : ACharacter( ObjectInitializer ) {
     PrimaryActorTick.bCanEverTick = true;
 }
 
@@ -32,10 +35,10 @@ void AMotionMatchingCharacter::SetupPlayerInputComponent(
 ///
 void AMotionMatchingCharacter::UpdateMovement() {
     gait = GetDesiredGait();
-    float MaxMoveSpeed = CalculateMaxSpeed();
+    float maxMoveSpeed = CalculateMaxSpeed();
 
-    movement->MaxWalkSpeed = MaxMoveSpeed;
-    movement->MaxWalkSpeedCrouched = MaxMoveSpeed;
+    movement->MaxWalkSpeed = maxMoveSpeed;
+    movement->MaxWalkSpeedCrouched = maxMoveSpeed;
 }
 
 ///
@@ -57,5 +60,53 @@ void AMotionMatchingCharacter::UpdateRotation() {
         movement->RotationRate = FRotator( 0.f, 0.f, 200.f );
     } else {
         movement->RotationRate = FRotator( 0.f, 0.f, -1.f );
+    }
+}
+
+EGait AMotionMatchingCharacter::GetDesiredGait() const {
+    if ( wantsToSprint ) {
+        return EGait::ERun;
+    } else if ( wantsToWalk ) {
+        return EGait::EWalk;
+    } else {
+        return EGait::ERun;
+    }
+}
+
+float AMotionMatchingCharacter::CalculateMaxSpeed() const {
+    const FVector velocity = movement->Velocity;
+    const FRotator characterRotation = GetActorRotation();
+
+    float direction = UKismetAnimationLibrary::CalculateDirection(
+        velocity, characterRotation );
+    direction = abs( direction );
+
+    const float strafeSpeedMap =
+        strafeSpeedMapCurve->GetFloatValue( direction );
+
+    FVector speedToUse;
+
+    switch ( gait ) {
+    case EGait::EWalk:
+        speedToUse = walkSpeeds;
+        break;
+    case EGait::ERun:
+        speedToUse = runSpeeds;
+        break;
+    case EGait::ESprint:
+        speedToUse = sprintSpeeds;
+        break;
+    }
+
+    if ( movement->IsCrouching() ) {
+        speedToUse = crouchSpeeds;
+    }
+
+    if ( strafeSpeedMap < 0.f ) {
+        return UKismetMathLibrary::MapRangeClamped(
+            strafeSpeedMap, 0.f, 1.f, speedToUse.X, speedToUse.Y );
+    } else {
+        return UKismetMathLibrary::MapRangeClamped(
+            strafeSpeedMap, 1.f, 2.f, speedToUse.Y, speedToUse.Z );
     }
 }

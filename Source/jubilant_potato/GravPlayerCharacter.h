@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "MotionMatchingCharacter.h"
 #include "GravPlayerCharacter.generated.h"
 
 class USmartSpringArm;
@@ -11,7 +12,8 @@ class UCameraComponent;
 class UGravMovementComponent;
 
 UCLASS()
-class JUBILANT_POTATO_API AGravPlayerCharacter : public ACharacter {
+class JUBILANT_POTATO_API AGravPlayerCharacter
+    : public AMotionMatchingCharacter {
     GENERATED_BODY()
 
 protected: // Functions
@@ -48,7 +50,7 @@ private: // Variables
 
     FRotator last_gimbal_rot;
     FRotator last_sa_rot;
-    
+
     bool updating_camera;
     bool can_update_camera = false;
 };

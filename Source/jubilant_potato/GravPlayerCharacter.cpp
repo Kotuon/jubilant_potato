@@ -6,7 +6,7 @@
 
 AGravPlayerCharacter::AGravPlayerCharacter(
     const FObjectInitializer& ObjectInitializer )
-    : ACharacter(
+    : AMotionMatchingCharacter(
           ObjectInitializer.SetDefaultSubobjectClass< UGravMovementComponent >(
               ACharacter::CharacterMovementComponentName ) ) {
     PrimaryActorTick.bCanEverTick = true;

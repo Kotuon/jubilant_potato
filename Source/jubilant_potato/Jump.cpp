@@ -18,7 +18,8 @@ void UJump::BeginPlay() {
     movement = parent->GetCharacterMovement();
     timer_manager = &( parent->GetWorldTimerManager() );
 
-    parent->MovementModeChangedDelegate.AddUniqueDynamic( this, &UJump::MovementModeChanged );
+    parent->MovementModeChangedDelegate.AddUniqueDynamic(
+        this, &UJump::MovementModeChanged );
     parent->LandedDelegate.AddUniqueDynamic( this, &UJump::OnLanded );
 }
 
@@ -36,7 +37,8 @@ void UJump::Start( const FInputActionValue& value ) {
     } else if ( movement->IsFalling() && !jump_memory ) {
         jump_memory = true;
         timer_manager->SetTimer( jump_memory_handle,
-                                 FTimerDelegate::CreateLambda( [this] { jump_memory = false; } ),
+                                 FTimerDelegate::CreateLambda(
+                                     [this] { jump_memory = false; } ),
                                  0.1f, false, jump_memory_time );
         return;
     }
@@ -54,24 +56,28 @@ void UJump::JumpTakeOff() {
     const FVector velocity = movement->Velocity;
     const float velocity_xy = velocity.Size2D();
 
-    movement->JumpZVelocity = UKismetMathLibrary::MapRangeClamped( velocity_xy,
-                                                                   400.f, 800.f, 700.f, 900.f );
+    movement->JumpZVelocity = UKismetMathLibrary::MapRangeClamped(
+        velocity_xy, 400.f, 800.f, 700.f, 900.f );
     parent->Jump();
 
     movement->bNotifyApex = true;
 }
 
-void UJump::MovementModeChanged( ACharacter* Character, EMovementMode PrevMovementMode,
+void UJump::MovementModeChanged( ACharacter* Character,
+                                 EMovementMode PrevMovementMode,
                                  uint8 PrevCustomMode ) {
-    if ( PrevMovementMode == MOVE_Falling && movement->MovementMode == MOVE_Walking ) {
+    if ( PrevMovementMode == MOVE_Falling &&
+         movement->MovementMode == MOVE_Walking ) {
         has_jumped = false;
         End();
         if ( jump_memory )
             Start( FInputActionValue() );
-    } else if ( PrevMovementMode == MOVE_Walking && movement->MovementMode == MOVE_Falling ) {
+    } else if ( PrevMovementMode == MOVE_Walking &&
+                movement->MovementMode == MOVE_Falling ) {
         can_coyote = true;
         timer_manager->SetTimer( coyote_time_handle,
-                                 FTimerDelegate::CreateLambda( [this] { can_coyote = false;GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red, "Can not Coyote" ); } ),
+                                 FTimerDelegate::CreateLambda(
+                                     [this] { can_coyote = false; } ),
                                  0.1f, false, coyote_time );
     }
 }

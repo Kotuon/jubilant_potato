@@ -8,7 +8,10 @@ public class jubilant_potato : ModuleRules
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG", "AIModule", "Niagara", "NinjaCharacter" });
+        PublicDependencyModuleNames.AddRange(new string[] {
+            "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput",
+            "UMG", "AIModule", "Niagara", "NinjaCharacter",
+            "AnimGraphRuntime" });
 
         PrivateDependencyModuleNames.AddRange(new string[] { });
 

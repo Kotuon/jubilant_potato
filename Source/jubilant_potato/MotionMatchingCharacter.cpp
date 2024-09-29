@@ -8,6 +8,8 @@ AMotionMatchingCharacter::AMotionMatchingCharacter(
     const FObjectInitializer& ObjectInitializer )
     : ACharacter( ObjectInitializer ) {
     PrimaryActorTick.bCanEverTick = true;
+
+    LandedDelegate.AddUniqueDynamic( this, &AMotionMatchingCharacter::OnLanded );
 }
 
 void AMotionMatchingCharacter::BeginPlay() {
@@ -109,4 +111,13 @@ float AMotionMatchingCharacter::CalculateMaxSpeed() const {
         return UKismetMathLibrary::MapRangeClamped(
             strafeSpeedMap, 1.f, 2.f, speedToUse.Y, speedToUse.Z );
     }
+}
+
+void AMotionMatchingCharacter::OnLanded( const FHitResult& Hit ) {
+    landVelocity = movement->Velocity;
+    justLanded = true;
+    timerManager->SetTimer( landedHandle,
+                            FTimerDelegate::CreateLambda(
+                                [this] { justLanded = false; } ),
+                            0.1f, false, 0.3f );
 }

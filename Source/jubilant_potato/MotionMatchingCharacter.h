@@ -51,6 +51,8 @@ private: // Functions
     EGait GetDesiredGait() const;
     float CalculateMaxSpeed() const;
 
+    void OnLanded( const FHitResult& Hit );
+
 protected: // Variables
     FVector lastMovementInput;
     FVector2D lastCameraInput;
@@ -76,12 +78,27 @@ public: // Variables
                Category = "MotionMatching" )
     FVector crouchSpeeds = { 200.f, 150.f, 150.f };
 
+    UPROPERTY( BlueprintReadOnly, Category = "MotionMatching" )
+    FVector landVelocity;
+
+    UPROPERTY( BlueprintReadOnly, Category = "MotionMatching" )
     EGait gait;
 
+    UPROPERTY( BlueprintReadOnly, Category = "MotionMatching" )
     bool wantsToStrafe = false;
+
+    UPROPERTY( BlueprintReadOnly, Category = "MotionMatching" )
     bool wantsToSprint = false;
+
+    UPROPERTY( BlueprintReadOnly, Category = "MotionMatching" )
     bool wantsToWalk = false;
+
+    UPROPERTY( BlueprintReadOnly, Category = "MotionMatching" )
+    bool justLanded = false;
 
 private: // Variables
     UCharacterMovementComponent* movement;
+    FTimerManager* timerManager;
+
+    FTimerHandle landedHandle;
 };

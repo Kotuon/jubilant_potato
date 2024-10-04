@@ -38,66 +38,66 @@ void AGravPlayerCharacter::Tick( float DeltaTime ) {
     Super::Tick( DeltaTime );
     //...
 
-    movement->UpdateRotation( DeltaTime );
+    // movement->UpdateRotation( DeltaTime );
 
-    if ( !can_update_camera ) return;
+    // if ( !can_update_camera ) return;
 
-    const FVector gravity = movement->GetGravityDirection() * -1.f;
+    // const FVector gravity = movement->GetGravityDirection() * -1.f;
 
-    const float result = FVector::DotProduct( gravity, gimbal->GetUpVector() );
+    // const float result = FVector::DotProduct( gravity, gimbal->GetUpVector() );
 
-    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
-                                      gravity.ToString() );
-    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red,
-                                      GetActorUpVector().ToString() );
-    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Yellow,
-                                      FString::SanitizeFloat( result ) );
+    // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
+    //                                   gravity.ToString() );
+    // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red,
+    //                                   GetActorUpVector().ToString() );
+    // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Yellow,
+    //                                   FString::SanitizeFloat( result ) );
 
-    if ( result < 0.999f ) {
-        if ( !updating_camera ) {
-            updating_camera = true;
-            target_up = gravity;
-            target_rot = GetActorRotation();
-            // target_rot = ( movement->GetGravityToWorldTransform() *
-            //                FRotator( 0.f ).Quaternion() )
-            //                  .Rotator();
-        } else {
-            const float update_result = FVector::DotProduct( gravity,
-                                                             target_up );
-            if ( result != 1.f ) {
-                target_up = gravity;
-                target_rot = GetActorRotation();
-                // target_rot = ( movement->GetGravityToWorldTransform() *
-                //                FRotator( 0.f ).Quaternion() )
-                //                  .Rotator();
-            }
-        }
+    // if ( result < 0.999f ) {
+    //     if ( !updating_camera ) {
+    //         updating_camera = true;
+    //         target_up = gravity;
+    //         target_rot = GetActorRotation();
+    //         // target_rot = ( movement->GetGravityToWorldTransform() *
+    //         //                FRotator( 0.f ).Quaternion() )
+    //         //                  .Rotator();
+    //     } else {
+    //         const float update_result = FVector::DotProduct( gravity,
+    //                                                          target_up );
+    //         if ( result != 1.f ) {
+    //             target_up = gravity;
+    //             target_rot = GetActorRotation();
+    //             // target_rot = ( movement->GetGravityToWorldTransform() *
+    //             //                FRotator( 0.f ).Quaternion() )
+    //             //                  .Rotator();
+    //         }
+    //     }
 
-        camera_root->SetWorldRotation(
-            FMath::RInterpTo( camera_root->GetComponentRotation(), target_rot,
-                              DeltaTime, 2.f ) );
+    //     camera_root->SetWorldRotation(
+    //         FMath::RInterpTo( camera_root->GetComponentRotation(), target_rot,
+    //                           DeltaTime, 2.f ) );
 
-        if ( last_gimbal_rot == gimbal->GetRelativeRotation() ) {
-            last_gimbal_rot = FMath::RInterpTo( gimbal->GetRelativeRotation(),
-                                                FRotator( 0.f ),
-                                                DeltaTime, 2.f );
-            if ( !last_gimbal_rot.IsNearlyZero() ) {
-                gimbal->SetRelativeRotation( last_gimbal_rot );
-            }
-        }
+    //     if ( last_gimbal_rot == gimbal->GetRelativeRotation() ) {
+    //         last_gimbal_rot = FMath::RInterpTo( gimbal->GetRelativeRotation(),
+    //                                             FRotator( 0.f ),
+    //                                             DeltaTime, 2.f );
+    //         if ( !last_gimbal_rot.IsNearlyZero() ) {
+    //             gimbal->SetRelativeRotation( last_gimbal_rot );
+    //         }
+    //     }
 
-        if ( last_sa_rot == spring_arm->GetRelativeRotation() ) {
-            last_sa_rot = FMath::RInterpTo( spring_arm->GetRelativeRotation(),
-                                            FRotator( 0.f ), DeltaTime, 2.f );
-            if ( !last_sa_rot.IsNearlyZero() ) {
-                spring_arm->SetRelativeRotation( last_sa_rot );
-            }
-        }
+    //     if ( last_sa_rot == spring_arm->GetRelativeRotation() ) {
+    //         last_sa_rot = FMath::RInterpTo( spring_arm->GetRelativeRotation(),
+    //                                         FRotator( 0.f ), DeltaTime, 2.f );
+    //         if ( !last_sa_rot.IsNearlyZero() ) {
+    //             spring_arm->SetRelativeRotation( last_sa_rot );
+    //         }
+    //     }
 
-    } else {
-        updating_camera = false;
-        can_update_camera = false;
-    }
+    // } else {
+    //     updating_camera = false;
+    //     can_update_camera = false;
+    // }
 }
 
 void AGravPlayerCharacter::SetupPlayerInputComponent(

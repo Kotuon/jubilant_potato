@@ -39,6 +39,9 @@ void AMotionMatchingCharacter::UpdateMovement() {
     gait = GetDesiredGait();
     float maxMoveSpeed = CalculateMaxSpeed();
 
+    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
+                                      FString::SanitizeFloat( maxMoveSpeed ) );
+
     movement->MaxWalkSpeed = maxMoveSpeed;
     movement->MaxWalkSpeedCrouched = maxMoveSpeed;
 }
@@ -49,7 +52,6 @@ void AMotionMatchingCharacter::UpdateMovement() {
 //
 ///
 void AMotionMatchingCharacter::UpdateRotation() {
-
     if ( wantsToStrafe ) {
         movement->bUseControllerDesiredRotation = true;
         movement->bOrientRotationToMovement = false;
@@ -82,6 +84,9 @@ float AMotionMatchingCharacter::CalculateMaxSpeed() const {
     float direction = UKismetAnimationLibrary::CalculateDirection(
         velocity, characterRotation );
     direction = abs( direction );
+
+    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
+                                      FString::SanitizeFloat( direction ) );
 
     const float strafeSpeedMap =
         strafeSpeedMapCurve->GetFloatValue( direction );

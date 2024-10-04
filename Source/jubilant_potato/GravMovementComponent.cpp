@@ -48,11 +48,13 @@ void UGravMovementComponent::UpdateRotation( float DeltaTime ) {
         FHitResult hitResult;
         const FVector start = GetActorLocation();
         const FVector end = start + GetGravityDirection() * 400.f;
-        bool overLand = GetWorld()->LineTraceSingleByChannel( hitResult, start, end,
-                                                              ECollisionChannel::ECC_Visibility );
+        bool overLand = GetWorld()->LineTraceSingleByChannel(
+            hitResult, start, end,
+            ECollisionChannel::ECC_Visibility );
 
         if ( overLand ) {
-            DrawDebugLine( GetWorld(), start, end, FColor::Red, false, 0.f, ( uint8 )0U, 2.f );
+            DrawDebugLine( GetWorld(), start, end, FColor::Red, false, 0.f,
+                           ( uint8 )0U, 2.f );
 
             FRotator newRotation = FMath::Lerp(
                 currentRotation, desiredRotation,
@@ -70,7 +72,8 @@ void UGravMovementComponent::UpdateRotation( float DeltaTime ) {
                 currentlyUpdatingRotation = false;
 
         } else {
-            DrawDebugLine( GetWorld(), start, end, FColor::Green, false, 0.f, ( uint8 )0U, 2.f );
+            DrawDebugLine( GetWorld(), start, end, FColor::Green, false, 0.f,
+                           ( uint8 )0U, 2.f );
         }
     }
 }

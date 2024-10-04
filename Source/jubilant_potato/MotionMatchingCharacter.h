@@ -85,7 +85,7 @@ public: // Variables
     EGait gait;
 
     UPROPERTY( BlueprintReadOnly, Category = "MotionMatching" )
-    bool wantsToStrafe = false;
+    bool wantsToStrafe = true;
 
     UPROPERTY( BlueprintReadOnly, Category = "MotionMatching" )
     bool wantsToSprint = false;

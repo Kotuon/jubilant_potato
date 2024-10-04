@@ -22,7 +22,7 @@ void UAim::Start( const FInputActionValue& value ) {
         is_aiming = true;
         spring_arm->SetIsAiming( true );
 
-        parent->GetCharacterMovement()->bOrientRotationToMovement = false;
+        // parent->GetCharacterMovement()->bOrientRotationToMovement = false;
 
         GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green, "Holding aim." );
     } else {
@@ -35,7 +35,7 @@ void UAim::End() {
 
     is_aiming = false;
     spring_arm->SetIsAiming( false );
-    parent->GetCharacterMovement()->bOrientRotationToMovement = true;
+    // parent->GetCharacterMovement()->bOrientRotationToMovement = true;
     GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red, "Released aim." );
 }
 

@@ -9,6 +9,7 @@
 #include "ActionManager.h"                   // UActionManager class
 #include "GameFramework/MovementComponent.h" //
 #include "Math/UnrealMathUtility.h"          // Lerp
+#include "Camera/CameraComponent.h"          // UCameraComponent class
 
 APlayerCharacter::APlayerCharacter(
     const FObjectInitializer& ObjectInitializer )
@@ -99,4 +100,6 @@ void APlayerCharacter::Look( const FInputActionValue& value ) {
 
     const FRotator newPitch{ clampedPitch, 0.0, 0.0 };
     spring_arm->SetRelativeRotation( newPitch );
+
+    SetControlRotation( camera->GetComponentRotation() );
 }

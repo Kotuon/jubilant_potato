@@ -109,7 +109,7 @@ float AMotionMatchingCharacter::CalculateMaxSpeed() const {
         speedToUse = crouchSpeeds;
     }
 
-    if ( strafeSpeedMap < 0.f ) {
+    if ( strafeSpeedMap < 1.f ) {
         return UKismetMathLibrary::MapRangeClamped(
             strafeSpeedMap, 0.f, 1.f, speedToUse.X, speedToUse.Y );
     } else {

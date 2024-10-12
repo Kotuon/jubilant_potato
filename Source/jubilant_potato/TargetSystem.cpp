@@ -24,15 +24,15 @@ void UTargetSystem::TickComponent( float DeltaTime, ELevelTick TickType, FActorC
 
 TArray< AEnemy* >& UTargetSystem::UpdateTarget( float Width, float Range, bool SingleTarget ) {
     float search_value = 1.f - Width;
-    FVector input = parent->GetLastMovementInput();
+    // FVector input = parent->GetLastMovementInput();
 
     FVector search_direction;
 
-    if ( abs( input.X ) + abs( input.Y ) > 0.f ) {
-        search_direction = ( ( parent->gimbal->GetForwardVector() * input.Y ) + ( parent->gimbal->GetRightVector() * input.X ) ).GetSafeNormal();
-    } else {
-        search_direction = parent->GetActorForwardVector();
-    }
+    // if ( abs( input.X ) + abs( input.Y ) > 0.f ) {
+    //     search_direction = ( ( parent->gimbal->GetForwardVector() * input.Y ) + ( parent->gimbal->GetRightVector() * input.X ) ).GetSafeNormal();
+    // } else {
+    //     search_direction = parent->GetActorForwardVector();
+    // }
 
     DrawDebugDirectionalArrow( GetWorld(), parent->GetActorLocation(),
                                parent->GetActorLocation() + ( search_direction * 200.f ), 10.f,

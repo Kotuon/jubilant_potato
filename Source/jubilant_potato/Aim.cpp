@@ -14,7 +14,7 @@ void UAim::BeginPlay() {
     Super::BeginPlay();
     //...
 
-    spring_arm = parent->spring_arm;
+    // spring_arm = parent->spring_arm;
 }
 
 void UAim::Start( const FInputActionValue& value ) {

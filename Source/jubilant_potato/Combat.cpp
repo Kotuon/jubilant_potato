@@ -79,7 +79,7 @@ void UCombat::Start( const FInputActionValue& Value ) {
         }
 
         if ( attack_count == 1 ) {
-            parent->SetCanWalk( false );
+            // parent->SetCanWalk( false );
             parent->PlayAnimMontage( attack_montages[attack_count - 1] );
         }
 
@@ -92,7 +92,7 @@ void UCombat::End() {
 
     target_system->ClearTargets();
 
-    parent->SetCanWalk( true );
+    // parent->SetCanWalk( true );
 
     attack_count = 0;
     can_combo = false;

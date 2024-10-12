@@ -11,17 +11,17 @@ AGravPlayerCharacter::AGravPlayerCharacter(
               ACharacter::CharacterMovementComponentName ) ) {
     PrimaryActorTick.bCanEverTick = true;
 
-    camera_root = Cast< USceneComponent >(
-        CreateDefaultSubobject< USceneComponent >( FName( "CameraRoot" ) ) );
-    camera_root->SetupAttachment( GetRootComponent() );
-    gimbal = Cast< USceneComponent >(
-        CreateDefaultSubobject< USceneComponent >( FName( "Gimbal" ) ) );
-    gimbal->SetupAttachment( camera_root );
-    spring_arm = Cast< USmartSpringArm >(
-        CreateDefaultSubobject< USmartSpringArm >( FName( "SpringArm" ) ) );
-    spring_arm->SetupAttachment( gimbal );
-    camera = CreateDefaultSubobject< UCameraComponent >( FName( "Camera" ) );
-    camera->SetupAttachment( spring_arm );
+    // camera_root = Cast< USceneComponent >(
+    //     CreateDefaultSubobject< USceneComponent >( FName( "CameraRoot" ) ) );
+    // camera_root->SetupAttachment( GetRootComponent() );
+    // gimbal = Cast< USceneComponent >(
+    //     CreateDefaultSubobject< USceneComponent >( FName( "Gimbal" ) ) );
+    // gimbal->SetupAttachment( camera_root );
+    // spring_arm = Cast< USmartSpringArm >(
+    //     CreateDefaultSubobject< USmartSpringArm >( FName( "SpringArm" ) ) );
+    // spring_arm->SetupAttachment( gimbal );
+    // camera = CreateDefaultSubobject< UCameraComponent >( FName( "Camera" ) );
+    // camera->SetupAttachment( spring_arm );
 
     MovementModeChangedDelegate.AddUniqueDynamic(
         this,

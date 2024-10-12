@@ -30,7 +30,7 @@ void UGravRush::Start( const FInputActionValue& Value ) {
 
     movement->SetGravityDirection( next_grav );
     movement->SetMovementMode( MOVE_Falling );
-    parent->SetCanWalk( true );
+    // parent->SetCanWalk( true );
 
     GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "Start grav rush." );
 }
@@ -40,7 +40,7 @@ void UGravRush::End() {
     //...
     movement->SetGravityDirection( original_grav );
     movement->SetMovementMode( MOVE_Falling );
-    parent->SetCanWalk( true );
+    // parent->SetCanWalk( true );
 
     GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red, "End grav rush." );
 }

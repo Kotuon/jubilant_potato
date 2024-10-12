@@ -35,14 +35,14 @@ protected: // Variables
 
 public: // Variables
     // Camera components
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
-    USceneComponent* camera_root;
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
-    USceneComponent* gimbal;
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
-    USmartSpringArm* spring_arm;
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
-    UCameraComponent* camera;
+    // UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
+    // USceneComponent* camera_root;
+    // UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
+    // USceneComponent* gimbal;
+    // UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
+    // USmartSpringArm* spring_arm;
+    // UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
+    // UCameraComponent* camera;
 
 private: // Variables
     FRotator target_rot;

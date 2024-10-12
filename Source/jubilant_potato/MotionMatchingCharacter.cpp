@@ -1,15 +1,23 @@
-
 #include "MotionMatchingCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "KismetAnimationLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h" // UCameraComponent class
 
 AMotionMatchingCharacter::AMotionMatchingCharacter(
     const FObjectInitializer& ObjectInitializer )
     : ACharacter( ObjectInitializer ) {
     PrimaryActorTick.bCanEverTick = true;
 
-    LandedDelegate.AddUniqueDynamic( this, &AMotionMatchingCharacter::OnLanded );
+    spring_arm = Cast< USpringArmComponent >(
+        CreateDefaultSubobject< USpringArmComponent >( FName( "SpringArm" ) ) );
+    spring_arm->SetupAttachment( GetRootComponent() );
+    camera = CreateDefaultSubobject< UCameraComponent >( FName( "Camera" ) );
+    camera->SetupAttachment( spring_arm );
+
+    LandedDelegate.
+        AddUniqueDynamic( this, &AMotionMatchingCharacter::OnLanded );
 }
 
 void AMotionMatchingCharacter::BeginPlay() {
@@ -17,6 +25,7 @@ void AMotionMatchingCharacter::BeginPlay() {
     //...
 
     movement = GetCharacterMovement();
+    UpdateCamera( 0.f, false );
 }
 
 void AMotionMatchingCharacter::Tick( float DeltaTime ) {
@@ -24,6 +33,8 @@ void AMotionMatchingCharacter::Tick( float DeltaTime ) {
     //...
 
     UpdateMovement();
+    UpdateRotation();
+    UpdateCamera( DeltaTime, true );
 }
 
 void AMotionMatchingCharacter::SetupPlayerInputComponent(
@@ -66,6 +77,46 @@ void AMotionMatchingCharacter::UpdateRotation() {
         movement->RotationRate = FRotator( 0.f, 0.f, -1.f );
     }
 }
+
+void AMotionMatchingCharacter::UpdateCamera( float DeltaTime,
+                                             bool Interpolate ) {
+    FSimpleCameraParams* paramsToUse = nullptr;
+    if ( wantsToAim )
+        paramsToUse = &CamStyle_Aim;
+    else
+        paramsToUse = &CamStyle_Close;
+
+    if ( !wantsToStrafe )
+        paramsToUse = &CamStyle_Far;
+
+    FSimpleCameraParams targetParams{
+        paramsToUse->SpringArmLength * CameraDistanceMultiplier,
+        paramsToUse->SocketOffset * CameraDistanceMultiplier,
+        Interpolate ? paramsToUse->TranslationLagSpeed : -1.f,
+        paramsToUse->FieldOfView,
+        Interpolate ? paramsToUse->TransitionSpeed : -1.f
+    };
+
+    camera->SetFieldOfView( FMath::FInterpTo( camera->FieldOfView,
+                                              targetParams.FieldOfView,
+                                              DeltaTime,
+                                              targetParams.TransitionSpeed ) );
+
+    spring_arm->TargetArmLength = FMath::FInterpTo(
+        spring_arm->TargetArmLength, targetParams.SpringArmLength, DeltaTime,
+        targetParams.TransitionSpeed );
+
+    spring_arm->CameraLagSpeed = FMath::FInterpTo(
+        spring_arm->CameraLagSpeed,
+        targetParams.TranslationLagSpeed,
+        DeltaTime,
+        targetParams.TransitionSpeed );
+
+    spring_arm->SocketOffset = FMath::VInterpTo(
+        spring_arm->SocketOffset, targetParams.SocketOffset, DeltaTime,
+        targetParams.TransitionSpeed );
+}
+
 
 EGait AMotionMatchingCharacter::GetDesiredGait() const {
     if ( wantsToSprint ) {

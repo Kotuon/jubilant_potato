@@ -4,16 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "GravPlayerCharacter.h"
+#include "MotionMatchingCharacter.h"
+#include "AbilitySystemInterface.h"
 #include "PlayerCharacter.generated.h"
 
 struct FInputActionValue;
 class UInputAction;
-class UAction;
-class UActionManager;
+class UDefaultASC;
+class UAbilitySystemComponent;
+class UPlayerGameplayAbilitiesDataAsset;
+class UAbilitySystemComponent;
 
 UCLASS()
-class JUBILANT_POTATO_API APlayerCharacter : public AGravPlayerCharacter {
+class JUBILANT_POTATO_API APlayerCharacter : public AMotionMatchingCharacter,
+                                             public IAbilitySystemInterface {
     GENERATED_BODY()
 
 protected: // Functions
@@ -24,21 +28,23 @@ public: // Functions
 
     virtual void Tick( float DeltaTime ) override;
 
-    virtual void SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent ) override;
+    virtual void SetupPlayerInputComponent(
+        class UInputComponent* PlayerInputComponent ) override;
 
-    UFUNCTION( BlueprintCallable )
-    void SetCanWalk( bool canWalk ) {
-        can_walk = canWalk;
-    }
+    void PossessedBy( AController* NewController ) override;
 
-    bool GetCanWalk() const {
-        return can_walk;
+    void AbilityInputPressed( int32 InputID );
+    void AbilityInputReleased( int32 InputID );
+
+    virtual UAbilitySystemComponent*
+    GetAbilitySystemComponent() const override;
+
+    FORCEINLINE UPlayerGameplayAbilitiesDataAsset*
+    GetPlayerGameplayAbilitiesDataAsset() const {
+        return PlayerGameplayAbilitiesDataAsset;
     }
 
 public: // Variables
-    UPROPERTY( VisibleDefaultsOnly, BlueprintReadOnly, Category = "Actions" )
-    UActionManager* action_manager;
-
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
     class UInputMappingContext* input_mapping;
 
@@ -48,17 +54,24 @@ public: // Variables
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Actions" )
     UInputAction* input_look;
 
-    // Running
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Jump" )
-    UAnimMontage* run_to_stop_animation;
-
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
     float sensitivity = 1.f;
+
+    UPROPERTY( EditDefaultsOnly, Category = "Gameplay Abilities" )
+    UDefaultASC* AbilitySystemComponent;
+
+    UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "AbilitySystem",
+        meta = ( AllowPrivateAccess = "true" ) )
+    TObjectPtr< UPlayerGameplayAbilitiesDataAsset >
+    PlayerGameplayAbilitiesDataAsset;
+
+    UPROPERTY()
+    class UJPAttributeSet* AttributeSet;
 
 private: // Functions
     void Move( const FInputActionValue& value );
     void Look( const FInputActionValue& value );
+    void InitAbilitySystem();
 
 private: // Variables
-    bool can_walk = true;
 };

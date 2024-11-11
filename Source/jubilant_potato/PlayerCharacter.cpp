@@ -1,102 +1,150 @@
-
 #include "PlayerCharacter.h"
-#include "SmartSpringArm.h"                  // USmartSpringArm class
-#include "EnhancedInputSubsystems.h"         // UEnhancedInputLocalPlayerSubsystem class
-#include "EnhancedInputComponent.h"          // UEnhancedInputComponent class
-#include "Kismet/KismetMathLibrary.h"        // GetForwardVector(), GetRightVector()
-#include "GravMovementComponent.h"           // UGravMovementComponent
-#include "Action.h"                          // UAction class
-#include "ActionManager.h"                   // UActionManager class
-#include "GameFramework/MovementComponent.h" //
-#include "Math/UnrealMathUtility.h"          // Lerp
+#include "DefaultASC.h"
+#include "EnhancedInputSubsystems.h" // UEnhancedInputLocalPlayerSubsystem class
+
+#include "AbilitySystemComponent.h"
+
+#include "JPAttributeSet.h"
+
+#include "EnhancedInputComponent.h"   // UEnhancedInputComponent class
+#include "Kismet/KismetMathLibrary.h" // GetForwardVector(), GetRightVector()
+#include "PlayerGameplayAbilitiesDataAsset.h"
 
 APlayerCharacter::APlayerCharacter(
     const FObjectInitializer& ObjectInitializer )
-    : AGravPlayerCharacter( ObjectInitializer ) {
+    : AMotionMatchingCharacter( ObjectInitializer ) {
     PrimaryActorTick.bCanEverTick = true;
 
-    action_manager = Cast< UActionManager >(
-        CreateDefaultSubobject< UActionManager >( FName( "ActionManager" ) ) );
+    AbilitySystemComponent = CreateDefaultSubobject< UDefaultASC >(
+        TEXT( "AbilitySystemComponent" ) );
+    AbilitySystemComponent->SetIsReplicated( true );
+
+    AttributeSet =
+        CreateDefaultSubobject< UJPAttributeSet >( TEXT( "AttributeSet" ) );
 
     Tags.Add( FName( "Player" ) );
 }
 
 void APlayerCharacter::BeginPlay() {
+    // AbilitySystemComponent->InitAbilityActorInfo( this, this );
+    InitAbilitySystem();
+
+    if ( const APlayerController* PlayerController =
+             Cast< APlayerController >( Controller ) ) {
+        if ( UEnhancedInputLocalPlayerSubsystem* Subsystem =
+                 ULocalPlayer::GetSubsystem<
+                     UEnhancedInputLocalPlayerSubsystem >(
+                     PlayerController->GetLocalPlayer() ) ) {
+            constexpr int32 Priority = 0;
+            Subsystem->AddMappingContext( input_mapping, Priority );
+        }
+    }
+
     Super::BeginPlay();
 
     UWorld* world = GetWorld();
-
-    APlayerController* pc = world->GetFirstPlayerController();
-    if ( !pc )
-        return;
-
-    pc->bShowMouseCursor = false;
 }
 
 void APlayerCharacter::Tick( float DeltaTime ) {
     Super::Tick( DeltaTime );
     //...
-
-    if ( !movement->bOrientRotationToMovement ) {
-        SetActorRotation( camera_root->GetRelativeRotation() );
-    }
 }
 
 // Called to bind functionality to input
 void APlayerCharacter::SetupPlayerInputComponent(
     UInputComponent* PlayerInputComponent ) {
     // Get the player controller
-    const APlayerController* pc = Cast< APlayerController >( GetController() );
-
-    // Get the local player subsystem
-    UEnhancedInputLocalPlayerSubsystem* Subsystem =
-        ULocalPlayer::GetSubsystem< UEnhancedInputLocalPlayerSubsystem >(
-            pc->GetLocalPlayer() );
-    // Clear out existing mapping, and add our mapping
-    Subsystem->ClearAllMappings();
-    Subsystem->AddMappingContext( input_mapping, 0 );
+    // const APlayerController* pc = Cast< APlayerController >( GetController()
+    // );
+    //
+    // // Get the local player subsystem
+    // UEnhancedInputLocalPlayerSubsystem* Subsystem =
+    //     ULocalPlayer::GetSubsystem< UEnhancedInputLocalPlayerSubsystem >(
+    //         pc->GetLocalPlayer() );
+    // // Clear out existing mapping, and add our mapping
+    // Subsystem->ClearAllMappings();
+    // Subsystem->AddMappingContext( input_mapping, 0 );
 
     // Get the EnhancedInputComponent
-    UEnhancedInputComponent* PEI = Cast< UEnhancedInputComponent >(
-        PlayerInputComponent );
+    UEnhancedInputComponent* PEI =
+        Cast< UEnhancedInputComponent >( PlayerInputComponent );
 
     // Bind the actions
-    PEI->BindAction( input_move, ETriggerEvent::Triggered, this,
-                     &APlayerCharacter::Move );
-    PEI->BindAction( input_look, ETriggerEvent::Triggered, this,
-                     &APlayerCharacter::Look );
+    // PEI->BindAction( input_move, ETriggerEvent::Triggered, this,
+    //                  &APlayerCharacter::Move );
+    // PEI->BindAction( input_look, ETriggerEvent::Triggered, this,
+    //                  &APlayerCharacter::Look );
 
-    TArray< UAction* > action_components;
-    GetComponents< UAction >( action_components );
-    for ( UAction* action : action_components ) {
-        action->RegisterComponent();
-        action->BindAction( PEI );
+    if ( !PlayerGameplayAbilitiesDataAsset ) return;
+
+    const TSet< FGameplayInputAbilityInfo >& InputAbilities =
+        PlayerGameplayAbilitiesDataAsset->GetInputAbilities();
+
+    for ( const auto& It : InputAbilities ) {
+        if ( !It.IsValid() ) continue;
+
+        const UInputAction* InputAction = It.InputAction;
+        const int32 InputID = It.InputID;
+
+        PEI->BindAction( InputAction, ETriggerEvent::Started, this,
+                         &APlayerCharacter::AbilityInputPressed, InputID );
+        PEI->BindAction( InputAction, ETriggerEvent::Completed, this,
+                         &APlayerCharacter::AbilityInputReleased, InputID );
     }
 }
 
+void APlayerCharacter::PossessedBy( AController* NewController ) {
+    Super::PossessedBy( NewController );
+
+    if ( AbilitySystemComponent )
+        AbilitySystemComponent->InitAbilityActorInfo( this, this );
+
+    SetOwner( NewController );
+}
+
 void APlayerCharacter::Move( const FInputActionValue& value ) {
-    const FVector2D inputValue = value.Get< FVector2D >();
-    lastMovementInput = FVector( inputValue.X, inputValue.Y, 0.f );
+    const FRotator rotation = GetControlRotation();
 
-    if ( !can_walk ) return;
+    AddMovementInput( UKismetMathLibrary::GetForwardVector( rotation ),
+                      value.Get< FVector2D >().Y );
 
-    AddMovementInput( gimbal->GetForwardVector(), inputValue.Y, false );
-    AddMovementInput( gimbal->GetRightVector(), inputValue.X, false );
+    AddMovementInput( UKismetMathLibrary::GetRightVector( rotation ),
+                      value.Get< FVector2D >().X );
 }
 
 void APlayerCharacter::Look( const FInputActionValue& value ) {
-    const FVector2D inputValue = value.Get< FVector2D >();
-    lastCameraInput = inputValue;
+    AddControllerPitchInput( value.Get< FVector2D >().Y * sensitivity );
+    AddControllerYawInput( value.Get< FVector2D >().X * sensitivity );
+}
 
-    const float inputYaw = gimbal->GetRelativeRotation().Yaw +
-                           ( inputValue.X * sensitivity );
-    const FRotator newYaw{ 0.0, inputYaw, 0.0 };
-    gimbal->SetRelativeRotation( newYaw );
+void APlayerCharacter::AbilityInputPressed( int32 InputID ) {
+    if ( AbilitySystemComponent ) {
+        AbilitySystemComponent->AbilityLocalInputPressed( InputID );
+    }
+}
 
-    const float inputPitch = spring_arm->GetRelativeRotation().Pitch +
-                             ( inputValue.Y * sensitivity );
-    const float clampedPitch = FMath::Clamp( inputPitch, -80, 80 );
+void APlayerCharacter::AbilityInputReleased( int32 InputID ) {
+    if ( AbilitySystemComponent ) {
+        AbilitySystemComponent->AbilityLocalInputReleased( InputID );
+    }
+}
 
-    const FRotator newPitch{ clampedPitch, 0.0, 0.0 };
-    spring_arm->SetRelativeRotation( newPitch );
+void APlayerCharacter::InitAbilitySystem() {
+    if ( !PlayerGameplayAbilitiesDataAsset ) return;
+
+    const TSet< FGameplayInputAbilityInfo > InputAbilities =
+        PlayerGameplayAbilitiesDataAsset->GetInputAbilities();
+    constexpr int32 AbilityLevel = 1;
+
+    for ( const auto& It : InputAbilities ) {
+        if ( !It.IsValid() ) continue;
+
+        const FGameplayAbilitySpec AbilitySpec =
+            FGameplayAbilitySpec( It.GameplayAbilityClass, 1, It.InputID );
+        AbilitySystemComponent->GiveAbility( AbilitySpec );
+    }
+}
+
+UAbilitySystemComponent* APlayerCharacter::GetAbilitySystemComponent() const {
+    return AbilitySystemComponent;
 }

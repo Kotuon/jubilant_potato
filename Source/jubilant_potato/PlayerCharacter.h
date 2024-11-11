@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "MotionMatchingCharacter.h"
 #include "AbilitySystemInterface.h"
 #include "PlayerCharacter.generated.h"
 
@@ -14,9 +13,11 @@ class UDefaultASC;
 class UAbilitySystemComponent;
 class UPlayerGameplayAbilitiesDataAsset;
 class UAbilitySystemComponent;
+class USmartSpringArm;
+class UCameraComponent;
 
 UCLASS()
-class JUBILANT_POTATO_API APlayerCharacter : public AMotionMatchingCharacter,
+class JUBILANT_POTATO_API APlayerCharacter : public ACharacter,
                                              public IAbilitySystemInterface {
     GENERATED_BODY()
 
@@ -36,8 +37,7 @@ public: // Functions
     void AbilityInputPressed( int32 InputID );
     void AbilityInputReleased( int32 InputID );
 
-    virtual UAbilitySystemComponent*
-    GetAbilitySystemComponent() const override;
+    virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
     FORCEINLINE UPlayerGameplayAbilitiesDataAsset*
     GetPlayerGameplayAbilitiesDataAsset() const {
@@ -46,13 +46,17 @@ public: // Functions
 
 public: // Variables
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
-    class UInputMappingContext* input_mapping;
+    class UInputMappingContext* inputMapping;
 
-    // Input Actions
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Actions" )
-    UInputAction* input_move;
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Actions" )
-    UInputAction* input_look;
+    // Camera components
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
+    USceneComponent* cameraRoot;
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
+    USceneComponent* gimbal;
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
+    USmartSpringArm* springArm;
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
+    UCameraComponent* camera;
 
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
     float sensitivity = 1.f;
@@ -61,16 +65,14 @@ public: // Variables
     UDefaultASC* AbilitySystemComponent;
 
     UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "AbilitySystem",
-        meta = ( AllowPrivateAccess = "true" ) )
+               meta = ( AllowPrivateAccess = "true" ) )
     TObjectPtr< UPlayerGameplayAbilitiesDataAsset >
-    PlayerGameplayAbilitiesDataAsset;
+        PlayerGameplayAbilitiesDataAsset;
 
     UPROPERTY()
     class UJPAttributeSet* AttributeSet;
 
 private: // Functions
-    void Move( const FInputActionValue& value );
-    void Look( const FInputActionValue& value );
     void InitAbilitySystem();
 
 private: // Variables

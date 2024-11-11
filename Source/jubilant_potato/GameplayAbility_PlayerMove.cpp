@@ -2,18 +2,19 @@
 
 #include "GameplayAbility_PlayerMove.h"
 #include "Kismet/KismetMathLibrary.h" // GetForwardVector(), GetRightVector()
-#include "GameFramework/Character.h"  // ACharacter
-#include "EnhancedInputComponent.h"   // FInputActionValue class
+#include "PlayerCharacter.h"
+#include "EnhancedInputComponent.h" // FInputActionValue class
 
 void UGameplayAbility_PlayerMove::OnTriggeredInputAction(
     const FInputActionValue& Value ) {
-    ACharacter* character = Cast< ACharacter >( GetAvatarActorFromActorInfo() );
+    APlayerCharacter* character =
+        Cast< APlayerCharacter >( GetAvatarActorFromActorInfo() );
+    USceneComponent* gimbal = character->gimbal;
 
-    const FRotator rotation = character->GetControlRotation();
+    const FVector2D inputValue = Value.Get< FVector2D >();
 
-    character->AddMovementInput(
-        UKismetMathLibrary::GetForwardVector( rotation ),
-        Value.Get< FVector2D >().Y );
-    character->AddMovementInput( UKismetMathLibrary::GetRightVector( rotation ),
-                                 Value.Get< FVector2D >().X );
+    character->AddMovementInput( gimbal->GetForwardVector(), inputValue.Y,
+                                 false );
+    character->AddMovementInput( gimbal->GetRightVector(), inputValue.X,
+                                 false );
 }

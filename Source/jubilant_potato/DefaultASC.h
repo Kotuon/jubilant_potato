@@ -13,4 +13,6 @@ UCLASS()
 class JUBILANT_POTATO_API UDefaultASC : public UAbilitySystemComponent {
     GENERATED_BODY()
 
+public:
+    void AbilityLocalInputPressed(int32 InputID);
 };

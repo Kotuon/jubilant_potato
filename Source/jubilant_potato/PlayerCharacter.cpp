@@ -13,6 +13,8 @@
 #include "Kismet/KismetMathLibrary.h" // GetForwardVector(), GetRightVector()
 #include "PlayerGameplayAbilitiesDataAsset.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
+
 APlayerCharacter::APlayerCharacter(
     const FObjectInitializer& ObjectInitializer )
     : ACharacter( ObjectInitializer ) {
@@ -63,6 +65,10 @@ void APlayerCharacter::BeginPlay() {
 void APlayerCharacter::Tick( float DeltaTime ) {
     Super::Tick( DeltaTime );
     //...
+
+    GEngine->AddOnScreenDebugMessage(
+        -1, 0.f, FColor::Green,
+        FString::SanitizeFloat( GetCharacterMovement()->MaxWalkSpeed ) );
 }
 
 // Called to bind functionality to input

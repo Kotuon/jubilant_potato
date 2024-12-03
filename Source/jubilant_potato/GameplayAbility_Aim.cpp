@@ -1,13 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "GameplayAbility_Sprint.h"
-#include "GameFramework/Character.h"
-#include "GameFramework/CharacterMovementComponent.h"
+#include "GameplayAbility_Aim.h"
 
-UGameplayAbility_Sprint::UGameplayAbility_Sprint(
-    class FObjectInitializer const& ) {}
+#include "PlayerCharacter.h"
+#include "SmartSpringArm.h"
 
-bool UGameplayAbility_Sprint::CanActivateAbility(
+UGameplayAbility_Aim::UGameplayAbility_Aim( class FObjectInitializer const& ) {
+    const APlayerCharacter* character = CastChecked< APlayerCharacter >(
+        ActorInfo->AvatarActor.Get(), ECastCheckedType::NullAllowed );
+
+    springArm = Character->springArm;
+}
+
+bool UGameplayAbility_Aim::CanActivateAbility(
     const FGameplayAbilitySpecHandle Handle,
     const FGameplayAbilityActorInfo* ActorInfo,
     const FGameplayTagContainer* SourceTags,
@@ -22,7 +27,7 @@ bool UGameplayAbility_Sprint::CanActivateAbility(
     return ( IsValid( Character ) );
 }
 
-void UGameplayAbility_Sprint::ActivateAbility(
+void UGameplayAbility_Aim::ActivateAbility(
     const FGameplayAbilitySpecHandle Handle,
     const FGameplayAbilityActorInfo* ActorInfo,
     const FGameplayAbilityActivationInfo ActivationInfo,
@@ -30,17 +35,12 @@ void UGameplayAbility_Sprint::ActivateAbility(
     if ( HasAuthorityOrPredictionKey( ActorInfo, &ActivationInfo ) ) {
         if ( !CommitAbility( Handle, ActorInfo, ActivationInfo ) ) return;
 
-        ACharacter* Character =
-            CastChecked< ACharacter >( ActorInfo->AvatarActor.Get() );
-        // TODO: Implement sprint
-        UCharacterMovementComponent* Movement =
-            Character->GetCharacterMovement();
-
-        Movement->MaxWalkSpeed = 800.f;
+        // TODO: Implement aim
+        springArm->SetIsAiming( true );
     }
 }
 
-void UGameplayAbility_Sprint::InputReleased(
+void UGameplayAbility_Aim::InputReleased(
     const FGameplayAbilitySpecHandle Handle,
     const FGameplayAbilityActorInfo* ActorInfo,
     const FGameplayAbilityActivationInfo ActivationInfo ) {
@@ -50,14 +50,14 @@ void UGameplayAbility_Sprint::InputReleased(
     }
 }
 
-void UGameplayAbility_Sprint::CancelAbility(
+void UGameplayAbility_Aim::CancelAbility(
     const FGameplayAbilitySpecHandle Handle,
     const FGameplayAbilityActorInfo* ActorInfo,
     const FGameplayAbilityActivationInfo ActivationInfo,
     bool bReplicateCancelAbility ) {
     if ( ScopeLockCount > 0 ) {
         WaitingToExecute.Add( FPostLockDelegate::CreateUObject(
-            this, &UGameplayAbility_Sprint::CancelAbility, Handle, ActorInfo,
+            this, &UGameplayAbility_Aim::CancelAbility, Handle, ActorInfo,
             ActivationInfo, bReplicateCancelAbility ) );
         return;
     }
@@ -65,10 +65,7 @@ void UGameplayAbility_Sprint::CancelAbility(
     Super::CancelAbility( Handle, ActorInfo, ActivationInfo,
                           bReplicateCancelAbility );
 
-    ACharacter* Character =
-        CastChecked< ACharacter >( ActorInfo->AvatarActor.Get() );
-    // TODO: Implement sprint
-    UCharacterMovementComponent* Movement = Character->GetCharacterMovement();
+    // TODO: Implement aim end
 
-    Movement->MaxWalkSpeed = 600.f;
+    springArm->SetIsAiming( false );
 }

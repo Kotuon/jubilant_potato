@@ -44,6 +44,8 @@ public: // Functions
         return PlayerGameplayAbilitiesDataAsset;
     }
 
+    void SetStrafe( bool NewStrafe );
+
 public: // Variables
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
     class UInputMappingContext* inputMapping;
@@ -75,5 +77,8 @@ public: // Variables
 private: // Functions
     void InitAbilitySystem();
 
+    void UpdateRotation( float DeltaTime );
+
 private: // Variables
+    bool ShouldStrafe = false;
 };

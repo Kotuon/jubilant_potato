@@ -7,6 +7,8 @@
 #include "GameplayAbility_Aim.generated.h"
 
 class USmartSpringArm;
+class USplineMeshComponent;
+class APlayerCharacter;
 
 UCLASS()
 class JUBILANT_POTATO_API UGameplayAbility_Aim : public UGameplayAbility {
@@ -39,7 +41,13 @@ public:
                    bool bReplicateCancelAbility ) override;
 
 private:
+    bool VerifySpringArm( const FGameplayAbilityActorInfo* ActorInfo );
+    bool VerifyLaserSpline( const FGameplayAbilityActorInfo* ActorInfo );
+    bool VerifyCharacter( const FGameplayAbilityActorInfo* ActorInfo );
+
+    APlayerCharacter* character;
     USmartSpringArm* springArm;
+    USplineMeshComponent* laserSpline;
 
     bool WantsToAim = false;
 };

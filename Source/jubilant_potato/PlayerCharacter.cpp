@@ -43,7 +43,6 @@ APlayerCharacter::APlayerCharacter(
 }
 
 void APlayerCharacter::BeginPlay() {
-    // AbilitySystemComponent->InitAbilityActorInfo( this, this );
     InitAbilitySystem();
 
     if ( const APlayerController* PlayerController =
@@ -60,11 +59,18 @@ void APlayerCharacter::BeginPlay() {
     Super::BeginPlay();
 
     UWorld* world = GetWorld();
+
+    const UPrimitiveComponent* MovementBase = GetMovementBase();
+    if ( !MovementBaseUtility::UseRelativeLocation( MovementBase ) ) {
+        return;
+    }
 }
 
 void APlayerCharacter::Tick( float DeltaTime ) {
     Super::Tick( DeltaTime );
     //...
+
+    UpdateRotation( DeltaTime );
 
     GEngine->AddOnScreenDebugMessage(
         -1, 0.f, FColor::Green,
@@ -136,4 +142,30 @@ void APlayerCharacter::InitAbilitySystem() {
 
 UAbilitySystemComponent* APlayerCharacter::GetAbilitySystemComponent() const {
     return AbilitySystemComponent;
+}
+
+void APlayerCharacter::SetStrafe( bool NewStrafe ) {
+    ShouldStrafe = NewStrafe;
+    GetCharacterMovement()->bOrientRotationToMovement = !NewStrafe;
+}
+
+void APlayerCharacter::UpdateRotation( float DeltaTime ) {
+    if ( !ShouldStrafe ) return;
+
+    UCharacterMovementComponent* Movement = GetCharacterMovement();
+
+    FQuat DeltaQuat = FQuat::Identity;
+    FVector DeltaPosition = FVector::ZeroVector;
+
+    FRotator CurrentRotation =
+        Movement->UpdatedComponent->GetComponentRotation();
+    CurrentRotation.DiagnosticCheckNaN( TEXT(
+        "CharacterMovementComponent::PhysicsRotation(): CurrentRotation" ) );
+
+    FRotator DesiredRotation = gimbal->GetComponentRotation();
+    DesiredRotation.Pitch = 0.f;
+    DesiredRotation.Roll = 0.f;
+
+    Movement->MoveUpdatedComponent( FVector::ZeroVector, DesiredRotation,
+                                    false );
 }

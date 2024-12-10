@@ -5,12 +5,11 @@
 #include "PlayerCharacter.h"
 #include "SmartSpringArm.h"
 
-UGameplayAbility_Aim::UGameplayAbility_Aim( class FObjectInitializer const& ) {
-    const APlayerCharacter* character = CastChecked< APlayerCharacter >(
-        ActorInfo->AvatarActor.Get(), ECastCheckedType::NullAllowed );
+#include "Abilities/Tasks/AbilityTask_Repeat.h"
 
-    springArm = Character->springArm;
-}
+#include "Components/SplineMeshComponent.h"
+
+UGameplayAbility_Aim::UGameplayAbility_Aim( class FObjectInitializer const& ) {}
 
 bool UGameplayAbility_Aim::CanActivateAbility(
     const FGameplayAbilitySpecHandle Handle,
@@ -35,8 +34,15 @@ void UGameplayAbility_Aim::ActivateAbility(
     if ( HasAuthorityOrPredictionKey( ActorInfo, &ActivationInfo ) ) {
         if ( !CommitAbility( Handle, ActorInfo, ActivationInfo ) ) return;
 
-        // TODO: Implement aim
-        springArm->SetIsAiming( true );
+        // TODO: Implement camera
+        if ( VerifySpringArm( ActorInfo ) ) springArm->SetIsAiming( true );
+
+        if ( VerifyLaserSpline( ActorInfo ) ) {
+            laserSpline->SetVisibleFlag( true );
+            laserSpline->SetHiddenInGame( false );
+        }
+
+        if ( VerifyCharacter( ActorInfo ) ) character->SetStrafe( true );
     }
 }
 
@@ -65,7 +71,68 @@ void UGameplayAbility_Aim::CancelAbility(
     Super::CancelAbility( Handle, ActorInfo, ActivationInfo,
                           bReplicateCancelAbility );
 
-    // TODO: Implement aim end
+    // TODO: Implement camera end
+    if ( VerifySpringArm( ActorInfo ) ) springArm->SetIsAiming( false );
 
-    springArm->SetIsAiming( false );
+    if ( VerifyLaserSpline( ActorInfo ) ) {
+        laserSpline->SetVisibleFlag( false );
+        laserSpline->SetHiddenInGame( true );
+    }
+
+    if ( VerifyCharacter( ActorInfo ) ) character->SetStrafe( false );
+
+    // UAbilityTask_Repeat* task = UAbilityTask_Repeat::();
+}
+
+bool UGameplayAbility_Aim::VerifySpringArm(
+    const FGameplayAbilityActorInfo* ActorInfo ) {
+    if ( IsValid( springArm ) ) return true;
+
+    VerifyCharacter( ActorInfo );
+
+    springArm = character->springArm;
+
+    if ( IsValid( springArm ) )
+        return true;
+    else
+        return false;
+}
+
+bool UGameplayAbility_Aim::VerifyLaserSpline(
+    const FGameplayAbilityActorInfo* ActorInfo ) {
+    if ( IsValid( laserSpline ) )
+        return true;
+    else
+        GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red, "BAD" );
+
+    VerifyCharacter( ActorInfo );
+
+    TArray< USplineMeshComponent* > Splines;
+    character->GetComponents< USplineMeshComponent >( Splines );
+
+    for ( USplineMeshComponent* Spline : Splines ) {
+        if ( Spline->ComponentHasTag( "Laser" ) ) laserSpline = Spline;
+    }
+
+    // UActorComponent* comp = character->FindComponentByClass(
+    //     TSubclassOf< USplineMeshComponent >() );
+
+    // laserSpline = Cast< USplineMeshComponent >( comp );
+
+    if ( IsValid( laserSpline ) )
+        return true;
+    else
+        return false;
+}
+
+bool UGameplayAbility_Aim::VerifyCharacter(
+    const FGameplayAbilityActorInfo* ActorInfo ) {
+
+    character = CastChecked< APlayerCharacter >(
+        ActorInfo->AvatarActor.Get(), ECastCheckedType::NullAllowed );
+
+    if ( IsValid( character ) )
+        return true;
+    else
+        return false;
 }

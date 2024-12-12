@@ -9,6 +9,7 @@
 class USmartSpringArm;
 class USplineMeshComponent;
 class APlayerCharacter;
+class UGameplayAbilityTask_Aim;
 
 UCLASS()
 class JUBILANT_POTATO_API UGameplayAbility_Aim : public UGameplayAbility {
@@ -44,10 +45,16 @@ private:
     bool VerifySpringArm( const FGameplayAbilityActorInfo* ActorInfo );
     bool VerifyLaserSpline( const FGameplayAbilityActorInfo* ActorInfo );
     bool VerifyCharacter( const FGameplayAbilityActorInfo* ActorInfo );
+    bool VerifyTask();
 
+    void TickTask( float DeltaTime );
+
+public:
     APlayerCharacter* character;
     USmartSpringArm* springArm;
     USplineMeshComponent* laserSpline;
+
+    UGameplayAbilityTask_Aim* currentUpdate = nullptr;
 
     bool WantsToAim = false;
 };

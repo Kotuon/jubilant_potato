@@ -9,6 +9,11 @@
 
 #include "Components/SplineMeshComponent.h"
 
+#include "GameplayAbilityTask_Aim.h"
+
+#include "Kismet/KismetSystemLibrary.h"
+#include "Camera/CameraComponent.h" // UCameraComponent class
+
 UGameplayAbility_Aim::UGameplayAbility_Aim( class FObjectInitializer const& ) {}
 
 bool UGameplayAbility_Aim::CanActivateAbility(
@@ -34,15 +39,23 @@ void UGameplayAbility_Aim::ActivateAbility(
     if ( HasAuthorityOrPredictionKey( ActorInfo, &ActivationInfo ) ) {
         if ( !CommitAbility( Handle, ActorInfo, ActivationInfo ) ) return;
 
-        // TODO: Implement camera
+        // Updating camera
         if ( VerifySpringArm( ActorInfo ) ) springArm->SetIsAiming( true );
 
+        // Updating effect
         if ( VerifyLaserSpline( ActorInfo ) ) {
             laserSpline->SetVisibleFlag( true );
             laserSpline->SetHiddenInGame( false );
         }
 
+        // Updating character movement
         if ( VerifyCharacter( ActorInfo ) ) character->SetStrafe( true );
+
+        if ( VerifyTask() ) currentUpdate->Activate();
+
+        // currentUpdate =
+        //     UGameplayAbilityTask_Aim::AbilityTaskOnTick( this, "UpdateLaser"
+        //     );
     }
 }
 
@@ -100,10 +113,7 @@ bool UGameplayAbility_Aim::VerifySpringArm(
 
 bool UGameplayAbility_Aim::VerifyLaserSpline(
     const FGameplayAbilityActorInfo* ActorInfo ) {
-    if ( IsValid( laserSpline ) )
-        return true;
-    else
-        GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red, "BAD" );
+    if ( IsValid( laserSpline ) ) return true;
 
     VerifyCharacter( ActorInfo );
 
@@ -113,11 +123,6 @@ bool UGameplayAbility_Aim::VerifyLaserSpline(
     for ( USplineMeshComponent* Spline : Splines ) {
         if ( Spline->ComponentHasTag( "Laser" ) ) laserSpline = Spline;
     }
-
-    // UActorComponent* comp = character->FindComponentByClass(
-    //     TSubclassOf< USplineMeshComponent >() );
-
-    // laserSpline = Cast< USplineMeshComponent >( comp );
 
     if ( IsValid( laserSpline ) )
         return true;
@@ -135,4 +140,43 @@ bool UGameplayAbility_Aim::VerifyCharacter(
         return true;
     else
         return false;
+}
+
+bool UGameplayAbility_Aim::VerifyTask() {
+    if ( IsValid( currentUpdate ) ) return true;
+
+    currentUpdate =
+        UGameplayAbilityTask_Aim::AbilityTaskOnTick( this, "UpdateLaser" );
+
+
+    if ( IsValid( currentUpdate ) )
+        return true;
+    else
+        return false;
+}
+
+void UGameplayAbility_Aim::TickTask( float DeltaTime ) {
+    GEngine->AddOnScreenDebugMessage( -1, 2.f, FColor::Yellow, "Updating" );
+    const FVector start = character->GetActorLocation();
+    const FVector end =
+        start + ( character->camera->GetForwardVector() * 2000.f );
+
+    TArray< TEnumAsByte< EObjectTypeQuery > > objectTypes;
+    objectTypes.Add( UEngineTypes::ConvertToObjectType( ECC_WorldStatic ) );
+
+    TArray< AActor*, FDefaultAllocator > ignoreTypes;
+    ignoreTypes.Add( character );
+
+    FHitResult hitResult;
+    UKismetSystemLibrary::SphereTraceSingleForObjects(
+        GetWorld(), start, end, 50.f, objectTypes, false, ignoreTypes,
+        EDrawDebugTrace::None, hitResult, false );
+
+    if ( hitResult.bBlockingHit ) {
+        GEngine->AddOnScreenDebugMessage(
+            -1, 2.f, FColor::Green, "Hit: " + hitResult.GetActor()->GetName() );
+        laserSpline->SetEndPosition( hitResult.ImpactPoint, true );
+
+    } else
+        GEngine->AddOnScreenDebugMessage( -1, 2.f, FColor::Red, "Miss" );
 }

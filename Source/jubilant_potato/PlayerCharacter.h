@@ -9,16 +9,12 @@
 
 struct FInputActionValue;
 class UInputAction;
-class UDefaultASC;
-class UAbilitySystemComponent;
-class UPlayerGameplayAbilitiesDataAsset;
-class UAbilitySystemComponent;
 class USmartSpringArm;
 class UCameraComponent;
+class UActionManager;
 
 UCLASS()
-class JUBILANT_POTATO_API APlayerCharacter : public ACharacter,
-                                             public IAbilitySystemInterface {
+class JUBILANT_POTATO_API APlayerCharacter : public ACharacter {
     GENERATED_BODY()
 
 protected: // Functions
@@ -32,23 +28,16 @@ public: // Functions
     virtual void SetupPlayerInputComponent(
         class UInputComponent* PlayerInputComponent ) override;
 
-    void PossessedBy( AController* NewController ) override;
-
-    void AbilityInputPressed( int32 InputID );
-    void AbilityInputReleased( int32 InputID );
-
-    virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
-    FORCEINLINE UPlayerGameplayAbilitiesDataAsset*
-    GetPlayerGameplayAbilitiesDataAsset() const {
-        return PlayerGameplayAbilitiesDataAsset;
-    }
-
     void SetStrafe( bool NewStrafe );
+
+    bool GetCanMove() const;
 
 public: // Variables
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
     class UInputMappingContext* inputMapping;
+
+    UPROPERTY( VisibleDefaultsOnly, BlueprintReadOnly, Category = "Actions" )
+    UActionManager* actionManager;
 
     // Camera components
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
@@ -63,22 +52,8 @@ public: // Variables
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
     float sensitivity = 1.f;
 
-    UPROPERTY( EditDefaultsOnly, Category = "Gameplay Abilities" )
-    UDefaultASC* AbilitySystemComponent;
-
-    UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "AbilitySystem",
-               meta = ( AllowPrivateAccess = "true" ) )
-    TObjectPtr< UPlayerGameplayAbilitiesDataAsset >
-        PlayerGameplayAbilitiesDataAsset;
-
-    UPROPERTY()
-    class UJPAttributeSet* AttributeSet;
-
 private: // Functions
-    void InitAbilitySystem();
-
-    void UpdateRotation( float DeltaTime );
-
 private: // Variables
-    bool ShouldStrafe = false;
+    bool shouldStrafe = false;
+    bool canMove = true;
 };

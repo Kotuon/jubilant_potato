@@ -14,7 +14,11 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Camera/CameraComponent.h" // UCameraComponent class
 
-UGameplayAbility_Aim::UGameplayAbility_Aim( class FObjectInitializer const& ) {}
+UGameplayAbility_Aim::UGameplayAbility_Aim( class FObjectInitializer const& ) {
+    character = nullptr;
+    springArm = nullptr;
+    currentUpdate = nullptr;
+}
 
 bool UGameplayAbility_Aim::CanActivateAbility(
     const FGameplayAbilitySpecHandle Handle,
@@ -44,14 +48,16 @@ void UGameplayAbility_Aim::ActivateAbility(
 
         // Updating effect
         if ( VerifyLaserSpline( ActorInfo ) ) {
-            laserSpline->SetVisibleFlag( true );
-            laserSpline->SetHiddenInGame( false );
+            // laserSpline->SetVisibleFlag( true );
+            // laserSpline->SetHiddenInGame( false );
+
+            // laserSpline->set
         }
 
         // Updating character movement
         if ( VerifyCharacter( ActorInfo ) ) character->SetStrafe( true );
 
-        if ( VerifyTask() ) currentUpdate->Activate();
+        // if ( VerifyTask() ) currentUpdate->Activate();
 
         // currentUpdate =
         //     UGameplayAbilityTask_Aim::AbilityTaskOnTick( this, "UpdateLaser"
@@ -87,10 +93,10 @@ void UGameplayAbility_Aim::CancelAbility(
     // TODO: Implement camera end
     if ( VerifySpringArm( ActorInfo ) ) springArm->SetIsAiming( false );
 
-    if ( VerifyLaserSpline( ActorInfo ) ) {
-        laserSpline->SetVisibleFlag( false );
-        laserSpline->SetHiddenInGame( true );
-    }
+    // if ( VerifyLaserSpline( ActorInfo ) ) {
+    //     laserSpline->SetVisibleFlag( false );
+    //     laserSpline->SetHiddenInGame( true );
+    // }
 
     if ( VerifyCharacter( ActorInfo ) ) character->SetStrafe( false );
 
@@ -99,7 +105,11 @@ void UGameplayAbility_Aim::CancelAbility(
 
 bool UGameplayAbility_Aim::VerifySpringArm(
     const FGameplayAbilityActorInfo* ActorInfo ) {
-    if ( IsValid( springArm ) ) return true;
+    if ( IsValid( springArm ) )
+        return true;
+    else
+        GEngine->AddOnScreenDebugMessage( -1, 2.f, FColor::Red,
+                                          "Bad spring arm." );
 
     VerifyCharacter( ActorInfo );
 
@@ -113,7 +123,10 @@ bool UGameplayAbility_Aim::VerifySpringArm(
 
 bool UGameplayAbility_Aim::VerifyLaserSpline(
     const FGameplayAbilityActorInfo* ActorInfo ) {
-    if ( IsValid( laserSpline ) ) return true;
+    if ( IsValid( laserSpline ) )
+        return true;
+    else
+        GEngine->AddOnScreenDebugMessage( -1, 2.f, FColor::Red, "Bad spline." );
 
     VerifyCharacter( ActorInfo );
 
@@ -126,15 +139,22 @@ bool UGameplayAbility_Aim::VerifyLaserSpline(
 
     if ( IsValid( laserSpline ) )
         return true;
-    else
+    else {
+        GEngine->AddOnScreenDebugMessage( -1, 2.f, FColor::Purple,
+                                          "Bad spline." );
         return false;
+    }
 }
 
 bool UGameplayAbility_Aim::VerifyCharacter(
     const FGameplayAbilityActorInfo* ActorInfo ) {
+    if ( IsValid( character ) )
+        return true;
+    else
+        GEngine->AddOnScreenDebugMessage( -1, 2.f, FColor::Red,
+                                          "Bad character." );
 
-    character = CastChecked< APlayerCharacter >(
-        ActorInfo->AvatarActor.Get(), ECastCheckedType::NullAllowed );
+    character = Cast< APlayerCharacter >( ActorInfo->AvatarActor.Get() );
 
     if ( IsValid( character ) )
         return true;
@@ -143,16 +163,21 @@ bool UGameplayAbility_Aim::VerifyCharacter(
 }
 
 bool UGameplayAbility_Aim::VerifyTask() {
-    if ( IsValid( currentUpdate ) ) return true;
+    if ( IsValid( currentUpdate ) )
+        return true;
+    else
+        GEngine->AddOnScreenDebugMessage( -1, 2.f, FColor::Red, "Bad task." );
 
     currentUpdate =
         UGameplayAbilityTask_Aim::AbilityTaskOnTick( this, "UpdateLaser" );
 
-
     if ( IsValid( currentUpdate ) )
         return true;
-    else
+    else {
+        GEngine->AddOnScreenDebugMessage( -1, 2.f, FColor::Purple,
+                                          "Bad task." );
         return false;
+    }
 }
 
 void UGameplayAbility_Aim::TickTask( float DeltaTime ) {

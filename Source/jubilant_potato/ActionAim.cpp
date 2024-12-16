@@ -12,15 +12,15 @@ void UActionAim::BeginPlay() {
     Super::BeginPlay();
     //...
 
-    // spring_arm = parent->spring_arm;
+    springArm = parent->springArm;
 }
 
 void UActionAim::Start( const FInputActionValue& value ) {
     if ( value.Get< bool >() ) {
-        is_aiming = true;
-        spring_arm->SetIsAiming( true );
-
-        // parent->GetCharacterMovement()->bOrientRotationToMovement = false;
+        isAiming = true;
+        springArm->SetIsAiming( true );
+        parent->SetStrafe( true );
+        parent->SetActorRotation( parent->gimbal->GetComponentRotation() );
 
         GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
                                           "Holding aim." );
@@ -32,9 +32,9 @@ void UActionAim::Start( const FInputActionValue& value ) {
 void UActionAim::End() {
     Super::End();
 
-    is_aiming = false;
-    spring_arm->SetIsAiming( false );
-    // parent->GetCharacterMovement()->bOrientRotationToMovement = true;
+    isAiming = false;
+    springArm->SetIsAiming( false );
+    parent->SetStrafe( false );
     GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red, "Released aim." );
 }
 
@@ -42,4 +42,4 @@ void UActionAim::TickComponent(
     float DeltaTime, ELevelTick TickType,
     FActorComponentTickFunction* ThisTickFunction ) {}
 
-bool UActionAim::GetIsAiming() const { return is_aiming; }
+bool UActionAim::GetIsAiming() const { return isAiming; }

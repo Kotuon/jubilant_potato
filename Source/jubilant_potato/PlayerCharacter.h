@@ -32,6 +32,9 @@ public: // Functions
 
     bool GetCanMove() const;
 
+    void SetLastMovementInput( const FVector newInput );
+    const FVector GetLastMovementInput() const;
+
 public: // Variables
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
     class UInputMappingContext* inputMapping;
@@ -54,6 +57,8 @@ public: // Variables
 
 private: // Functions
 private: // Variables
+    FVector lastMovementInput;
+
     bool shouldStrafe = false;
     bool canMove = true;
 };

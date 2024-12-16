@@ -81,4 +81,12 @@ void APlayerCharacter::SetStrafe( bool NewStrafe ) {
     GetCharacterMovement()->bOrientRotationToMovement = !NewStrafe;
 }
 
-bool APlayerCharacter::GetCanMove() const {return canMove;}
+bool APlayerCharacter::GetCanMove() const { return canMove; }
+
+void APlayerCharacter::SetLastMovementInput( const FVector newInput ) {
+    lastMovementInput = newInput;
+}
+
+const FVector APlayerCharacter::GetLastMovementInput() const {
+    return lastMovementInput;
+}

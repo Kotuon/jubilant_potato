@@ -14,6 +14,7 @@ void UActionMove::BeginPlay() {
 
 void UActionMove::Start( const FInputActionValue& value ) {
     const FVector2D inputValue = value.Get< FVector2D >();
+    parent->SetLastMovementInput( FVector( inputValue.X, inputValue.Y, 0.0f ) );
 
     parent->AddMovementInput( gimbal->GetForwardVector(), inputValue.Y, false );
     parent->AddMovementInput( gimbal->GetRightVector(), inputValue.X, false );

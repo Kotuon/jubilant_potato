@@ -61,8 +61,8 @@ void UActionSprint::TickComponent(
     Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
     //...
 
-    // const FVector last_input = parent->GetLastMovementInput();
-    // if ( ( abs( last_input.X ) + abs( last_input.Y ) <= 0.f ) ||
-    // aim_action->GetIsAiming() ) { End();
-    // }
+    const FVector last_input = parent->GetLastMovementInput();
+    if ( ( last_input.Length() <= 0.f ) || aim_action->GetIsAiming() ) {
+        End();
+    }
 }

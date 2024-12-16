@@ -26,7 +26,7 @@ public: // Functions
 
 public:  // Variables
 private: // Variables
-    USmartSpringArm* spring_arm;
+    USmartSpringArm* springArm;
 
-    bool is_aiming = false;
+    bool isAiming = false;
 };

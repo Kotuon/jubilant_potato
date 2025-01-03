@@ -11,6 +11,8 @@
 AEnemy::AEnemy() {
     PrimaryActorTick.bCanEverTick = true;
     //...
+
+    Tags.Add( "Enemy" );
 }
 
 void AEnemy::BeginPlay() {
@@ -28,8 +30,7 @@ void AEnemy::BeginPlay() {
             target_marker = Cast< UUserWidget >( widget->GetWidget() );
             target_marker->SetRenderOpacity( 0.f );
             continue;
-        }
-        else if ( widget->GetName() == "HealthBar" ) {
+        } else if ( widget->GetName() == "HealthBar" ) {
             healthBar = Cast< UProgressBar >(
                 widget->GetWidget()->GetWidgetFromName( "HealthBar" ) );
             healthBar->SetPercent( static_cast< float >( currHealth ) /

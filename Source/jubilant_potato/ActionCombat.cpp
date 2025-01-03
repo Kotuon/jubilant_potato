@@ -11,6 +11,7 @@
 #include "ActionAim.h"                                // UActionAim class
 #include "Base_Projectile.h"                          // ABase_Projectile class
 #include "Camera/CameraComponent.h"                   // UCameraComponent class
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values for this component's properties
 UActionCombat::UActionCombat() {
@@ -65,33 +66,41 @@ void UActionCombat::Start( const FInputActionValue& Value ) {
         can_combo = false;
         is_attacking = true;
 
-        TArray< AEnemy* > targets =
-            target_system->UpdateTarget( 0.01f, 2000.f, true );
-        int target_num = targets.Num();
-        if ( target_num > 0 ) {
-            FVector average_position = FVector( 0 );
-            for ( AEnemy* target : targets ) {
-                average_position += target->GetActorLocation();
-                target->ApplyDamage( damage_amount );
+        TArray< TEnumAsByte< EObjectTypeQuery > > objectTypes;
+        objectTypes.Add( UEngineTypes::ConvertToObjectType( ECC_Pawn ) );
+
+        TArray< AActor*, FDefaultAllocator > ignoreTypes;
+        ignoreTypes.Add( parent );
+
+        FVector start = parent->camera->GetComponentLocation();
+        FVector end = start + ( parent->camera->GetForwardVector() * 2000.f );
+
+        FHitResult hitResult;
+        UKismetSystemLibrary::SphereTraceSingleForObjects(
+            world, start, end, 50.f, objectTypes, false, ignoreTypes,
+            EDrawDebugTrace::None, hitResult, false );
+
+        if ( hitResult.bBlockingHit ) {
+            if ( hitResult.GetActor()->ActorHasTag( "Enemy" ) ) {
+                AEnemy* target = Cast< AEnemy >( hitResult.GetActor() );
+                // target->ApplyDamage( damage_amount );
             }
 
-            average_position /= target_num;
-            parent->SetActorRotation(
-                ( average_position - parent->GetActorLocation() ).Rotation() );
+            parent->SetActorRotation( end.Rotation() );
         } else {
             FVector input = parent->GetLastMovementInput();
 
-            FVector search_direction;
+            FVector searchDirection;
 
             if ( abs( input.X ) + abs( input.Y ) > 0.f ) {
-                search_direction =
+                searchDirection =
                     ( ( parent->gimbal->GetForwardVector() * input.Y ) +
                       ( parent->gimbal->GetRightVector() * input.X ) )
                         .GetSafeNormal();
             } else {
-                search_direction = parent->GetActorForwardVector();
+                searchDirection = parent->gimbal->GetForwardVector();
             }
-            parent->SetActorRotation( search_direction.Rotation() );
+            parent->SetActorRotation( searchDirection.Rotation() );
         }
 
         if ( attack_count == 1 ) {
@@ -168,7 +177,8 @@ void UActionCombat::SpawnProjectile() {
     FVector traceStart = parent->camera->GetComponentLocation();
     FVector traceEnd = traceStart + ( cameraForward * 10000.f );
 
-    // DrawDebugLine( world, traceStart, traceEnd, FColor::Green, false, 2.f );
+    // DrawDebugLine( world, traceStart, traceEnd, FColor::Green, false, 2.f
+    // );
 
     FCollisionShape sphere;
     sphere.SetSphere( 20.f );

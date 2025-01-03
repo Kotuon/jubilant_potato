@@ -25,7 +25,9 @@ public:
     void FireInDirection( const FVector& ShootDirection );
 
     UFUNCTION()
-    void OnHit( UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit );
+    void OnHit( UPrimitiveComponent* HitComponent, AActor* OtherActor,
+                UPrimitiveComponent* OtherComp, FVector NormalImpulse,
+                const FHitResult& Hit );
 
     UPROPERTY( VisibleDefaultsOnly, Category = Projectile )
     USphereComponent* collision_component;

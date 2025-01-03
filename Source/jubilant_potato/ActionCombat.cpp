@@ -40,9 +40,9 @@ void UActionCombat::Start( const FInputActionValue& Value ) {
         return;
     }
 
-    if ( !manager->StartAction( type ) && attack_count == 0 ) {
-        return;
-    }
+    // if ( is_attacking && attack_count == 0 ) {
+    //     return;
+    // }
 
     // if ( parent->GetCharacterMovement()->IsFalling() ) {
     //     can_combo = false;
@@ -53,12 +53,12 @@ void UActionCombat::Start( const FInputActionValue& Value ) {
     //     return;
     // }
 
-    if ( aim_action->GetIsAiming() ) {
-        SpawnProjectile();
+    // if ( aim_action->GetIsAiming() ) {
+    //     SpawnProjectile();
 
-        End();
-        return;
-    }
+    //     End();
+    //     return;
+    // }
 
     if ( attack_count == 0 || can_combo ) {
         attack_count += 1;
@@ -66,7 +66,7 @@ void UActionCombat::Start( const FInputActionValue& Value ) {
         is_attacking = true;
 
         TArray< AEnemy* > targets =
-            target_system->UpdateTarget( 0.15f, 500.f, false );
+            target_system->UpdateTarget( 0.01f, 2000.f, true );
         int target_num = targets.Num();
         if ( target_num > 0 ) {
             FVector average_position = FVector( 0 );
@@ -78,6 +78,20 @@ void UActionCombat::Start( const FInputActionValue& Value ) {
             average_position /= target_num;
             parent->SetActorRotation(
                 ( average_position - parent->GetActorLocation() ).Rotation() );
+        } else {
+            FVector input = parent->GetLastMovementInput();
+
+            FVector search_direction;
+
+            if ( abs( input.X ) + abs( input.Y ) > 0.f ) {
+                search_direction =
+                    ( ( parent->gimbal->GetForwardVector() * input.Y ) +
+                      ( parent->gimbal->GetRightVector() * input.X ) )
+                        .GetSafeNormal();
+            } else {
+                search_direction = parent->GetActorForwardVector();
+            }
+            parent->SetActorRotation( search_direction.Rotation() );
         }
 
         if ( attack_count == 1 ) {

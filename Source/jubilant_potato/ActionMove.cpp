@@ -13,6 +13,8 @@ void UActionMove::BeginPlay() {
 }
 
 void UActionMove::Start( const FInputActionValue& value ) {
+    if ( !parent->GetCanMove() ) return;
+
     const FVector2D inputValue = value.Get< FVector2D >();
     parent->SetLastMovementInput( FVector( inputValue.X, inputValue.Y, 0.0f ) );
 

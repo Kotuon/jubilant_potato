@@ -30,6 +30,7 @@ public: // Functions
 
     void SetStrafe( bool NewStrafe );
 
+    void SetCanMove( bool CanMove_ );
     bool GetCanMove() const;
 
     void SetLastMovementInput( const FVector newInput );

@@ -6,6 +6,8 @@
 #include "Action.h"
 #include "ActionDash.generated.h"
 
+class UNiagaraSystem;
+
 UCLASS( ClassGroup = ( Custom ), meta = ( BlueprintSpawnableComponent ) )
 class JUBILANT_POTATO_API UActionDash : public UAction {
     GENERATED_BODY()
@@ -27,10 +29,17 @@ public: // Variables
     float distance = 1500.f;
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "General" )
     float dashDuration = 0.1f;
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "General" )
+    float exitSpeed = 800.f;
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "General" )
+    class UNiagaraSystem* effect;
 
 private: // Variables
     UWorld* world;
 
     FVector endLocation;
+    FVector startLocation;
     float dashTimer;
+
+    bool isRunning = false;
 };

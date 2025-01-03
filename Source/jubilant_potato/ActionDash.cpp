@@ -4,6 +4,10 @@
 #include "PlayerCharacter.h"
 
 #include "Kismet/KismetSystemLibrary.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 UActionDash::UActionDash() { type = EAction::A_Dash; }
 
@@ -15,7 +19,11 @@ void UActionDash::BeginPlay() {
 }
 
 void UActionDash::Start( const FInputActionValue& value ) {
+    parent->SetCanMove( false );
+    isRunning = true;
+
     const FVector parentLocation = parent->GetActorLocation();
+    startLocation = parentLocation;
 
     FVector dashDirection =
         parent->GetLastMovementInput().Y * parent->gimbal->GetForwardVector() +
@@ -45,14 +53,25 @@ void UActionDash::Start( const FInputActionValue& value ) {
     }
 
     dashTimer = 0.f;
+
+    // VFX
+    UNiagaraComponent* effectComponent =
+        UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+            world, effect, startLocation, dashDirection.Rotation(),
+            FVector( 1.f, 0.25f, 0.25f ) );
 }
 
-void UActionDash::End() {}
+void UActionDash::End() {
+    parent->SetCanMove( true );
+    isRunning = false;
+}
 
 void UActionDash::TickComponent(
     float DeltaTime, ELevelTick TickType,
     FActorComponentTickFunction* ThisTickFunction ) {
-    if ( dashTimer >= dashDuration ) {
+    if ( !isRunning ) return;
+
+    if ( dashTimer >= dashDuration - ( dashDuration * 0.2f ) ) {
         End();
         return;
     }

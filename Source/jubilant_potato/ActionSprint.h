@@ -7,7 +7,6 @@
 #include "ActionSprint.generated.h"
 
 class UCharacterMovementComponent;
-class UActionAim;
 
 UCLASS( ClassGroup = ( Custom ), meta = ( BlueprintSpawnableComponent ) )
 class JUBILANT_POTATO_API UActionSprint : public UAction {
@@ -19,9 +18,6 @@ protected: // Functions
 public: // Functions
     UActionSprint();
     virtual void Start( const FInputActionValue& value );
-    virtual void End();
-
-    virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
 
 public: // Variables
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "General" )
@@ -29,8 +25,6 @@ public: // Variables
 
 private: // Variables
     UCharacterMovementComponent* character_movement;
-
-    UActionAim* aim_action;
 
     float original_walk_speed;
 

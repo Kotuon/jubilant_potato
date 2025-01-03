@@ -8,6 +8,7 @@
 
 class UUserWidget;
 class UBehaviorTree;
+class UProgressBar;
 
 UCLASS()
 class JUBILANT_POTATO_API AEnemy : public ACharacter {
@@ -39,19 +40,24 @@ public: // Functions
     UFUNCTION( BlueprintCallable )
     void StartRagdoll();
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION( BlueprintCallable )
     bool IsDead() const;
 
 private: // Functions
 public:  // Variables
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Behaviors" )
-    UBehaviorTree *enemy_behavior_tree;
+    UBehaviorTree* enemy_behavior_tree;
 
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "General" )
     int health = 10;
 
 private: // Variables
-    UUserWidget *target_marker;
+    UUserWidget* target_marker;
+    UProgressBar* healthBar;
+
+    int maxHealth;
+    int currHealth;
+    
     bool is_targeted = false;
     bool is_dead = false;
 };

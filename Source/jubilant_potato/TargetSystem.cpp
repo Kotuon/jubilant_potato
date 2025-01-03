@@ -3,6 +3,7 @@
 #include "PlayerCharacter.h"        // APlayerCharacter class
 #include "Enemy.h"                  // AEnemy class
 #include "Kismet/GameplayStatics.h" // GetAllActorsOfClass()
+#include "Camera/CameraComponent.h" // UCameraComponent class
 
 UTargetSystem::UTargetSystem() {
     PrimaryComponentTick.bCanEverTick = false;
@@ -17,33 +18,40 @@ void UTargetSystem::BeginPlay() {
     world = GetWorld();
 }
 
-void UTargetSystem::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) {
+void UTargetSystem::TickComponent(
+    float DeltaTime, ELevelTick TickType,
+    FActorComponentTickFunction* ThisTickFunction ) {
     Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
     // ...
 }
 
-TArray< AEnemy* >& UTargetSystem::UpdateTarget( float Width, float Range, bool SingleTarget ) {
+TArray< AEnemy* >& UTargetSystem::UpdateTarget( float Width, float Range,
+                                                bool SingleTarget ) {
     float search_value = 1.f - Width;
-    // FVector input = parent->GetLastMovementInput();
+    FVector input = parent->GetLastMovementInput();
 
     FVector search_direction;
 
-    // if ( abs( input.X ) + abs( input.Y ) > 0.f ) {
-    //     search_direction = ( ( parent->gimbal->GetForwardVector() * input.Y ) + ( parent->gimbal->GetRightVector() * input.X ) ).GetSafeNormal();
-    // } else {
-    //     search_direction = parent->GetActorForwardVector();
-    // }
+    if ( abs( input.X ) + abs( input.Y ) > 0.f ) {
+        search_direction = ( ( parent->gimbal->GetForwardVector() * input.Y ) +
+                             ( parent->gimbal->GetRightVector() * input.X ) )
+                               .GetSafeNormal();
+    } else {
+        search_direction = parent->camera->GetForwardVector();
+    }
 
-    DrawDebugDirectionalArrow( GetWorld(), parent->GetActorLocation(),
-                               parent->GetActorLocation() + ( search_direction * 200.f ), 10.f,
-                               FColor::Green, false, 1.f, ( uint8 )0U, 2.f );
+    DrawDebugDirectionalArrow(
+        GetWorld(), parent->GetActorLocation(),
+        parent->GetActorLocation() + ( search_direction * Range ), 10.f,
+        FColor::Green, false, 1.f, ( uint8 )0U, 2.f );
 
     // DrawDebugDirectionalArrow( GetWorld(), parent->GetActorLocation(),
-    //                            parent->GetActorLocation() + ( search_direction * 200.f ),
-    //                            2.f, );
+    //                            parent->GetActorLocation() + (
+    //                            search_direction * 200.f ), 2.f, );
 
     TArray< AActor* > found_enemies;
-    UGameplayStatics::GetAllActorsOfClass( world, AEnemy::StaticClass(), found_enemies );
+    UGameplayStatics::GetAllActorsOfClass( world, AEnemy::StaticClass(),
+                                           found_enemies );
 
     TArray< float > found_dot_result;
     found_dot_result.Init( -1.f, 1 );
@@ -52,7 +60,8 @@ TArray< AEnemy* >& UTargetSystem::UpdateTarget( float Width, float Range, bool S
     for ( int i = 0; i < found_enemies.Num(); ++i ) {
         AEnemy* enemy = Cast< AEnemy >( found_enemies[i] );
 
-        float distance = FVector::Distance( enemy->GetActorLocation(), parent->GetActorLocation() );
+        float distance = FVector::Distance( enemy->GetActorLocation(),
+                                            parent->GetActorLocation() );
 
         if ( distance > Range || enemy->IsDead() ) {
             if ( enemy->GetIsTargeted() ) {
@@ -62,10 +71,13 @@ TArray< AEnemy* >& UTargetSystem::UpdateTarget( float Width, float Range, bool S
             continue;
         }
 
-        FVector enemy_direction = ( enemy->GetActorLocation() - parent->GetActorLocation() ).GetSafeNormal();
+        FVector enemy_direction =
+            ( enemy->GetActorLocation() - parent->GetActorLocation() )
+                .GetSafeNormal();
 
-        float dot_result = FVector::DotProduct( search_direction, enemy_direction );
-        if ( abs( dot_result ) > search_value ) {
+        float dot_result =
+            FVector::DotProduct( search_direction, enemy_direction );
+        if ( dot_result > search_value ) {
             if ( SingleTarget ) {
                 if ( dot_result > found_dot_result[0] ) {
                     found_dot_result[0] = dot_result;

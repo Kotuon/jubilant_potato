@@ -1,28 +1,40 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Enemy.h"
-#include "Components/WidgetComponent.h"  // UUserWidget class and UWidgetComponent class
-#include "AIController.h"                // AAIController class
-#include "BrainComponent.h"              // UBrainComponent class
+#include "Components/WidgetComponent.h" // UUserWidget class and UWidgetComponent class
+#include "AIController.h"               // AAIController class
+#include "BrainComponent.h"             // UBrainComponent class
 #include "Components/CapsuleComponent.h" // UCapsuleComponent class
+#include "Components/ProgressBar.h"
+#include "Blueprint/UserWidget.h"
 
 AEnemy::AEnemy() {
     PrimaryActorTick.bCanEverTick = true;
     //...
+
+    Tags.Add( "Enemy" );
 }
 
 void AEnemy::BeginPlay() {
     Super::BeginPlay();
     //...
 
-    TArray< UWidgetComponent * > widgets;
+    maxHealth = health;
+    currHealth = maxHealth;
+
+    TArray< UWidgetComponent* > widgets;
     GetComponents< UWidgetComponent >( widgets );
 
-    for ( UWidgetComponent *widget : widgets ) {
+    for ( UWidgetComponent* widget : widgets ) {
         if ( widget->GetName() == "TargetMarker" ) {
             target_marker = Cast< UUserWidget >( widget->GetWidget() );
             target_marker->SetRenderOpacity( 0.f );
             continue;
+        } else if ( widget->GetName() == "HealthBar" ) {
+            healthBar = Cast< UProgressBar >(
+                widget->GetWidget()->GetWidgetFromName( "HealthBar" ) );
+            healthBar->SetPercent( static_cast< float >( currHealth ) /
+                                   static_cast< float >( maxHealth ) );
         }
     }
 }
@@ -42,13 +54,15 @@ void AEnemy::EndTarget() {
     target_marker->SetRenderOpacity( 0.f );
 }
 
-bool AEnemy::GetIsTargeted() const {
-    return is_targeted;
-}
+bool AEnemy::GetIsTargeted() const { return is_targeted; }
 
 void AEnemy::ApplyDamage( int DamageAmount ) {
-    health -= DamageAmount;
-    if ( !is_dead && health <= 0 ) {
+    currHealth -= DamageAmount;
+
+    healthBar->SetPercent( static_cast< float >( currHealth ) /
+                           static_cast< float >( maxHealth ) );
+
+    if ( !is_dead && currHealth <= 0 ) {
         Kill();
     }
 }
@@ -58,23 +72,24 @@ void AEnemy::Kill() {
 
     EndTarget();
 
-    AAIController *controller = Cast< AAIController >( GetController() );
+    AAIController* controller = Cast< AAIController >( GetController() );
     if ( IsValid( controller ) ) {
         controller->GetBrainComponent()->StopLogic( "Dead" );
     }
 
-    UCapsuleComponent *bodyHitbox = FindComponentByClass< UCapsuleComponent >();
+    UCapsuleComponent* bodyHitbox = FindComponentByClass< UCapsuleComponent >();
     if ( IsValid( bodyHitbox ) ) {
         bodyHitbox->SetCollisionEnabled( ECollisionEnabled::NoCollision );
     }
 
-    // TODO: Stop any animation montages playing when dying (once/if there are any added)
+    // TODO: Stop any animation montages playing when dying (once/if there are
+    // any added)
 
     controller->UnPossess();
 }
 
 void AEnemy::StartRagdoll() {
-    USkeletalMeshComponent *mesh = GetMesh();
+    USkeletalMeshComponent* mesh = GetMesh();
 
     mesh->SetCollisionObjectType( ECollisionChannel::ECC_PhysicsBody );
     mesh->SetCollisionEnabled( ECollisionEnabled::QueryAndPhysics );
@@ -82,6 +97,4 @@ void AEnemy::StartRagdoll() {
     mesh->SetAllBodiesSimulatePhysics( true );
 }
 
-bool AEnemy::IsDead() const {
-    return is_dead;
-}
+bool AEnemy::IsDead() const { return is_dead; }

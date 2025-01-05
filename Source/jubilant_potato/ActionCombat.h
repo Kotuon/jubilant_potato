@@ -8,8 +8,8 @@
 
 class UAnimMontage;
 struct FTimerHandle;
-class UTargetSystem;
 class UActionAim;
+class AEnemy;
 
 UCLASS( ClassGroup = ( Custom ), meta = ( BlueprintSpawnableComponent ) )
 class JUBILANT_POTATO_API UActionCombat : public UAction {
@@ -23,7 +23,9 @@ public: // Functions
     UActionCombat();
     virtual void Start( const FInputActionValue& Value );
     virtual void End();
-    virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
+    virtual void
+    TickComponent( float DeltaTime, ELevelTick TickType,
+                   FActorComponentTickFunction* ThisTickFunction ) override;
 
     UFUNCTION( BlueprintCallable )
     void SetCanCombo( bool CanCombo );
@@ -34,10 +36,11 @@ public: // Functions
     UFUNCTION( BlueprintCallable )
     bool GetIsAttacking() const;
 
+    UFUNCTION( BlueprintCallable )
+    void SpawnProjectile( FVector SocketLocation, FRotator SocketNormal );
+
 private: // Functions
     void EndCooldown();
-
-    void SpawnProjectile();
 
 public: // Variables
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Animation" )
@@ -47,7 +50,7 @@ public: // Variables
 
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Projectile" )
     TSubclassOf< class ABase_Projectile > projectile_class;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category ="Projectile")
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Projectile" )
     float start_distance_projectile = 100.f;
 
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "General" )
@@ -56,17 +59,17 @@ public: // Variables
     int damage_amount = 1;
 
 private: // Variables
-    UTargetSystem* target_system;
-
-    UActionAim* aim_action;
+    UActionAim* aimAction;
     UWorld* world;
 
-    FTimerHandle cooldown_timer;
+    AEnemy* currTarget = nullptr;
 
-    int attack_count = 0;
-    int start_combo_count = 0;
+    FTimerHandle cooldownTimer;
 
-    bool can_combo = false;
-    bool is_attacking = false;
-    bool on_cooldown = false;
+    int attackCount = 0;
+    int startComboCount = 0;
+
+    bool canCombo = false;
+    bool isAttacking = false;
+    bool onCooldown = false;
 };

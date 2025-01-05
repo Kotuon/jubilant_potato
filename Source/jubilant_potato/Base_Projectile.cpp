@@ -88,6 +88,7 @@ void ABase_Projectile::OnHit( UPrimitiveComponent* HitComponent,
                               AActor* OtherActor,
                               UPrimitiveComponent* OtherComp,
                               FVector NormalImpulse, const FHitResult& Hit ) {
+    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Cyan, "Hit" );
 
     if ( OtherActor == this || OtherActor == parent ) {
         return;

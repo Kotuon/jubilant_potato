@@ -8,6 +8,7 @@
 
 class USphereComponent;
 class UProjectileMovementComponent;
+class AEnemy;
 
 UCLASS()
 class JUBILANT_POTATO_API ABase_Projectile : public AActor {
@@ -67,6 +68,8 @@ public:
 
     AActor* parent;
     FVector start_location;
+
+    AEnemy* target;
 
     bool has_muzzle = false;
 };

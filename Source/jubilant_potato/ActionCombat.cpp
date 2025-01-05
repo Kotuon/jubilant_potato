@@ -12,6 +12,7 @@
 #include "Base_Projectile.h"                          // ABase_Projectile class
 #include "Camera/CameraComponent.h"                   // UCameraComponent class
 #include "Kismet/KismetSystemLibrary.h"
+#include "GameFramework/ProjectileMovementComponent.h" // UProjectileMovementComponent class
 
 // Sets default values for this component's properties
 UActionCombat::UActionCombat() {
@@ -24,47 +25,46 @@ void UActionCombat::BeginPlay() {
     Super::BeginPlay();
     // ...
 
-    target_system = parent->FindComponentByClass< UTargetSystem >();
     world = GetWorld();
 
     TArray< UAction* > action_components;
     parent->GetComponents< UAction >( action_components );
     for ( UAction* action : action_components ) {
         if ( action->type == EAction::A_Aim ) {
-            aim_action = Cast< UActionAim >( action );
+            aimAction = Cast< UActionAim >( action );
         }
     }
 }
 
 void UActionCombat::Start( const FInputActionValue& Value ) {
-    if ( on_cooldown || parent->GetCharacterMovement()->IsFalling() ) {
+    if ( onCooldown || parent->GetCharacterMovement()->IsFalling() ) {
         return;
     }
 
-    // if ( is_attacking && attack_count == 0 ) {
+    // if ( isAttacking && attackCount == 0 ) {
     //     return;
     // }
 
     // if ( parent->GetCharacterMovement()->IsFalling() ) {
-    //     can_combo = false;
-    //     is_attacking = true;
+    //     canCombo = false;
+    //     isAttacking = true;
 
     //     parent->SetCanWalk( false );
 
     //     return;
     // }
 
-    // if ( aim_action->GetIsAiming() ) {
+    // if ( aimAction->GetIsAiming() ) {
     //     SpawnProjectile();
 
     //     End();
     //     return;
     // }
 
-    if ( attack_count == 0 || can_combo ) {
-        attack_count += 1;
-        can_combo = false;
-        is_attacking = true;
+    if ( attackCount == 0 || canCombo ) {
+        attackCount += 1;
+        canCombo = false;
+        isAttacking = true;
 
         TArray< TEnumAsByte< EObjectTypeQuery > > objectTypes;
         objectTypes.Add( UEngineTypes::ConvertToObjectType( ECC_Pawn ) );
@@ -84,10 +84,20 @@ void UActionCombat::Start( const FInputActionValue& Value ) {
             if ( hitResult.GetActor()->ActorHasTag( "Enemy" ) ) {
                 AEnemy* target = Cast< AEnemy >( hitResult.GetActor() );
                 // target->ApplyDamage( damage_amount );
+                if ( currTarget != target && IsValid( currTarget ) ) {
+                    currTarget->EndTarget();
+                }
+                currTarget = target;
+                target->StartTarget();
             }
 
             parent->SetActorRotation( end.Rotation() );
         } else {
+            if ( IsValid( currTarget ) ) {
+                currTarget->EndTarget();
+                currTarget = nullptr;
+            }
+
             FVector input = parent->GetLastMovementInput();
 
             FVector searchDirection;
@@ -103,31 +113,34 @@ void UActionCombat::Start( const FInputActionValue& Value ) {
             parent->SetActorRotation( searchDirection.Rotation() );
         }
 
-        if ( attack_count == 1 ) {
+        if ( attackCount == 1 ) {
             // parent->SetCanWalk( false );
-            parent->PlayAnimMontage( attack_montages[attack_count - 1] );
+            parent->PlayAnimMontage( attack_montages[attackCount - 1] );
         }
 
         GEngine->AddOnScreenDebugMessage(
             -1, 5.f, FColor::Green,
-            "Start attack " + FString::FromInt( attack_count ) + "." );
+            "Start attack " + FString::FromInt( attackCount ) + "." );
     }
 }
 
 void UActionCombat::End() {
     Super::End();
 
-    target_system->ClearTargets();
+    // parent->SetCanWalk( true );]
 
-    // parent->SetCanWalk( true );
+    if ( IsValid( currTarget ) ) {
+        currTarget->EndTarget();
+        currTarget = nullptr;
+    }
 
-    attack_count = 0;
-    can_combo = false;
-    is_attacking = false;
+    attackCount = 0;
+    canCombo = false;
+    isAttacking = false;
 
-    on_cooldown = true;
+    onCooldown = true;
     parent->GetWorldTimerManager().SetTimer(
-        cooldown_timer, this, &UActionCombat::EndCooldown, cooldown, false );
+        cooldownTimer, this, &UActionCombat::EndCooldown, cooldown, false );
 
     GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "End attack." );
 }
@@ -141,63 +154,31 @@ void UActionCombat::TickComponent(
 
 void UActionCombat::SetCanCombo( bool CanCombo ) {
     if ( CanCombo ) {
-        start_combo_count = attack_count;
-    } else if ( start_combo_count == attack_count ||
-                attack_count > attack_montages.Num() ) {
+        startComboCount = attackCount;
+    } else if ( startComboCount == attackCount ||
+                attackCount > attack_montages.Num() ) {
         End();
     } else if ( !CanCombo ) {
-        if ( attack_count <= attack_montages.Num() ) {
-            parent->PlayAnimMontage( attack_montages[attack_count - 1] );
+        if ( attackCount <= attack_montages.Num() ) {
+            parent->PlayAnimMontage( attack_montages[attackCount - 1] );
         }
     }
 
-    can_combo = CanCombo;
+    canCombo = CanCombo;
 }
 
-int UActionCombat::GetAttackCount() const { return attack_count; }
+int UActionCombat::GetAttackCount() const { return attackCount; }
 
-bool UActionCombat::GetIsAttacking() const { return is_attacking; }
+bool UActionCombat::GetIsAttacking() const { return isAttacking; }
 
 void UActionCombat::EndCooldown() {
-    on_cooldown = false;
+    onCooldown = false;
 
     GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "End cooldown." );
 }
 
-void UActionCombat::SpawnProjectile() {
-    FVector playerPosition =
-        parent->GetActorLocation() + FVector{ 0.f, 0.f, 40.f };
-    FVector cameraForward =
-        Cast< USceneComponent >( parent->camera )->GetForwardVector();
-    FRotator playerRotation = parent->GetActorRotation();
-
-    FVector initialLocation =
-        FVector( 100000000000, 10000000000000, 10000000000 );
-
-    FVector traceStart = parent->camera->GetComponentLocation();
-    FVector traceEnd = traceStart + ( cameraForward * 10000.f );
-
-    // DrawDebugLine( world, traceStart, traceEnd, FColor::Green, false, 2.f
-    // );
-
-    FCollisionShape sphere;
-    sphere.SetSphere( 20.f );
-
-    FHitResult hitResult;
-    world->SweepSingleByChannel( hitResult, traceStart, traceEnd,
-                                 FQuat::Identity,
-                                 ECollisionChannel::ECC_PhysicsBody, sphere );
-
-    if ( hitResult.IsValidBlockingHit() ) {
-        GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Yellow,
-                                          hitResult.GetActor()->GetName() );
-        traceEnd = hitResult.ImpactPoint;
-    }
-
-    FVector shotLocation =
-        playerPosition + ( cameraForward * start_distance_projectile );
-    FVector launchDirection = ( traceEnd - shotLocation ).GetSafeNormal();
-
+void UActionCombat::SpawnProjectile( FVector SocketLocation,
+                                     FRotator SocketNormal ) {
     FActorSpawnParameters spawnParams;
     spawnParams.Owner = parent;
     spawnParams.Instigator = parent->GetInstigator();
@@ -205,15 +186,79 @@ void UActionCombat::SpawnProjectile() {
         ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
     ABase_Projectile* newProjectile = world->SpawnActor< ABase_Projectile >(
-        projectile_class, initialLocation,
-        FRotationMatrix::MakeFromX( launchDirection ).Rotator(), spawnParams );
+        projectile_class, SocketLocation, SocketNormal, spawnParams );
     if ( !newProjectile ) {
         return;
     }
     newProjectile->parent = parent;
     newProjectile->Tags.Add( parent->Tags[0] );
-    newProjectile->start_location = shotLocation;
+    newProjectile->start_location = SocketLocation;
 
-    newProjectile->SetActorLocation( shotLocation );
-    newProjectile->FireInDirection( launchDirection );
+    newProjectile->SetActorLocation( SocketLocation );
+    newProjectile->FireInDirection( SocketNormal.Vector() );
+
+    if ( IsValid( currTarget ) ) {
+        newProjectile->projectile_movement_component->bIsHomingProjectile =
+            true;
+
+        newProjectile->projectile_movement_component->HomingTargetComponent =
+            currTarget->GetRootComponent();
+
+        GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Yellow, "HOMING" );
+    }
+
+    /////////////////////////////////
+    // FVector playerPosition =
+    //     parent->GetActorLocation() + FVector{ 0.f, 0.f, 40.f };
+    // FVector cameraForward =
+    //     Cast< USceneComponent >( parent->camera )->GetForwardVector();
+    // FRotator playerRotation = parent->GetActorRotation();
+
+    // FVector initialLocation =
+    //     FVector( 100000000000, 10000000000000, 10000000000 );
+
+    // FVector traceStart = parent->camera->GetComponentLocation();
+    // FVector traceEnd = traceStart + ( cameraForward * 10000.f );
+
+    // // DrawDebugLine( world, traceStart, traceEnd, FColor::Green, false, 2.f
+    // // );
+
+    // FCollisionShape sphere;
+    // sphere.SetSphere( 20.f );
+
+    // FHitResult hitResult;
+    // world->SweepSingleByChannel( hitResult, traceStart, traceEnd,
+    //                              FQuat::Identity,
+    //                              ECollisionChannel::ECC_PhysicsBody, sphere
+    //                              );
+
+    // if ( hitResult.IsValidBlockingHit() ) {
+    //     GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Yellow,
+    //                                       hitResult.GetActor()->GetName() );
+    //     traceEnd = hitResult.ImpactPoint;
+    // }
+
+    // FVector shotLocation =
+    //     playerPosition + ( cameraForward * start_distance_projectile );
+    // FVector launchDirection = ( traceEnd - shotLocation ).GetSafeNormal();
+
+    // FActorSpawnParameters spawnParams;
+    // spawnParams.Owner = parent;
+    // spawnParams.Instigator = parent->GetInstigator();
+    // spawnParams.SpawnCollisionHandlingOverride =
+    //     ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+    // ABase_Projectile* newProjectile = world->SpawnActor< ABase_Projectile >(
+    //     projectile_class, initialLocation,
+    //     FRotationMatrix::MakeFromX( launchDirection ).Rotator(), spawnParams
+    //     );
+    // if ( !newProjectile ) {
+    //     return;
+    // }
+    // newProjectile->parent = parent;
+    // newProjectile->Tags.Add( parent->Tags[0] );
+    // newProjectile->start_location = shotLocation;
+
+    // newProjectile->SetActorLocation( shotLocation );
+    // newProjectile->FireInDirection( launchDirection );
 }

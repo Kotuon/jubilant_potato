@@ -58,7 +58,7 @@ void UActionDash::Start( const FInputActionValue& value ) {
     UNiagaraComponent* effectComponent =
         UNiagaraFunctionLibrary::SpawnSystemAtLocation(
             world, effect, startLocation, dashDirection.Rotation(),
-            FVector( 1.f, 0.25f, 0.25f ) );
+            FVector( distance / 800.f, 0.25f, 0.25f ) );
 }
 
 void UActionDash::End() {

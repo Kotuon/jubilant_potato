@@ -203,8 +203,6 @@ void UActionCombat::SpawnProjectile( FVector SocketLocation,
 
         newProjectile->projectile_movement_component->HomingTargetComponent =
             currTarget->GetRootComponent();
-
-        GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Yellow, "HOMING" );
     }
 
     /////////////////////////////////

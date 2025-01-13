@@ -64,19 +64,35 @@ void ABase_Projectile::BeginPlay() {
 void ABase_Projectile::Tick( float DeltaTime ) {
     Super::Tick( DeltaTime );
 
-    if ( has_muzzle ) return;
-
     UWorld* world = GetWorld();
     if ( !world ) return;
 
-    UNiagaraComponent* newEffect =
-        UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-            world, hit_VFX, start_location, GetActorRotation() );
-    if ( newEffect ) {
-        newEffect->SetVariableFloat( "Scale", muzzle_size );
+    if ( !has_muzzle ) {
+        UNiagaraComponent* newEffect =
+            UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+                world, hit_VFX, start_location, GetActorRotation() );
+        if ( newEffect ) {
+            newEffect->SetVariableFloat( "Scale", muzzle_size );
+        }
+
+        has_muzzle = true;
     }
 
-    has_muzzle = true;
+    const FVector targetPos =
+        projectile_movement_component->HomingTargetComponent
+            ->GetComponentLocation();
+
+    const FVector thisPos = GetActorLocation();
+
+    const float distance = FVector::Distance( targetPos, thisPos );
+    // GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red,
+    //                                   FString::SanitizeFloat( distance ) );
+
+    if ( distance < 200.f ) {
+        projectile_movement_component->HomingAccelerationMagnitude = 80000;
+        // GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Yellow,
+        //                                   "Distance update." );
+    }
 }
 
 void ABase_Projectile::FireInDirection( const FVector& ShootDirection ) {

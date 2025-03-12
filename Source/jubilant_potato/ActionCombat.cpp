@@ -41,26 +41,6 @@ void UActionCombat::Start( const FInputActionValue& Value ) {
         return;
     }
 
-    // if ( isAttacking && attackCount == 0 ) {
-    //     return;
-    // }
-
-    // if ( parent->GetCharacterMovement()->IsFalling() ) {
-    //     canCombo = false;
-    //     isAttacking = true;
-
-    //     parent->SetCanWalk( false );
-
-    //     return;
-    // }
-
-    // if ( aimAction->GetIsAiming() ) {
-    //     SpawnProjectile();
-
-    //     End();
-    //     return;
-    // }
-
     if ( attackCount == 0 || canCombo ) {
         attackCount += 1;
         canCombo = false;
@@ -73,7 +53,7 @@ void UActionCombat::Start( const FInputActionValue& Value ) {
         ignoreTypes.Add( parent );
 
         FVector start = parent->camera->GetComponentLocation();
-        FVector end = start + ( parent->camera->GetForwardVector() * 2000.f );
+        FVector end = start + ( parent->camera->GetForwardVector() * range );
 
         FHitResult hitResult;
         UKismetSystemLibrary::SphereTraceSingleForObjects(
@@ -91,7 +71,7 @@ void UActionCombat::Start( const FInputActionValue& Value ) {
                 target->StartTarget();
             }
 
-            parent->SetActorRotation( end.Rotation() );
+            parent->SetActorRotation( ( end - start ).Rotation() );
         } else {
             if ( IsValid( currTarget ) ) {
                 currTarget->EndTarget();
@@ -114,13 +94,8 @@ void UActionCombat::Start( const FInputActionValue& Value ) {
         }
 
         if ( attackCount == 1 ) {
-            // parent->SetCanWalk( false );
             parent->PlayAnimMontage( attack_montages[attackCount - 1] );
         }
-
-        GEngine->AddOnScreenDebugMessage(
-            -1, 5.f, FColor::Green,
-            "Start attack " + FString::FromInt( attackCount ) + "." );
     }
 }
 
@@ -141,8 +116,6 @@ void UActionCombat::End() {
     onCooldown = true;
     parent->GetWorldTimerManager().SetTimer(
         cooldownTimer, this, &UActionCombat::EndCooldown, cooldown, false );
-
-    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "End attack." );
 }
 
 void UActionCombat::TickComponent(
@@ -171,11 +144,7 @@ int UActionCombat::GetAttackCount() const { return attackCount; }
 
 bool UActionCombat::GetIsAttacking() const { return isAttacking; }
 
-void UActionCombat::EndCooldown() {
-    onCooldown = false;
-
-    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "End cooldown." );
-}
+void UActionCombat::EndCooldown() { onCooldown = false; }
 
 void UActionCombat::SpawnProjectile( FVector SocketLocation,
                                      FRotator SocketNormal ) {
@@ -203,60 +172,8 @@ void UActionCombat::SpawnProjectile( FVector SocketLocation,
 
         newProjectile->projectile_movement_component->HomingTargetComponent =
             currTarget->GetRootComponent();
+    } else {
+        newProjectile->projectile_movement_component->HomingTargetComponent =
+            nullptr;
     }
-
-    /////////////////////////////////
-    // FVector playerPosition =
-    //     parent->GetActorLocation() + FVector{ 0.f, 0.f, 40.f };
-    // FVector cameraForward =
-    //     Cast< USceneComponent >( parent->camera )->GetForwardVector();
-    // FRotator playerRotation = parent->GetActorRotation();
-
-    // FVector initialLocation =
-    //     FVector( 100000000000, 10000000000000, 10000000000 );
-
-    // FVector traceStart = parent->camera->GetComponentLocation();
-    // FVector traceEnd = traceStart + ( cameraForward * 10000.f );
-
-    // // DrawDebugLine( world, traceStart, traceEnd, FColor::Green, false, 2.f
-    // // );
-
-    // FCollisionShape sphere;
-    // sphere.SetSphere( 20.f );
-
-    // FHitResult hitResult;
-    // world->SweepSingleByChannel( hitResult, traceStart, traceEnd,
-    //                              FQuat::Identity,
-    //                              ECollisionChannel::ECC_PhysicsBody, sphere
-    //                              );
-
-    // if ( hitResult.IsValidBlockingHit() ) {
-    //     GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Yellow,
-    //                                       hitResult.GetActor()->GetName() );
-    //     traceEnd = hitResult.ImpactPoint;
-    // }
-
-    // FVector shotLocation =
-    //     playerPosition + ( cameraForward * start_distance_projectile );
-    // FVector launchDirection = ( traceEnd - shotLocation ).GetSafeNormal();
-
-    // FActorSpawnParameters spawnParams;
-    // spawnParams.Owner = parent;
-    // spawnParams.Instigator = parent->GetInstigator();
-    // spawnParams.SpawnCollisionHandlingOverride =
-    //     ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-    // ABase_Projectile* newProjectile = world->SpawnActor< ABase_Projectile >(
-    //     projectile_class, initialLocation,
-    //     FRotationMatrix::MakeFromX( launchDirection ).Rotator(), spawnParams
-    //     );
-    // if ( !newProjectile ) {
-    //     return;
-    // }
-    // newProjectile->parent = parent;
-    // newProjectile->Tags.Add( parent->Tags[0] );
-    // newProjectile->start_location = shotLocation;
-
-    // newProjectile->SetActorLocation( shotLocation );
-    // newProjectile->FireInDirection( launchDirection );
 }

@@ -37,6 +37,8 @@ void AEnemy::BeginPlay() {
                                    static_cast< float >( maxHealth ) );
         }
     }
+    
+    healthBar->SetVisibility( ESlateVisibility::Hidden );
 }
 
 void AEnemy::Tick( float DeltaTime ) {
@@ -57,6 +59,8 @@ void AEnemy::EndTarget() {
 bool AEnemy::GetIsTargeted() const { return is_targeted; }
 
 void AEnemy::ApplyDamage( int DamageAmount ) {
+    healthBar->SetVisibility( ESlateVisibility::Visible );
+
     currHealth -= DamageAmount;
 
     healthBar->SetPercent( static_cast< float >( currHealth ) /

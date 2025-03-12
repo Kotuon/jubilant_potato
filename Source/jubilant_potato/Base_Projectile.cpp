@@ -78,6 +78,9 @@ void ABase_Projectile::Tick( float DeltaTime ) {
         has_muzzle = true;
     }
 
+    if ( projectile_movement_component->HomingTargetComponent == nullptr )
+        return;
+
     const FVector targetPos =
         projectile_movement_component->HomingTargetComponent
             ->GetComponentLocation();
@@ -104,14 +107,9 @@ void ABase_Projectile::OnHit( UPrimitiveComponent* HitComponent,
                               AActor* OtherActor,
                               UPrimitiveComponent* OtherComp,
                               FVector NormalImpulse, const FHitResult& Hit ) {
-    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Cyan, "Hit" );
-
     if ( OtherActor == this || OtherActor == parent ) {
         return;
     }
-
-    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green,
-                                      OtherActor->GetName() );
 
     // TArray< UAudioComponent* > audioComponents;
     // GetComponents< UAudioComponent >( audioComponents );

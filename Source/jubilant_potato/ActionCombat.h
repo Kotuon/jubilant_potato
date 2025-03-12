@@ -53,6 +53,8 @@ public: // Variables
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Projectile" )
     float start_distance_projectile = 100.f;
 
+    UPROPERTY( EditDefaultsOnly, BlueprintReadWrite, Category = "General" )
+    float range = 2000.f;
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "General" )
     float cooldown = 0.1f;
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "General" )

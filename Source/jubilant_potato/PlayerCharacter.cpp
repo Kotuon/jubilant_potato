@@ -12,20 +12,8 @@
 
 APlayerCharacter::APlayerCharacter(
     const FObjectInitializer& ObjectInitializer )
-    : ACharacter( ObjectInitializer ) {
+    : AGravPlayerCharacter( ObjectInitializer ) {
     PrimaryActorTick.bCanEverTick = true;
-
-    cameraRoot = Cast< USceneComponent >(
-        CreateDefaultSubobject< USceneComponent >( FName( "CameraRoot" ) ) );
-    cameraRoot->SetupAttachment( GetRootComponent() );
-    gimbal = Cast< USceneComponent >(
-        CreateDefaultSubobject< USceneComponent >( FName( "Gimbal" ) ) );
-    gimbal->SetupAttachment( cameraRoot );
-    springArm = Cast< USmartSpringArm >(
-        CreateDefaultSubobject< USmartSpringArm >( FName( "SpringArm" ) ) );
-    springArm->SetupAttachment( gimbal );
-    camera = CreateDefaultSubobject< UCameraComponent >( FName( "Camera" ) );
-    camera->SetupAttachment( springArm );
 
     actionManager = Cast< UActionManager >(
         CreateDefaultSubobject< UActionManager >( FName( "ActionManager" ) ) );
@@ -91,4 +79,12 @@ void APlayerCharacter::SetLastMovementInput( const FVector newInput ) {
 
 const FVector APlayerCharacter::GetLastMovementInput() const {
     return lastMovementInput;
+}
+
+void APlayerCharacter::SetLastCameraInput( const FVector2D newInput ) {
+    lastCameraInput = newInput;
+}
+
+const FVector2D APlayerCharacter::GetLastCameraInput() const {
+    return lastCameraInput;
 }

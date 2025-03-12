@@ -16,6 +16,7 @@ void UActionLook::BeginPlay() {
 
 void UActionLook::Start( const FInputActionValue& value ) {
     const FVector2D inputValue = value.Get< FVector2D >();
+    parent->SetLastCameraInput( inputValue );
 
     const float inputYaw = gimbal->GetRelativeRotation().Yaw +
                            ( inputValue.X * parent->sensitivity );

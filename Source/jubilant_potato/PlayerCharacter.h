@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GravPlayerCharacter.h"
 #include "AbilitySystemInterface.h"
 #include "PlayerCharacter.generated.h"
 
@@ -14,7 +15,7 @@ class UCameraComponent;
 class UActionManager;
 
 UCLASS()
-class JUBILANT_POTATO_API APlayerCharacter : public ACharacter {
+class JUBILANT_POTATO_API APlayerCharacter : public AGravPlayerCharacter {
     GENERATED_BODY()
 
 protected: // Functions
@@ -36,6 +37,9 @@ public: // Functions
     void SetLastMovementInput( const FVector newInput );
     const FVector GetLastMovementInput() const;
 
+    void SetLastCameraInput(const FVector2D newInput);
+    const FVector2D GetLastCameraInput() const;
+
 public: // Variables
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
     class UInputMappingContext* inputMapping;
@@ -43,22 +47,13 @@ public: // Variables
     UPROPERTY( VisibleDefaultsOnly, BlueprintReadOnly, Category = "Actions" )
     UActionManager* actionManager;
 
-    // Camera components
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
-    USceneComponent* cameraRoot;
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
-    USceneComponent* gimbal;
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
-    USmartSpringArm* springArm;
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
-    UCameraComponent* camera;
-
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
     float sensitivity = 1.f;
 
 private: // Functions
 private: // Variables
     FVector lastMovementInput;
+    FVector2D lastCameraInput;
 
     bool shouldStrafe = false;
     bool canMove = true;

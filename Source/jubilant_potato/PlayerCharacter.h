@@ -13,6 +13,7 @@ class UInputAction;
 class USmartSpringArm;
 class UCameraComponent;
 class UActionManager;
+class UProgressBar;
 
 UCLASS()
 class JUBILANT_POTATO_API APlayerCharacter : public AGravPlayerCharacter {
@@ -37,8 +38,16 @@ public: // Functions
     void SetLastMovementInput( const FVector newInput );
     const FVector GetLastMovementInput() const;
 
-    void SetLastCameraInput(const FVector2D newInput);
+    void SetLastCameraInput( const FVector2D newInput );
     const FVector2D GetLastCameraInput() const;
+
+    bool UseResource( const float Amount );
+
+    void UseResourceOnTimer( const float Amount );
+    void ClearResourceTimer();
+
+    UFUNCTION( BlueprintCallable )
+    bool AddResource( const float Amount );
 
 public: // Variables
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
@@ -50,10 +59,22 @@ public: // Variables
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
     float sensitivity = 1.f;
 
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Resource" )
+    float resourceTotalAmount = 1000.f;
+
 private: // Functions
+    UFUNCTION()
+    void TickResource( const float Amount );
+
 private: // Variables
     FVector lastMovementInput;
     FVector2D lastCameraInput;
+
+    UProgressBar* resourceBar;
+
+    FTimerHandle resourceTimer;
+
+    float resourceCurrAmount;
 
     bool shouldStrafe = false;
     bool canMove = true;

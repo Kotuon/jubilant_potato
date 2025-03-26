@@ -10,6 +10,11 @@
 #include "ActionManager.h"
 #include "Action.h"
 
+#include "Blueprint/WidgetTree.h"
+#include "Blueprint/UserWidget.h"
+#include "Components/WidgetComponent.h"
+#include "Components/ProgressBar.h"
+
 APlayerCharacter::APlayerCharacter(
     const FObjectInitializer& ObjectInitializer )
     : AGravPlayerCharacter( ObjectInitializer ) {
@@ -26,6 +31,28 @@ void APlayerCharacter::BeginPlay() {
     //...
 
     UWorld* world = GetWorld();
+
+    resourceCurrAmount = resourceTotalAmount;
+
+    TArray< UWidgetComponent* > widgets;
+    GetComponents< UWidgetComponent >( widgets );
+    UWidgetComponent* hud = nullptr;
+
+    for ( UWidgetComponent* widget : widgets ) {
+        if ( widget->GetName() == "Hud" ) {
+            hud = widget;
+            break;
+        }
+    }
+
+    TArray< UWidget* > child_widgets;
+    hud->GetWidget()->WidgetTree->GetAllWidgets( child_widgets );
+    for ( UWidget* child : child_widgets ) {
+        if ( child->GetName() == "ProgressBar" ) {
+            resourceBar = Cast< UProgressBar >( child );
+            resourceBar->SetPercent( resourceCurrAmount / resourceTotalAmount );
+        }
+    }
 }
 
 void APlayerCharacter::Tick( float DeltaTime ) {
@@ -35,6 +62,9 @@ void APlayerCharacter::Tick( float DeltaTime ) {
     GEngine->AddOnScreenDebugMessage(
         -1, 0.f, FColor::Green,
         FString::SanitizeFloat( GetCharacterMovement()->MaxWalkSpeed ) );
+
+    GEngine->AddOnScreenDebugMessage(
+        -1, 0.f, FColor::Green, FString::SanitizeFloat( resourceCurrAmount ) );
 }
 
 // Called to bind functionality to input
@@ -87,4 +117,45 @@ void APlayerCharacter::SetLastCameraInput( const FVector2D newInput ) {
 
 const FVector2D APlayerCharacter::GetLastCameraInput() const {
     return lastCameraInput;
+}
+
+bool APlayerCharacter::UseResource( const float Amount ) {
+    if ( resourceCurrAmount - Amount <= 0.f ) return false;
+
+    resourceCurrAmount =
+        FMath::Clamp( resourceCurrAmount - Amount, 0.f, resourceTotalAmount );
+    resourceBar->SetPercent( resourceCurrAmount / resourceTotalAmount );
+
+    return true;
+}
+
+void APlayerCharacter::UseResourceOnTimer( const float Amount ) {
+    FTimerDelegate resourceTickDelegate;
+
+    resourceTickDelegate.BindUFunction( this, FName( "TickResource" ), Amount );
+
+    GetWorldTimerManager().SetTimer( resourceTimer, resourceTickDelegate, 0.01f,
+                                     true );
+}
+
+void APlayerCharacter::ClearResourceTimer() {
+    GetWorldTimerManager().ClearTimer( resourceTimer );
+}
+
+void APlayerCharacter::TickResource( const float Amount ) {
+    if ( !UseResource( Amount ) ) {
+        ClearResourceTimer();
+    }
+}
+
+bool APlayerCharacter::AddResource( const float Amount ) {
+    if ( resourceCurrAmount >= resourceTotalAmount ) {
+        return false;
+    }
+
+    resourceCurrAmount =
+        FMath::Clamp( resourceCurrAmount + Amount, 0.f, resourceTotalAmount );
+    resourceBar->SetPercent( resourceCurrAmount / resourceTotalAmount );
+
+    return true;
 }

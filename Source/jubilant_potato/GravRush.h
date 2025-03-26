@@ -6,7 +6,7 @@
 #include "Action.h"
 #include "GravRush.generated.h"
 
-class UCharacterMovementComponent;
+class UGravMovementComponent;
 class UEnhancedInputComponent;
 class UInputAction;
 
@@ -21,34 +21,52 @@ public: // Functions
     UGravRush();
     virtual void Start( const FInputActionValue& Value );
     virtual void End();
-    virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
+    virtual void
+    TickComponent( float DeltaTime, ELevelTick TickType,
+                   FActorComponentTickFunction* ThisTickFunction ) override;
 
     UFUNCTION()
-    void MovementModeChanged( ACharacter* Character, EMovementMode PrevMovementMode, uint8 PrevCustomMode );
+    void MovementModeChanged( ACharacter* Character,
+                              EMovementMode PrevMovementMode,
+                              uint8 PrevCustomMode );
 
     virtual void InvertGrav();
     virtual void LeftGrav();
     virtual void RightGrav();
     virtual void BackGrav();
 
+    virtual void GroundGrav();
+
     virtual void BindAction( UEnhancedInputComponent* PEI ) override;
 
 private: // Functions
-public:  // Variables
+    void TriggerGravShift( const FVector direction );
+
+public: // Variables
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
-    UInputAction* invert_action;
+    UInputAction* invertAction;
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
-    UInputAction* left_action;
+    UInputAction* leftAction;
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
-    UInputAction* right_action;
+    UInputAction* rightAction;
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
-    UInputAction* back_action;
+    UInputAction* backAction;
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
-    UInputAction* cancel_action;
+    UInputAction* cancelAction;
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
+    UInputAction* groundAction;
+
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
+    float startCost = 20.f;
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )
+    float tickCost = 1.f;
 
 private: // Variables
-    UCharacterMovementComponent* movement;
-    FVector original_grav;
+    UGravMovementComponent* movement;
+    FVector originalGrav;
 
-    bool has_clicked = false;
+    FTimerHandle resourceCostTimer;
+
+    bool hasClicked = false;
+    bool groundGrav = false;
 };

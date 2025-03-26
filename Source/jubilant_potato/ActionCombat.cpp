@@ -37,7 +37,8 @@ void UActionCombat::BeginPlay() {
 }
 
 void UActionCombat::Start( const FInputActionValue& Value ) {
-    if ( onCooldown || parent->GetCharacterMovement()->IsFalling() ) {
+    if ( onCooldown || parent->GetCharacterMovement()->IsFalling() ||
+         aimAction->GetIsAiming() ) {
         return;
     }
 

@@ -75,21 +75,22 @@ void AGravPlayerCharacter::Tick( float DeltaTime ) {
         cameraRoot->SetWorldRotation( FMath::RInterpTo(
             cameraRoot->GetComponentRotation(), targetRot, DeltaTime, 2.f ) );
 
-        if ( lastGimbalRot == gimbal->GetRelativeRotation() ) {
-            lastGimbalRot = FMath::RInterpTo( gimbal->GetRelativeRotation(),
-                                              FRotator( 0.f ), DeltaTime, 2.f );
-            if ( !lastGimbalRot.IsNearlyZero() ) {
-                gimbal->SetRelativeRotation( lastGimbalRot );
-            }
-        }
+        // if ( lastGimbalRot == gimbal->GetRelativeRotation() ) {
+        //     lastGimbalRot = FMath::RInterpTo( gimbal->GetRelativeRotation(),
+        //                                       FRotator( 0.f ), DeltaTime, 2.f
+        //                                       );
+        //     if ( !lastGimbalRot.IsNearlyZero() ) {
+        //         gimbal->SetRelativeRotation( lastGimbalRot );
+        //     }
+        // }
 
-        if ( lastSaRot == springArm->GetRelativeRotation() ) {
-            lastSaRot = FMath::RInterpTo( springArm->GetRelativeRotation(),
-                                          FRotator( 0.f ), DeltaTime, 2.f );
-            if ( !lastSaRot.IsNearlyZero() ) {
-                springArm->SetRelativeRotation( lastSaRot );
-            }
-        }
+        // if ( lastSaRot == springArm->GetRelativeRotation() ) {
+        //     lastSaRot = FMath::RInterpTo( springArm->GetRelativeRotation(),
+        //                                   FRotator( 0.f ), DeltaTime, 2.f );
+        //     if ( !lastSaRot.IsNearlyZero() ) {
+        //         springArm->SetRelativeRotation( lastSaRot );
+        //     }
+        // }
 
     } else {
         updatingCamera = false;
@@ -109,4 +110,12 @@ void AGravPlayerCharacter::MovementModeChanged( ACharacter* Character,
          movement->MovementMode == MOVE_Walking ) {
         canUpdateCamera = true;
     }
+}
+
+void AGravPlayerCharacter::SetCanUpdateCamera( bool Value ) {
+    canUpdateCamera = Value;
+}
+
+const FRotator AGravPlayerCharacter::GetTargetRotation() const {
+    return targetRot;
 }

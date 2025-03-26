@@ -22,6 +22,8 @@ public: // Functions
 
     virtual void UpdateGravity();
 
+    void SetGravityToGround();
+
     virtual bool ShouldRemainVertical() const;
 
     void UpdateRotation( float DeltaTime );

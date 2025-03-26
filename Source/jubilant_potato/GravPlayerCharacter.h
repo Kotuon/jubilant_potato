@@ -30,6 +30,10 @@ public: // Functions
                               EMovementMode PrevMovementMode,
                               uint8 PrevCustomMode );
 
+    void SetCanUpdateCamera( bool Value );
+
+    const FRotator GetTargetRotation() const;
+
 private:   // Functions
 protected: // Variables
     UGravMovementComponent* movement;

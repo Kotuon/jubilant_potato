@@ -58,13 +58,6 @@ void APlayerCharacter::BeginPlay() {
 void APlayerCharacter::Tick( float DeltaTime ) {
     Super::Tick( DeltaTime );
     //...
-
-    GEngine->AddOnScreenDebugMessage(
-        -1, 0.f, FColor::Green,
-        FString::SanitizeFloat( GetCharacterMovement()->MaxWalkSpeed ) );
-
-    GEngine->AddOnScreenDebugMessage(
-        -1, 0.f, FColor::Green, FString::SanitizeFloat( resourceCurrAmount ) );
 }
 
 // Called to bind functionality to input

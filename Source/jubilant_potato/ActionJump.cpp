@@ -8,9 +8,7 @@
 #include "Kismet/KismetMathLibrary.h"                 // MapRangeClamped
 #include "Animation/AnimMontage.h"                    // UAnimMontage class
 
-UActionJump::UActionJump() {
-    type = EAction::A_Jump;
-}
+UActionJump::UActionJump() { type = EAction::A_Jump; }
 
 void UActionJump::BeginPlay() {
     Super::BeginPlay();
@@ -24,10 +22,9 @@ void UActionJump::BeginPlay() {
 }
 
 void UActionJump::Start( const FInputActionValue& value ) {
-    if ( !movement->IsMovingOnGround() )
-        return;
+    if ( !movement->IsMovingOnGround() ) return;
 
-    parent->Jump();
+    // parent->Jump();
 
     // if ( value.Get< bool >() ) {
     //     parent->SetLastMovementZInput( 1.f );
@@ -48,7 +45,7 @@ void UActionJump::Start( const FInputActionValue& value ) {
     //     return;
     // }
     // has_jumped = true;
-    // parent->PlayAnimMontage( jump_montage );
+    parent->PlayAnimMontage( jump_montage );
 }
 
 void UActionJump::End() {
@@ -58,19 +55,19 @@ void UActionJump::End() {
 }
 
 void UActionJump::JumpTakeOff() {
-    // const FVector velocity = movement->Velocity;
-    // const float velocity_xy = velocity.Size2D();
+    const FVector velocity = movement->Velocity;
+    const float velocity_xy = velocity.Size2D();
 
-    // movement->JumpZVelocity = UKismetMathLibrary::MapRangeClamped(
-    //     velocity_xy, 400.f, 800.f, 700.f, 900.f );
-    // parent->Jump();
+    movement->JumpZVelocity = UKismetMathLibrary::MapRangeClamped(
+        velocity_xy, 400.f, 800.f, 700.f, 900.f );
+    parent->Jump();
 
-    // movement->bNotifyApex = true;
+    movement->bNotifyApex = true;
 }
 
 void UActionJump::MovementModeChanged( ACharacter* Character,
-                                 EMovementMode PrevMovementMode,
-                                 uint8 PrevCustomMode ) {
+                                       EMovementMode PrevMovementMode,
+                                       uint8 PrevCustomMode ) {
     // if ( PrevMovementMode == MOVE_Falling &&
     //      movement->MovementMode == MOVE_Walking ) {
     //     has_jumped = false;

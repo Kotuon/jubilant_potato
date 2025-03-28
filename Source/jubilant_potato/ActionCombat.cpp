@@ -14,6 +14,11 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "GameFramework/ProjectileMovementComponent.h" // UProjectileMovementComponent class
 
+#include "EnhancedInputSubsystems.h" // UEnhancedInputLocalPlayerSubsystem class
+#include "EnhancedInputComponent.h"  // UEnhancedInputComponent class
+
+#include "AttackData.h"
+
 // Sets default values for this component's properties
 UActionCombat::UActionCombat() {
     PrimaryComponentTick.bCanEverTick = true;
@@ -25,7 +30,10 @@ void UActionCombat::BeginPlay() {
     Super::BeginPlay();
     // ...
 
+    targetSystem = parent->FindComponentByClass< UTargetSystem >();
+
     world = GetWorld();
+    movement = parent->GetCharacterMovement();
 
     TArray< UAction* > action_components;
     parent->GetComponents< UAction >( action_components );
@@ -36,66 +44,47 @@ void UActionCombat::BeginPlay() {
     }
 }
 
+void UActionCombat::BindAction( UEnhancedInputComponent* PEI ) {
+    AttackList = AttackDataAsset->GetAttackInfo().Array();
+
+    unsigned i = 0;
+    for ( auto& Attack : AttackList ) {
+        if ( Attack.InputAction ) {
+            PEI->BindActionInstanceLambda(
+                Attack.InputAction, ETriggerEvent::Triggered,
+                [this, Attack,
+                 i]( const FInputActionInstance& ActionInstance ) {
+                    if ( this->currAttackId != -1 && this->currAttackId != i ) {
+                        this->End();
+                        GEngine->AddOnScreenDebugMessage(
+                            -1, 5.f, FColor::Green, "End last thing." );
+                    }
+
+                    this->currAttackId = i;
+                    this->Start( ActionInstance.GetValue() );
+                } );
+        }
+        ++i;
+    }
+}
+
 void UActionCombat::Start( const FInputActionValue& Value ) {
-    if ( onCooldown || parent->GetCharacterMovement()->IsFalling() ||
-         aimAction->GetIsAiming() ) {
+    if ( onCooldown || movement->IsFalling() || aimAction->GetIsAiming() ) {
         return;
     }
 
-    if ( attackCount == 0 || canCombo ) {
+    if ( ( attackCount == 0 || canCombo ) &&
+         AttackList[currAttackId].attacks.Num() >= attackCount + 1 ) {
         attackCount += 1;
         canCombo = false;
         isAttacking = true;
 
-        TArray< TEnumAsByte< EObjectTypeQuery > > objectTypes;
-        objectTypes.Add( UEngineTypes::ConvertToObjectType( ECC_Pawn ) );
-
-        TArray< AActor*, FDefaultAllocator > ignoreTypes;
-        ignoreTypes.Add( parent );
-
-        FVector start = parent->camera->GetComponentLocation();
-        FVector end = start + ( parent->camera->GetForwardVector() * range );
-
-        FHitResult hitResult;
-        UKismetSystemLibrary::SphereTraceSingleForObjects(
-            world, start, end, 50.f, objectTypes, false, ignoreTypes,
-            EDrawDebugTrace::None, hitResult, false );
-
-        if ( hitResult.bBlockingHit ) {
-            if ( hitResult.GetActor()->ActorHasTag( "Enemy" ) ) {
-                AEnemy* target = Cast< AEnemy >( hitResult.GetActor() );
-                // target->ApplyDamage( damage_amount );
-                if ( currTarget != target && IsValid( currTarget ) ) {
-                    currTarget->EndTarget();
-                }
-                currTarget = target;
-                target->StartTarget();
-            }
-
-            parent->SetActorRotation( ( end - start ).Rotation() );
-        } else {
-            if ( IsValid( currTarget ) ) {
-                currTarget->EndTarget();
-                currTarget = nullptr;
-            }
-
-            FVector input = parent->GetLastMovementInput();
-
-            FVector searchDirection;
-
-            if ( abs( input.X ) + abs( input.Y ) > 0.f ) {
-                searchDirection =
-                    ( ( parent->gimbal->GetForwardVector() * input.Y ) +
-                      ( parent->gimbal->GetRightVector() * input.X ) )
-                        .GetSafeNormal();
-            } else {
-                searchDirection = parent->gimbal->GetForwardVector();
-            }
-            parent->SetActorRotation( searchDirection.Rotation() );
-        }
+        UpdatePlayerRotation();
 
         if ( attackCount == 1 ) {
-            parent->PlayAnimMontage( attack_montages[attackCount - 1] );
+            parent->PlayAnimMontage( AttackList[currAttackId]
+                                         .attacks[attackCount - 1]
+                                         .attackMontage );
         }
     }
 }
@@ -116,7 +105,10 @@ void UActionCombat::End() {
 
     onCooldown = true;
     parent->GetWorldTimerManager().SetTimer(
-        cooldownTimer, this, &UActionCombat::EndCooldown, cooldown, false );
+        cooldownTimer, this, &UActionCombat::EndCooldown,
+        AttackList[currAttackId].cooldown, false );
+
+    currAttackId = -1;
 }
 
 void UActionCombat::TickComponent(
@@ -124,18 +116,27 @@ void UActionCombat::TickComponent(
     FActorComponentTickFunction* ThisTickFunction ) {
     Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
     // ...
+
+    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
+                                      FString::FromInt( attackCount ) );
+    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red,
+                                      FString::FromInt( currAttackId ) );
 }
 
 void UActionCombat::SetCanCombo( bool CanCombo ) {
+    const int32 comboLength = AttackList[currAttackId].attacks.Num();
+
     if ( CanCombo ) {
         startComboCount = attackCount;
-    } else if ( startComboCount == attackCount ||
-                attackCount > attack_montages.Num() ) {
+        startComboId = currAttackId;
+    } else if ( startComboId != currAttackId ||
+                ( isAttacking && ( startComboCount == attackCount ||
+                                   attackCount > comboLength ) ) ) {
         End();
+        return;
     } else if ( !CanCombo ) {
-        if ( attackCount <= attack_montages.Num() ) {
-            parent->PlayAnimMontage( attack_montages[attackCount - 1] );
-        }
+        parent->PlayAnimMontage(
+            AttackList[currAttackId].attacks[attackCount - 1].attackMontage );
     }
 
     canCombo = CanCombo;
@@ -147,34 +148,43 @@ bool UActionCombat::GetIsAttacking() const { return isAttacking; }
 
 void UActionCombat::EndCooldown() { onCooldown = false; }
 
-void UActionCombat::SpawnProjectile( FVector SocketLocation,
-                                     FRotator SocketNormal ) {
-    FActorSpawnParameters spawnParams;
-    spawnParams.Owner = parent;
-    spawnParams.Instigator = parent->GetInstigator();
-    spawnParams.SpawnCollisionHandlingOverride =
-        ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-    ABase_Projectile* newProjectile = world->SpawnActor< ABase_Projectile >(
-        projectile_class, SocketLocation, SocketNormal, spawnParams );
-    if ( !newProjectile ) {
-        return;
+void UActionCombat::TargetEnemy( AEnemy* Target ) {
+    if ( currTarget != Target && IsValid( currTarget ) ) {
+        currTarget->EndTarget();
     }
-    newProjectile->parent = parent;
-    newProjectile->Tags.Add( parent->Tags[0] );
-    newProjectile->start_location = SocketLocation;
+    currTarget = Target;
+    Target->StartTarget();
+}
 
-    newProjectile->SetActorLocation( SocketLocation );
-    newProjectile->FireInDirection( SocketNormal.Vector() );
+void UActionCombat::UpdatePlayerRotation() {
+    FVector input = parent->GetLastMovementInput();
+    FVector searchDirection;
 
-    if ( IsValid( currTarget ) ) {
-        newProjectile->projectile_movement_component->bIsHomingProjectile =
-            true;
-
-        newProjectile->projectile_movement_component->HomingTargetComponent =
-            currTarget->GetRootComponent();
+    if ( abs( input.X ) + abs( input.Y ) > 0.f ) {
+        searchDirection = ( ( parent->gimbal->GetForwardVector() * input.Y ) +
+                            ( parent->gimbal->GetRightVector() * input.X ) )
+                              .GetSafeNormal();
     } else {
-        newProjectile->projectile_movement_component->HomingTargetComponent =
-            nullptr;
+        searchDirection = parent->gimbal->GetForwardVector();
     }
+    parent->SetActorRotation( searchDirection.Rotation() );
+}
+
+void UActionCombat::HitTargets() {
+
+    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Cyan,
+                                      "Current attack: " +
+                                          FString::FromInt( currAttackId ) );
+
+    targetSystem->UpdateTarget(
+        AttackList[currAttackId].attacks[attackCount - 1].hitSize,
+        AttackList[currAttackId].attacks[attackCount - 1].hitRange, false );
+
+    TArray< AEnemy* >& targets = targetSystem->GetTargets();
+
+    for ( auto* target : targets ) {
+        target->ApplyDamage( damage_amount );
+    }
+
+    targetSystem->ClearTargets();
 }

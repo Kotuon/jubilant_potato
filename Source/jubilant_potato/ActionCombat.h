@@ -6,10 +6,15 @@
 #include "Action.h"
 #include "ActionCombat.generated.h"
 
-class UAnimMontage;
 struct FTimerHandle;
+class UAnimMontage;
 class UActionAim;
 class AEnemy;
+class UCharacterMovementComponent;
+class UTargetSystem;
+class UAttackData;
+class UEnhancedInputComponent;
+struct FAttackInfo;
 
 UCLASS( ClassGroup = ( Custom ), meta = ( BlueprintSpawnableComponent ) )
 class JUBILANT_POTATO_API UActionCombat : public UAction {
@@ -21,6 +26,9 @@ protected: // Functions
 
 public: // Functions
     UActionCombat();
+
+    virtual void BindAction( UEnhancedInputComponent* PEI ) override;
+
     virtual void Start( const FInputActionValue& Value );
     virtual void End();
     virtual void
@@ -37,39 +45,39 @@ public: // Functions
     bool GetIsAttacking() const;
 
     UFUNCTION( BlueprintCallable )
-    void SpawnProjectile( FVector SocketLocation, FRotator SocketNormal );
+    void HitTargets();
 
 private: // Functions
     void EndCooldown();
+    void TargetEnemy( AEnemy* Target );
+    void UpdatePlayerRotation();
 
 public: // Variables
-    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Animation" )
-    TArray< UAnimMontage* > attack_montages;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Animation" )
-    UAnimMontage* jump_attack_montage;
-
-    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Projectile" )
-    TSubclassOf< class ABase_Projectile > projectile_class;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Projectile" )
-    float start_distance_projectile = 100.f;
-
-    UPROPERTY( EditDefaultsOnly, BlueprintReadWrite, Category = "General" )
-    float range = 2000.f;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "General" )
-    float cooldown = 0.1f;
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "General" )
     int damage_amount = 1;
 
+    UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Attacks",
+               meta = ( AllowPrivateAccess = "true" ) )
+    TObjectPtr< UAttackData > AttackDataAsset;
+
 private: // Variables
+    TArray< FAttackInfo > AttackList;
+
     UActionAim* aimAction;
     UWorld* world;
+
+    UCharacterMovementComponent* movement;
+    UTargetSystem* targetSystem;
 
     AEnemy* currTarget = nullptr;
 
     FTimerHandle cooldownTimer;
 
+    int currAttackId = -1;
+
     int attackCount = 0;
     int startComboCount = 0;
+    int startComboId = 0;
 
     bool canCombo = false;
     bool isAttacking = false;

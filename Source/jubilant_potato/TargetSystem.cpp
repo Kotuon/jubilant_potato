@@ -25,9 +25,13 @@ void UTargetSystem::TickComponent(
     // ...
 }
 
-TArray< AEnemy* >& UTargetSystem::UpdateTarget( float Width, float Range,
-                                                bool SingleTarget ) {
+void UTargetSystem::UpdateTarget( float Width, float Range,
+                                  bool SingleTarget ) {
     float search_value = 1.f - Width;
+
+    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Yellow,
+                                      FString::SanitizeFloat( search_value ) );
+
     FVector input = parent->GetLastMovementInput();
 
     FVector search_direction;
@@ -37,17 +41,13 @@ TArray< AEnemy* >& UTargetSystem::UpdateTarget( float Width, float Range,
                              ( parent->gimbal->GetRightVector() * input.X ) )
                                .GetSafeNormal();
     } else {
-        search_direction = parent->camera->GetForwardVector();
+        search_direction = parent->gimbal->GetForwardVector();
     }
 
     DrawDebugDirectionalArrow(
         GetWorld(), parent->GetActorLocation(),
         parent->GetActorLocation() + ( search_direction * Range ), 10.f,
         FColor::Green, false, 1.f, ( uint8 )0U, 2.f );
-
-    // DrawDebugDirectionalArrow( GetWorld(), parent->GetActorLocation(),
-    //                            parent->GetActorLocation() + (
-    //                            search_direction * 200.f ), 2.f, );
 
     TArray< AActor* > found_enemies;
     UGameplayStatics::GetAllActorsOfClass( world, AEnemy::StaticClass(),
@@ -77,6 +77,10 @@ TArray< AEnemy* >& UTargetSystem::UpdateTarget( float Width, float Range,
 
         float dot_result =
             FVector::DotProduct( search_direction, enemy_direction );
+
+        GEngine->AddOnScreenDebugMessage(
+            -1, 5.f, FColor::Green, FString::SanitizeFloat( dot_result ) );
+
         if ( dot_result > search_value ) {
             if ( SingleTarget ) {
                 if ( dot_result > found_dot_result[0] ) {
@@ -102,9 +106,13 @@ TArray< AEnemy* >& UTargetSystem::UpdateTarget( float Width, float Range,
         }
     }
 
+    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red,
+                                      "---------------------" );
+
     curr_targets.Empty();
     if ( found_enemy_index[0] == -1 ) {
-        return curr_targets;
+        // return curr_targets;
+        return;
     }
 
     for ( int index : found_enemy_index ) {
@@ -112,8 +120,10 @@ TArray< AEnemy* >& UTargetSystem::UpdateTarget( float Width, float Range,
         curr_targets.Last()->StartTarget();
     }
 
-    return curr_targets;
+    // return curr_targets;
 }
+
+TArray< AEnemy* >& UTargetSystem::GetTargets() { return curr_targets; }
 
 void UTargetSystem::ClearTargets() {
     for ( AEnemy* target : curr_targets ) {

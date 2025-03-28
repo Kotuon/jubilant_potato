@@ -19,10 +19,16 @@ protected: // Functions
 public: // Functions
     UTargetSystem();
 
-    virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
+    virtual void
+    TickComponent( float DeltaTime, ELevelTick TickType,
+                   FActorComponentTickFunction* ThisTickFunction ) override;
 
     UFUNCTION( BlueprintCallable )
-    TArray< AEnemy* >& UpdateTarget( float Width = 0.1f, float Range = 500.f, bool SingleTarget = true );
+    void UpdateTarget( float Width = 0.1f, float Range = 500.f,
+                                     bool SingleTarget = true );
+
+    UFUNCTION( BlueprintCallable )
+    TArray< AEnemy* >& GetTargets();
 
     UFUNCTION( BlueprintCallable )
     void ClearTargets();

@@ -47,11 +47,11 @@ void UGravRush::TickComponent( float DeltaTime, ELevelTick TickType,
                                FActorComponentTickFunction* ThisTickFunction ) {
     Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
     //...
-    if ( movement->MovementMode == MOVE_Walking ) {
-        movement->SetGravityDirection(
-            movement->CurrentFloor.HitResult.ImpactNormal * -1.f );
-        parent->SetCanUpdateCamera( true );
-    }
+    // if ( movement->MovementMode == MOVE_Walking ) {
+    //     movement->SetGravityDirection(
+    //         movement->CurrentFloor.HitResult.ImpactNormal * -1.f );
+    //     parent->SetCanUpdateCamera( true );
+    // }
 
     // movement->SetGravityToGround();
 }

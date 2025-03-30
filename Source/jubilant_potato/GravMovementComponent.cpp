@@ -19,18 +19,11 @@ void UGravMovementComponent::OnMovementUpdated( float DeltaSeconds,
 }
 
 void UGravMovementComponent::UpdateGravity() {
-    if ( !gravIsDirty ) return;
+    // if ( !gravIsDirty ) return;
 
     SetGravityToGround();
 
     gravIsDirty = false;
-}
-
-void UGravMovementComponent::MovementModeChanged(
-    ACharacter* Character, EMovementMode PrevMovementMode,
-    uint8 PrevCustomMode ) {
-    if ( PrevMovementMode == MOVE_Falling && MovementMode == MOVE_Walking )
-        UpdateGravity();
 }
 
 void UGravMovementComponent::SetGravityToGround() {
@@ -40,6 +33,13 @@ void UGravMovementComponent::SetGravityToGround() {
         hasUpdatedRotationForNewGravity = true;
         currentlyUpdatingRotation = false;
     }
+}
+
+void UGravMovementComponent::MovementModeChanged(
+    ACharacter* Character, EMovementMode PrevMovementMode,
+    uint8 PrevCustomMode ) {
+    if ( PrevMovementMode == MOVE_Falling && MovementMode == MOVE_Walking )
+        UpdateGravity();
 }
 
 bool UGravMovementComponent::ShouldRemainVertical() const {

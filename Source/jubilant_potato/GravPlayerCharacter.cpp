@@ -37,7 +37,7 @@ void AGravPlayerCharacter::Tick( float DeltaTime ) {
     Super::Tick( DeltaTime );
     //...
 
-    // movement->UpdateRotation( DeltaTime );
+    movement->UpdateRotation( DeltaTime );
 
     if ( !canUpdateCamera ) return;
 

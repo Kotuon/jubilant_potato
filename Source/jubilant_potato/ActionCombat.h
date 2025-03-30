@@ -39,6 +39,12 @@ public: // Functions
     void SetCanCombo( bool CanCombo );
 
     UFUNCTION( BlueprintCallable )
+    void StartCanComboWindow();
+
+    UFUNCTION( BlueprintCallable )
+    void EndCanComboWindow();
+
+    UFUNCTION( BlueprintCallable )
     int GetAttackCount() const;
 
     UFUNCTION( BlueprintCallable )
@@ -71,6 +77,7 @@ private: // Variables
 
     AEnemy* currTarget = nullptr;
 
+    FTimerHandle comboWindowTimer;
     FTimerHandle cooldownTimer;
 
     int currAttackId = -1;

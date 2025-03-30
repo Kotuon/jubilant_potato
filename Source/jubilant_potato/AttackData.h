@@ -42,7 +42,25 @@ USTRUCT() struct FAttackInfo {
     TObjectPtr< UInputAction > InputAction;
 
     UPROPERTY( EditAnywhere, Category = "AttackInfo" )
+    float comboWindow = 0.4f;
+
+    UPROPERTY( EditAnywhere, Category = "AttackInfo" )
     float cooldown = 0.1f;
+
+    UPROPERTY( EditAnywhere, Category = "AttackInfo" )
+    bool hasTriggerConditions = false;
+
+    UPROPERTY( EditAnywhere, Category = "AttackInfo|Conditions",
+               meta = ( EditCondition = "hasTriggerConditions" ) )
+    bool hasVelocityCondition = false;
+
+    UPROPERTY( EditAnywhere, Category = "AttackInfo|Conditions",
+               meta = ( EditCondition = "hasVelocityCondition" ) )
+    float minVelocity = 0.f;
+
+    UPROPERTY( EditAnywhere, Category = "AttackInfo|Conditions",
+               meta = ( EditCondition = "hasTriggerConditions" ) )
+    bool hasInAirCondition = false;
 
     UPROPERTY( VisibleAnywhere, Category = "AttackInfo" )
     int32 InputID;

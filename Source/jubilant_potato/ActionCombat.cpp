@@ -54,14 +54,25 @@ void UActionCombat::BindAction( UEnhancedInputComponent* PEI ) {
                 Attack.InputAction, ETriggerEvent::Triggered,
                 [this, Attack,
                  i]( const FInputActionInstance& ActionInstance ) {
-                    if ( this->currAttackId != -1 && this->currAttackId != i ) {
-                        this->End();
-                        GEngine->AddOnScreenDebugMessage(
-                            -1, 5.f, FColor::Green, "End last thing." );
+                    if ( onCooldown ||
+                         ( currAttackId != -1 && currAttackId != i ) ) {
+                        return;
                     }
 
-                    this->currAttackId = i;
-                    this->Start( ActionInstance.GetValue() );
+                    auto& AttackInfo = AttackList[i];
+                    if ( AttackInfo.hasTriggerConditions ) {
+                        if ( AttackInfo.hasVelocityCondition &&
+                             AttackInfo.minVelocity >
+                                 parent->GetVelocity().Length() ) {
+                            return;
+                        } else if ( AttackInfo.hasInAirCondition &&
+                                    !movement->IsFalling() ) {
+                            return;
+                        }
+                    }
+
+                    currAttackId = i;
+                    Start( ActionInstance.GetValue() );
                 } );
         }
         ++i;
@@ -121,6 +132,33 @@ void UActionCombat::TickComponent(
                                       FString::FromInt( attackCount ) );
     GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red,
                                       FString::FromInt( currAttackId ) );
+}
+
+void UActionCombat::StartCanComboWindow() {
+    startComboCount = attackCount;
+    startComboId = currAttackId;
+    canCombo = true;
+
+    parent->GetWorldTimerManager().SetTimer(
+        comboWindowTimer, this, &UActionCombat::EndCanComboWindow,
+        AttackList[currAttackId].comboWindow, false );
+}
+
+void UActionCombat::EndCanComboWindow() {
+    const int32 comboLength = AttackList[currAttackId].attacks.Num();
+
+    const bool shouldEndAttack =
+        ( startComboCount == attackCount || attackCount > comboLength );
+
+    if ( startComboId != currAttackId || ( isAttacking && shouldEndAttack ) ) {
+        End();
+        return;
+    }
+
+    parent->PlayAnimMontage(
+        AttackList[currAttackId].attacks[attackCount - 1].attackMontage );
+
+    canCombo = false;
 }
 
 void UActionCombat::SetCanCombo( bool CanCombo ) {

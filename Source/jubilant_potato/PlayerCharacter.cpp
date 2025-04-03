@@ -58,6 +58,15 @@ void APlayerCharacter::BeginPlay() {
 void APlayerCharacter::Tick( float DeltaTime ) {
     Super::Tick( DeltaTime );
     //...
+
+    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red,
+                                      GetActorRotation().ToString() );
+
+    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Yellow,
+                                      GetTransform().ToString() );
+
+    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Yellow,
+                                      GetTargetRotation().ToString() );
 }
 
 // Called to bind functionality to input
@@ -136,8 +145,10 @@ void APlayerCharacter::ClearResourceTimer() {
 }
 
 void APlayerCharacter::TickResource( const float Amount ) {
+
     if ( !UseResource( Amount ) ) {
         ClearResourceTimer();
+        ResourceEmptyDelegate.Broadcast();
     }
 }
 

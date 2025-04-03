@@ -41,56 +41,44 @@ void AGravPlayerCharacter::Tick( float DeltaTime ) {
 
     if ( !canUpdateCamera ) return;
 
-    const FVector gravity = movement->GetGravityDirection() * -1.f;
+    const FVector inverseGravity = movement->GetGravityDirection() * -1.f;
 
-    const float result = FVector::DotProduct( gravity, gimbal->GetUpVector() );
+    const float result =
+        FVector::DotProduct( inverseGravity, gimbal->GetUpVector() );
 
     GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
-                                      gravity.ToString() );
+                                      inverseGravity.ToString() );
     GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red,
                                       GetActorUpVector().ToString() );
     GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Yellow,
                                       FString::SanitizeFloat( result ) );
 
-    if ( result < 0.999f ) {
+    if ( result < 0.9999999f ) {
         if ( !updatingCamera ) {
             updatingCamera = true;
-            targetUp = gravity;
+            targetUp = inverseGravity;
             targetRot = GetActorRotation();
-            // targetRot = ( movement->GetGravityToWorldTransform() *
-            //                FRotator( 0.f ).Quaternion() )
-            //                  .Rotator();
         } else {
             const float update_result =
-                FVector::DotProduct( gravity, targetUp );
+                FVector::DotProduct( inverseGravity, targetUp );
             if ( result != 1.f ) {
-                targetUp = gravity;
+                targetUp = inverseGravity;
                 targetRot = GetActorRotation();
-                // targetRot = ( movement->GetGravityToWorldTransform() *
-                //                FRotator( 0.f ).Quaternion() )
-                //                  .Rotator();
             }
         }
 
-        cameraRoot->SetWorldRotation( FMath::RInterpTo(
-            cameraRoot->GetComponentRotation(), targetRot, DeltaTime, 2.f ) );
+        const FQuat startRot = cameraRoot->GetComponentRotation().Quaternion();
+        const FQuat endRot = targetRot.Quaternion();
 
-        // if ( lastGimbalRot == gimbal->GetRelativeRotation() ) {
-        //     lastGimbalRot = FMath::RInterpTo( gimbal->GetRelativeRotation(),
-        //                                       FRotator( 0.f ), DeltaTime, 2.f
-        //                                       );
-        //     if ( !lastGimbalRot.IsNearlyZero() ) {
-        //         gimbal->SetRelativeRotation( lastGimbalRot );
-        //     }
-        // }
+        // cameraRoot->SetWorldRotation(
+        //     FQuat::Slerp( startRot, endRot, 3.0 * DeltaTime ) );
 
-        // if ( lastSaRot == springArm->GetRelativeRotation() ) {
-        //     lastSaRot = FMath::RInterpTo( springArm->GetRelativeRotation(),
-        //                                   FRotator( 0.f ), DeltaTime, 2.f );
-        //     if ( !lastSaRot.IsNearlyZero() ) {
-        //         springArm->SetRelativeRotation( lastSaRot );
-        //     }
-        // }
+        cameraRoot->SetWorldRotation(
+            FQuat::FastLerp( startRot, endRot, 3.0 * DeltaTime ) );
+
+        // cameraRoot->SetWorldRotation( FMath::RInterpTo(
+        //     cameraRoot->GetComponentRotation(), targetRot, DeltaTime, 4.f )
+        //     );
 
     } else {
         updatingCamera = false;

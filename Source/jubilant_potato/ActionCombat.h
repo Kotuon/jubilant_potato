@@ -10,7 +10,7 @@ struct FTimerHandle;
 class UAnimMontage;
 class UActionAim;
 class AEnemy;
-class UCharacterMovementComponent;
+class UGravMovementComponent;
 class UTargetSystem;
 class UAttackData;
 class UEnhancedInputComponent;
@@ -72,7 +72,7 @@ private: // Variables
     UActionAim* aimAction;
     UWorld* world;
 
-    UCharacterMovementComponent* movement;
+    UGravMovementComponent* movement;
     UTargetSystem* targetSystem;
 
     AEnemy* currTarget = nullptr;

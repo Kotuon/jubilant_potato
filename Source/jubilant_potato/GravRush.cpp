@@ -20,6 +20,8 @@ void UGravRush::BeginPlay() {
     Super::BeginPlay();
     //...
 
+    parent->ResourceEmptyDelegate.AddUObject( this, &UGravRush::ResourceEmpty );
+
     movement = Cast< UGravMovementComponent >( parent->GetCharacterMovement() );
     originalGrav = movement->GetGravityDirection();
 }
@@ -34,7 +36,7 @@ void UGravRush::Start( const FInputActionValue& Value ) {
 void UGravRush::End() {
     Super::End();
     //...
-    movement->SetGravityDirection( originalGrav );
+    movement->SetGravityDirection( originalGrav.GetSafeNormal() );
     movement->SetMovementMode( MOVE_Falling );
     parent->SetCanMove( true );
 
@@ -64,10 +66,16 @@ void UGravRush::TriggerGravShift( const FVector direction ) {
     if ( !parent->UseResource( startCost ) ) {
         return;
     }
-    movement->SetGravityDirection( direction );
+    movement->SetGravityDirection( direction.GetSafeNormal() );
     hasClicked = true;
 
     parent->UseResourceOnTimer( tickCost );
+}
+
+void UGravRush::ResourceEmpty() {
+    if ( hasClicked ) {
+        End();
+    }
 }
 
 void UGravRush::InvertGrav() {

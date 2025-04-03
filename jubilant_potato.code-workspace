@@ -14,7 +14,9 @@
         "npm.autoDetect": "off",
         "files.associations": {
             "chrono": "cpp",
-            "functional": "cpp"
+            "functional": "cpp",
+            "__locale": "cpp",
+            "xlocale": "cpp"
         }
 	},
 	"extensions": {

@@ -15,6 +15,8 @@ class UCameraComponent;
 class UActionManager;
 class UProgressBar;
 
+DECLARE_MULTICAST_DELEGATE( FResourceEmptyDelegate );
+
 UCLASS()
 class JUBILANT_POTATO_API APlayerCharacter : public AGravPlayerCharacter {
     GENERATED_BODY()
@@ -55,6 +57,8 @@ public: // Variables
 
     UPROPERTY( VisibleDefaultsOnly, BlueprintReadOnly, Category = "Actions" )
     UActionManager* actionManager;
+
+    FResourceEmptyDelegate ResourceEmptyDelegate;
 
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
     float sensitivity = 1.f;

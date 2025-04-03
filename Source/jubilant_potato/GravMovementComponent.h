@@ -6,19 +6,25 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GravMovementComponent.generated.h"
 
-/**
- *
- */
+class AGravPlayerCharacter;
+
 UCLASS()
-class JUBILANT_POTATO_API UGravMovementComponent : public UCharacterMovementComponent {
+class JUBILANT_POTATO_API UGravMovementComponent
+    : public UCharacterMovementComponent {
     GENERATED_BODY()
 
 protected: // Functions
     virtual void BeginPlay() override;
 
 public: // Functions
-    virtual void OnMovementUpdated( float DeltaSeconds, const FVector& OldLocation,
+    virtual void OnMovementUpdated( float DeltaSeconds,
+                                    const FVector& OldLocation,
                                     const FVector& OldVelocity ) override;
+
+    FTransform
+    ProcessPostRootMotion( const FTransform& WorldRootMotionTransform,
+                           UCharacterMovementComponent* movement,
+                           float DeltaSeconds );
 
     virtual void UpdateGravity();
 
@@ -29,18 +35,24 @@ public: // Functions
     void UpdateRotation( float DeltaTime );
 
     UFUNCTION()
-    void MovementModeChanged( ACharacter* Character, EMovementMode PrevMovementMode,
+    void MovementModeChanged( ACharacter* Character,
+                              EMovementMode PrevMovementMode,
                               uint8 PrevCustomMode );
 
     virtual void SetGravityDirection( const FVector& GravityDir );
 
+    const FQuat& GetLastGravityToWorldTransform() const;
+    const FQuat& GetLastWorldToGravityTransform() const;
+
 private: // Variables
+    AGravPlayerCharacter* parent;
+
     FQuat LastGravityToWorldTransform;
     FQuat LastWorldToGravityTransform;
 
-    FRotator currentLastGravRotation;
-    FRotator currentRotation;
-    FRotator desiredRotation;
+    FQuat currentLastGravRotation;
+    FQuat currentRotation;
+    FQuat desiredRotation;
 
     float startDistance;
 

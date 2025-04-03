@@ -41,6 +41,7 @@ public: // Functions
 
 private: // Functions
     void TriggerGravShift( const FVector direction );
+    void ResourceEmpty();
 
 public: // Variables
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Input" )

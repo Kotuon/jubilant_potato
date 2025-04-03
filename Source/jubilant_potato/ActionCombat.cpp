@@ -1,16 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "ActionCombat.h"
-#include "PlayerCharacter.h"                          // APlayerCharacter class
-#include "ActionManager.h"                            // UActionManager class
-#include "Animation/AnimMontage.h"                    // UAnimMontage class
-#include "TimerManager.h"                             // SetTimer()
-#include "TargetSystem.h"                             // UTargetSystem class
-#include "Enemy.h"                                    // AEnemy class
-#include "GameFramework/CharacterMovementComponent.h" // UCharacterMovementComponent class
-#include "ActionAim.h"                                // UActionAim class
-#include "Base_Projectile.h"                          // ABase_Projectile class
-#include "Camera/CameraComponent.h"                   // UCameraComponent class
+#include "PlayerCharacter.h"       // APlayerCharacter class
+#include "ActionManager.h"         // UActionManager class
+#include "Animation/AnimMontage.h" // UAnimMontage class
+#include "TimerManager.h"          // SetTimer()
+#include "TargetSystem.h"          // UTargetSystem class
+#include "Enemy.h"                 // AEnemy class
+#include "GravMovementComponent.h"
+#include "ActionAim.h"              // UActionAim class
+#include "Base_Projectile.h"        // ABase_Projectile class
+#include "Camera/CameraComponent.h" // UCameraComponent class
 #include "Kismet/KismetSystemLibrary.h"
 #include "GameFramework/ProjectileMovementComponent.h" // UProjectileMovementComponent class
 
@@ -33,7 +33,7 @@ void UActionCombat::BeginPlay() {
     targetSystem = parent->FindComponentByClass< UTargetSystem >();
 
     world = GetWorld();
-    movement = parent->GetCharacterMovement();
+    movement = Cast< UGravMovementComponent >( parent->GetCharacterMovement() );
 
     TArray< UAction* > action_components;
     parent->GetComponents< UAction >( action_components );
@@ -102,8 +102,6 @@ void UActionCombat::Start( const FInputActionValue& Value ) {
 
 void UActionCombat::End() {
     Super::End();
-
-    // parent->SetCanWalk( true );]
 
     if ( IsValid( currTarget ) ) {
         currTarget->EndTarget();
@@ -198,6 +196,8 @@ void UActionCombat::UpdatePlayerRotation() {
     FVector input = parent->GetLastMovementInput();
     FVector searchDirection;
 
+    const FQuat& gravToWorldQuat = movement->GetLastGravityToWorldTransform();
+
     if ( abs( input.X ) + abs( input.Y ) > 0.f ) {
         searchDirection = ( ( parent->gimbal->GetForwardVector() * input.Y ) +
                             ( parent->gimbal->GetRightVector() * input.X ) )
@@ -205,7 +205,27 @@ void UActionCombat::UpdatePlayerRotation() {
     } else {
         searchDirection = parent->gimbal->GetForwardVector();
     }
-    parent->SetActorRotation( searchDirection.Rotation() );
+
+    // FQuat rightRot;
+    // if ( input.Y < 0.f ) {
+    //     rightRot =
+    //         ( parent->gimbal->GetRightVector() * -input.X
+    //         ).ToOrientationQuat();
+    // } else {
+    //     rightRot =
+    //         ( parent->gimbal->GetRightVector() * input.X
+    //         ).ToOrientationQuat();
+    // }
+
+    FQuat amountQuat = FQuat::MakeFromRotationVector(
+        parent->gimbal->GetUpVector() *
+        parent->gimbal->GetRelativeRotation().Yaw );
+
+    // FQuat fwdRot = parent->gimbal->GetComponentQuat() * input.Y;
+
+    // parent->SetActorRotation( fwdRot + rightRot );
+    // parent->SetActorRotation( fwdRot);
+    parent->AddActorWorldRotation( amountQuat );
 }
 
 void UActionCombat::HitTargets() {

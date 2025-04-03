@@ -2,6 +2,7 @@
 
 #include "GravMovementComponent.h"
 #include "GameFramework/Character.h" // ACharacter class
+#include "GravPlayerCharacter.h"
 
 void UGravMovementComponent::BeginPlay() {
     LastGravityToWorldTransform = GetGravityToWorldTransform();
@@ -9,6 +10,11 @@ void UGravMovementComponent::BeginPlay() {
 
     CharacterOwner->MovementModeChangedDelegate.AddUniqueDynamic(
         this, &UGravMovementComponent::MovementModeChanged );
+
+    ProcessRootMotionPostConvertToWorld.BindUObject(
+        this, &UGravMovementComponent::ProcessPostRootMotion );
+
+    parent = Cast< AGravPlayerCharacter >( CharacterOwner );
 }
 
 void UGravMovementComponent::OnMovementUpdated( float DeltaSeconds,
@@ -16,6 +22,55 @@ void UGravMovementComponent::OnMovementUpdated( float DeltaSeconds,
                                                 const FVector& OldVelocity ) {
     Super::OnMovementUpdated( DeltaSeconds, OldLocation, OldVelocity );
     //...
+}
+
+FTransform UGravMovementComponent::ProcessPostRootMotion(
+    const FTransform& WorldRootMotionTransform,
+    UCharacterMovementComponent* movement, float DeltaSeconds ) {
+    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
+                                      "ROOT MOTION TEST" );
+
+    GEngine->AddOnScreenDebugMessage(
+        -1, 0.f, FColor::Cyan,
+        WorldRootMotionTransform.GetRotation().ToString() );
+
+    // FTransform newTransform = WorldRootMotionTransform;
+    FTransform newTransform( FVector::ZeroVector );
+
+    // FQuat cameraRot = Cast< AGravPlayerCharacter >( CharacterOwner )
+    //                       ->cameraRoot->GetComponentRotation()
+    //                       .Quaternion().GetNormalized();
+
+    // cameraRot.
+    ///////////////////////////////////
+    newTransform.AddToTranslation( WorldRootMotionTransform.GetTranslation() );
+
+    // MoveUpdatedComponent( FVector::ZeroVector, -desiredRotation, true );
+
+    // newTransform.SetRotation(
+    // FQuat::MakeFromEuler( FVector( 1.f, 0.f, 0.f ) ) );
+    ////////////////////////////////////
+    // newTransform.ConcatenateRotation(
+    // FQuat::MakeFromEuler( FVector( 0.f, 0.f, 90.f ) ) );
+
+    // newTransform.ConcatenateRotation( desiredRotation );
+    // newTransform.ConcatenateRotation( -UpdatedComponent->GetComponentQuat()
+    // );
+
+    // newTransform.SetRotation( WorldRootMotionTransform.GetRotation() );
+    // newTransform.SetRotation( desiredRotation );
+    // newTransform.SetRotation( Cast< AGravPlayerCharacter >(
+    // CharacterOwner )
+    //                               ->cameraRoot->GetComponentRotation()
+    //                               .Quaternion() );
+
+    // MoveUpdatedComponent
+
+    // newTransform.SetRotation( desiredRotation *
+    //   -GetLastUpdateRotation().Quaternion() );
+
+    // return newTransform;
+    return WorldRootMotionTransform;
 }
 
 void UGravMovementComponent::UpdateGravity() {
@@ -59,10 +114,11 @@ void UGravMovementComponent::UpdateRotation( float DeltaTime ) {
             DrawDebugLine( GetWorld(), start, end, FColor::Red, false, 0.f,
                            ( uint8 )0U, 2.f );
 
-            FRotator newRotation = FMath::Lerp(
+            FQuat newRotation = FQuat::FastLerp(
                 currentRotation, desiredRotation,
-                1.f - FMath::Clamp( ( hitResult.Distance / ( 400.f ) ), 0.f,
-                                    1.f ) );
+                1.f -
+                    FMath::Clamp( ( ( hitResult.Distance - 20.f ) / ( 400.f ) ),
+                                  0.f, 1.f ) );
 
             CharacterOwner->SetActorRotation( newRotation );
 
@@ -90,21 +146,29 @@ void UGravMovementComponent::SetGravityDirection( const FVector& GravityDir ) {
 
     const FQuat WorldToNegativeGravityTransform =
         FQuat::FindBetweenNormals( FVector::UpVector, GravityDir );
+    LastWorldToGravityTransform = WorldToNegativeGravityTransform;
+
     const FQuat NegativeGravityToWorldTransform =
         WorldToNegativeGravityTransform.Inverse();
+    LastGravityToWorldTransform = NegativeGravityToWorldTransform;
 
-    currentRotation = CharacterOwner->GetActorRotation();
+    currentRotation = CharacterOwner->GetActorRotation().Quaternion();
 
     if ( hasUpdatedRotationForNewGravity ) {
         currentLastGravRotation =
-            ( GetWorldToGravityTransform() * currentRotation.Quaternion() )
-                .Rotator();
+            ( GetWorldToGravityTransform() * currentRotation );
     }
 
     desiredRotation =
-        ( NegativeGravityToWorldTransform *
-          ( currentLastGravRotation + FRotator( 0.f, 0.f, 0.f ) ).Quaternion() )
-            .Rotator();
+        ( NegativeGravityToWorldTransform * currentLastGravRotation );
+
+    // FQuat unrotateYaw = FQuat::MakeFromRotationVector(
+    //     GravityDir * -1 * parent->gimbal->GetRelativeRotation().Yaw );
+    // desiredRotation *= unrotateYaw;
+
+    // FQuat::
+    // FQuat::operator*
+
     GEngine->AddOnScreenDebugMessage( -1, 20.f, FColor::Green,
                                       desiredRotation.ToString() );
 
@@ -114,4 +178,12 @@ void UGravMovementComponent::SetGravityDirection( const FVector& GravityDir ) {
 
     Super::SetGravityDirection( GravityDir );
     //...
+}
+
+const FQuat& UGravMovementComponent::GetLastGravityToWorldTransform() const {
+    return LastGravityToWorldTransform;
+}
+
+const FQuat& UGravMovementComponent::GetLastWorldToGravityTransform() const {
+    return LastWorldToGravityTransform;
 }

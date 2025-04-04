@@ -27,12 +27,12 @@ void UGravMovementComponent::OnMovementUpdated( float DeltaSeconds,
 FTransform UGravMovementComponent::ProcessPostRootMotion(
     const FTransform& WorldRootMotionTransform,
     UCharacterMovementComponent* movement, float DeltaSeconds ) {
-    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
-                                      "ROOT MOTION TEST" );
+    // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
+    //                                   "ROOT MOTION TEST" );
 
-    GEngine->AddOnScreenDebugMessage(
-        -1, 0.f, FColor::Cyan,
-        WorldRootMotionTransform.GetRotation().ToString() );
+    // GEngine->AddOnScreenDebugMessage(
+    //     -1, 0.f, FColor::Cyan,
+    //     WorldRootMotionTransform.GetRotation().ToString() );
 
     // FTransform newTransform = WorldRootMotionTransform;
     FTransform newTransform( FVector::ZeroVector );
@@ -142,7 +142,7 @@ void UGravMovementComponent::SetGravityDirection( const FVector& GravityDir ) {
              1.f - FVector::DotProduct( GravityDir, GetGravityDirection() ) ) )
         return;
 
-    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "Set gravity" );
+    // GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "Set gravity" );
 
     const FQuat WorldToNegativeGravityTransform =
         FQuat::FindBetweenNormals( FVector::UpVector, GravityDir );
@@ -162,15 +162,8 @@ void UGravMovementComponent::SetGravityDirection( const FVector& GravityDir ) {
     desiredRotation =
         ( NegativeGravityToWorldTransform * currentLastGravRotation );
 
-    // FQuat unrotateYaw = FQuat::MakeFromRotationVector(
-    //     GravityDir * -1 * parent->gimbal->GetRelativeRotation().Yaw );
-    // desiredRotation *= unrotateYaw;
-
-    // FQuat::
-    // FQuat::operator*
-
-    GEngine->AddOnScreenDebugMessage( -1, 20.f, FColor::Green,
-                                      desiredRotation.ToString() );
+    // GEngine->AddOnScreenDebugMessage( -1, 20.f, FColor::Green,
+    //                                   desiredRotation.ToString() );
 
     hasUpdatedRotationForNewGravity = false;
 

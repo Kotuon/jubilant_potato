@@ -10,9 +10,9 @@ public class jubilant_potato : ModuleRules
 
         PublicDependencyModuleNames.AddRange(new string[] {
             "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput",
-            "UMG", "AIModule", "Niagara", "NinjaCharacter", });
+            "UMG", "AIModule", "Niagara", });
 
-        PrivateDependencyModuleNames.AddRange(new string[] { 
+        PrivateDependencyModuleNames.AddRange(new string[] {
             "AnimGraphRuntime", "GameplayAbilities", "GameplayTags", "GameplayTasks", });
 
         // Uncomment if you are using Slate UI

@@ -29,8 +29,8 @@ void UTargetSystem::UpdateTarget( float Width, float Range,
                                   bool SingleTarget ) {
     float search_value = 1.f - Width;
 
-    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Yellow,
-                                      FString::SanitizeFloat( search_value ) );
+    // GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Yellow,
+    //                                   FString::SanitizeFloat( search_value ) );
 
     FVector input = parent->GetLastMovementInput();
 
@@ -78,8 +78,8 @@ void UTargetSystem::UpdateTarget( float Width, float Range,
         float dot_result =
             FVector::DotProduct( search_direction, enemy_direction );
 
-        GEngine->AddOnScreenDebugMessage(
-            -1, 5.f, FColor::Green, FString::SanitizeFloat( dot_result ) );
+        // GEngine->AddOnScreenDebugMessage(
+        //     -1, 5.f, FColor::Green, FString::SanitizeFloat( dot_result ) );
 
         if ( dot_result > search_value ) {
             if ( SingleTarget ) {
@@ -106,8 +106,8 @@ void UTargetSystem::UpdateTarget( float Width, float Range,
         }
     }
 
-    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red,
-                                      "---------------------" );
+    // GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red,
+    //                                   "---------------------" );
 
     curr_targets.Empty();
     if ( found_enemy_index[0] == -1 ) {

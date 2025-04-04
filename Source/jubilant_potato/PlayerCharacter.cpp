@@ -55,18 +55,43 @@ void APlayerCharacter::BeginPlay() {
     }
 }
 
+#include "GravMovementComponent.h"
+
 void APlayerCharacter::Tick( float DeltaTime ) {
     Super::Tick( DeltaTime );
     //...
 
-    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red,
-                                      GetActorRotation().ToString() );
+    const FQuat gravToWorld =
+        Cast< UGravMovementComponent >( GetCharacterMovement() )
+            ->GetLastGravityToWorldTransform();
 
-    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Yellow,
-                                      GetTransform().ToString() );
+    const FQuat relative = gimbal->GetRelativeRotation().Quaternion();
+    const FQuat world = gimbal->GetComponentRotation().Quaternion();
+    const FQuat converted = relative * gravToWorld;
+    const FQuat fwd = gimbal->GetForwardVector().ToOrientationQuat();
 
-    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Yellow,
-                                      GetTargetRotation().ToString() );
+    // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Yellow,
+    //                                   relative.ToString() );
+    // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Cyan, world.ToString()
+    // ); GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red,
+    //                                   converted.ToString() );
+    // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red, fwd.ToString() );
+
+    // GEngine->AddOnScreenDebugMessage(
+    //     -1, 0.f, FColor::Green,
+    //     "Gimbal local rotation: " + gimbal->GetRelativeRotation().ToString() );
+    // GEngine->AddOnScreenDebugMessage(
+    //     -1, 0.f, FColor::Green,
+    //     "Gimbal world rotation: " +
+    //         gimbal->GetComponentRotation().Quaternion().ToString() );
+    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
+                                      "Gimbal Up Vector: " +
+                                          gimbal->GetUpVector().ToString() );
+
+    // DrawDebugDirectionalArrow(
+    //     GetWorld(), GetActorLocation(),
+    //     GetActorLocation() + ( gimbal->GetUpVector() * 500.f ), 10.f,
+    //     FColor::Red, false, 0.f, ( uint8 )0U, 2.f );
 }
 
 // Called to bind functionality to input

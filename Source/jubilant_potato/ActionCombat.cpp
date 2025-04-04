@@ -12,6 +12,7 @@
 #include "Base_Projectile.h"        // ABase_Projectile class
 #include "Camera/CameraComponent.h" // UCameraComponent class
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/ProjectileMovementComponent.h" // UProjectileMovementComponent class
 
 #include "EnhancedInputSubsystems.h" // UEnhancedInputLocalPlayerSubsystem class
@@ -126,10 +127,10 @@ void UActionCombat::TickComponent(
     Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
     // ...
 
-    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
-                                      FString::FromInt( attackCount ) );
-    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red,
-                                      FString::FromInt( currAttackId ) );
+    // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
+    //                                   FString::FromInt( attackCount ) );
+    // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red,
+    //                                   FString::FromInt( currAttackId ) );
 }
 
 void UActionCombat::StartCanComboWindow() {
@@ -193,46 +194,49 @@ void UActionCombat::TargetEnemy( AEnemy* Target ) {
 }
 
 void UActionCombat::UpdatePlayerRotation() {
+    // Getting input vector {x: left/right, y: forward/backward, z: isJumping}
     FVector input = parent->GetLastMovementInput();
-    FVector searchDirection;
 
-    const FQuat& gravToWorldQuat = movement->GetLastGravityToWorldTransform();
+    // Non-input vector equals (0.f, 1.0)
+    float dot = input.Y; // input.X * 0.0 + input.Y * 1.0
+    float det = input.X; // input.X * 1.0 - input.Y * 0.0
 
-    if ( abs( input.X ) + abs( input.Y ) > 0.f ) {
-        searchDirection = ( ( parent->gimbal->GetForwardVector() * input.Y ) +
-                            ( parent->gimbal->GetRightVector() * input.X ) )
-                              .GetSafeNormal();
-    } else {
-        searchDirection = parent->gimbal->GetForwardVector();
+    float angle = UKismetMathLibrary::Atan2( det, dot );
+
+    // Up vector from the player model.
+    const FQuat& gimbalQuat = parent->gimbal->GetComponentQuat();
+
+    // Quaternion for applying yaw rotation to player
+    const FQuat addQuat =
+        FQuat( parent->gimbal->GetUpVector().GetSafeNormal(), angle )
+            .GetNormalized();
+
+    // Calculate new player rotation
+    const FQuat outputQuat = addQuat * gimbalQuat;
+
+    // Debug messaging
+    {
+        GEngine->AddOnScreenDebugMessage(
+            -1, 5.f, FColor::Green, "Adding rotation: " + addQuat.ToString() );
+
+        UE_LOG( LogTemp, Display, TEXT( "Adding quaternion: %s" ),
+                *addQuat.ToString() );
+        UE_LOG( LogTemp, Display, TEXT( "Gimbal quaternion: %s" ),
+                *gimbalQuat.ToString() );
+        UE_LOG( LogTemp, Display, TEXT( "Output quaternion: %s" ),
+                *outputQuat.ToString() );
+        UE_LOG( LogTemp, Display, TEXT( "Gimbal rotator: %s" ),
+                *parent->gimbal->GetComponentRotation().ToString() );
     }
 
-    // FQuat rightRot;
-    // if ( input.Y < 0.f ) {
-    //     rightRot =
-    //         ( parent->gimbal->GetRightVector() * -input.X
-    //         ).ToOrientationQuat();
-    // } else {
-    //     rightRot =
-    //         ( parent->gimbal->GetRightVector() * input.X
-    //         ).ToOrientationQuat();
-    // }
-
-    FQuat amountQuat = FQuat::MakeFromRotationVector(
-        parent->gimbal->GetUpVector() *
-        parent->gimbal->GetRelativeRotation().Yaw );
-
-    // FQuat fwdRot = parent->gimbal->GetComponentQuat() * input.Y;
-
-    // parent->SetActorRotation( fwdRot + rightRot );
-    // parent->SetActorRotation( fwdRot);
-    parent->AddActorWorldRotation( amountQuat );
+    // Update player rotation
+    parent->SetActorRotation( outputQuat );
 }
 
 void UActionCombat::HitTargets() {
-
-    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Cyan,
-                                      "Current attack: " +
-                                          FString::FromInt( currAttackId ) );
+    // GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Cyan,
+    //                                   "Current attack: " +
+    //                                       FString::FromInt( currAttackId ) );
 
     targetSystem->UpdateTarget(
         AttackList[currAttackId].attacks[attackCount - 1].hitSize,

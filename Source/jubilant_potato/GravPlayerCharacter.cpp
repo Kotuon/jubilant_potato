@@ -46,12 +46,12 @@ void AGravPlayerCharacter::Tick( float DeltaTime ) {
     const float result =
         FVector::DotProduct( inverseGravity, gimbal->GetUpVector() );
 
-    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
-                                      inverseGravity.ToString() );
-    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red,
-                                      GetActorUpVector().ToString() );
-    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Yellow,
-                                      FString::SanitizeFloat( result ) );
+    // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
+    //                                   inverseGravity.ToString() );
+    // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red,
+    //                                   GetActorUpVector().ToString() );
+    // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Yellow,
+    //                                   FString::SanitizeFloat( result ) );
 
     if ( result < 0.9999999f ) {
         if ( !updatingCamera ) {
@@ -74,7 +74,7 @@ void AGravPlayerCharacter::Tick( float DeltaTime ) {
         //     FQuat::Slerp( startRot, endRot, 3.0 * DeltaTime ) );
 
         cameraRoot->SetWorldRotation(
-            FQuat::FastLerp( startRot, endRot, 3.0 * DeltaTime ) );
+            FQuat::FastLerp( startRot, endRot, 12.0 * DeltaTime ) );
 
         // cameraRoot->SetWorldRotation( FMath::RInterpTo(
         //     cameraRoot->GetComponentRotation(), targetRot, DeltaTime, 4.f )

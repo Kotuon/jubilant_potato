@@ -152,7 +152,7 @@ void UGravMovementComponent::SetGravityDirection( const FVector& GravityDir ) {
         WorldToNegativeGravityTransform.Inverse();
     LastGravityToWorldTransform = NegativeGravityToWorldTransform;
 
-    currentRotation = CharacterOwner->GetActorRotation().Quaternion();
+    currentRotation = CharacterOwner->GetActorQuat();
 
     if ( hasUpdatedRotationForNewGravity ) {
         currentLastGravRotation =

@@ -32,7 +32,7 @@ public: // Functions
 
     void SetCanUpdateCamera( bool Value );
 
-    const FRotator GetTargetRotation() const;
+    const FQuat& GetTargetQuat() const;
 
 private:   // Functions
 protected: // Variables
@@ -50,7 +50,8 @@ public: // Variables
     UCameraComponent* camera;
 
 private: // Variables
-    FRotator targetRot;
+    // FRotator targetRot;
+    FQuat targetRot;
     FVector targetUp;
 
     FRotator lastGimbalRot;

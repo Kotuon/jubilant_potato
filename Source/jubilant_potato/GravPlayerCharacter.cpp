@@ -42,44 +42,38 @@ void AGravPlayerCharacter::Tick( float DeltaTime ) {
     if ( !canUpdateCamera ) return;
 
     const FVector inverseGravity = movement->GetGravityDirection() * -1.f;
+    const FVector gimbalUp = gimbal->GetUpVector();
 
-    const float result =
-        FVector::DotProduct( inverseGravity, gimbal->GetUpVector() );
+    const float result = FVector::DotProduct( inverseGravity, gimbalUp );
 
-    // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
-    //                                   inverseGravity.ToString() );
-    // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red,
-    //                                   GetActorUpVector().ToString() );
-    // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Yellow,
-    //                                   FString::SanitizeFloat( result ) );
-
-    if ( result < 0.9999999f ) {
+    // If the camera is not aligned with the new gravity
+    // if ( result < 0.9999999f ) {
+    if ( !FMath::IsNearlyEqual( result, 1.f ) ) {
+        GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green,
+                                          "Updating camera rotation" );
+        // If camera hasn't started updating
         if ( !updatingCamera ) {
             updatingCamera = true;
             targetUp = inverseGravity;
-            targetRot = GetActorRotation();
+            targetRot = GetActorQuat();
         } else {
             const float update_result =
                 FVector::DotProduct( inverseGravity, targetUp );
-            if ( result != 1.f ) {
+
+            // Check if the gravity has changed since starting update
+            if ( FMath::IsNearlyEqual( update_result, 1.f ) ) {
                 targetUp = inverseGravity;
-                targetRot = GetActorRotation();
+                targetRot = GetActorQuat();
             }
         }
 
-        const FQuat startRot = cameraRoot->GetComponentRotation().Quaternion();
-        const FQuat endRot = targetRot.Quaternion();
+        // Setup quaternions for lerp
+        const FQuat startRot = cameraRoot->GetComponentQuat();
+        const FQuat endRot = targetRot;
 
-        // cameraRoot->SetWorldRotation(
-        //     FQuat::Slerp( startRot, endRot, 3.0 * DeltaTime ) );
-
+        // Update camera root rotation with lerp
         cameraRoot->SetWorldRotation(
             FQuat::FastLerp( startRot, endRot, 12.0 * DeltaTime ) );
-
-        // cameraRoot->SetWorldRotation( FMath::RInterpTo(
-        //     cameraRoot->GetComponentRotation(), targetRot, DeltaTime, 4.f )
-        //     );
-
     } else {
         updatingCamera = false;
         canUpdateCamera = false;
@@ -104,6 +98,4 @@ void AGravPlayerCharacter::SetCanUpdateCamera( bool Value ) {
     canUpdateCamera = Value;
 }
 
-const FRotator AGravPlayerCharacter::GetTargetRotation() const {
-    return targetRot;
-}
+const FQuat& AGravPlayerCharacter::GetTargetQuat() const { return targetRot; }

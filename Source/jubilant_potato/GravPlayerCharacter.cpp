@@ -49,8 +49,6 @@ void AGravPlayerCharacter::Tick( float DeltaTime ) {
     // If the camera is not aligned with the new gravity
     // if ( result < 0.9999999f ) {
     if ( !FMath::IsNearlyEqual( result, 1.f ) ) {
-        GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green,
-                                          "Updating camera rotation" );
         // If camera hasn't started updating
         if ( !updatingCamera ) {
             updatingCamera = true;

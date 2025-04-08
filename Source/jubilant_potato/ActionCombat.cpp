@@ -216,17 +216,17 @@ void UActionCombat::UpdatePlayerRotation() {
 
     // Debug messaging
     {
-        GEngine->AddOnScreenDebugMessage(
-            -1, 5.f, FColor::Green, "Adding rotation: " + addQuat.ToString() );
+        // GEngine->AddOnScreenDebugMessage(
+        //     -1, 5.f, FColor::Green, "Adding rotation: " + addQuat.ToString() );
 
-        UE_LOG( LogTemp, Display, TEXT( "Adding quaternion: %s" ),
-                *addQuat.ToString() );
-        UE_LOG( LogTemp, Display, TEXT( "Gimbal quaternion: %s" ),
-                *gimbalQuat.ToString() );
-        UE_LOG( LogTemp, Display, TEXT( "Output quaternion: %s" ),
-                *outputQuat.ToString() );
-        UE_LOG( LogTemp, Display, TEXT( "Gimbal rotator: %s" ),
-                *parent->gimbal->GetComponentRotation().ToString() );
+        // UE_LOG( LogTemp, Display, TEXT( "Adding quaternion: %s" ),
+        //         *addQuat.ToString() );
+        // UE_LOG( LogTemp, Display, TEXT( "Gimbal quaternion: %s" ),
+        //         *gimbalQuat.ToString() );
+        // UE_LOG( LogTemp, Display, TEXT( "Output quaternion: %s" ),
+        //         *outputQuat.ToString() );
+        // UE_LOG( LogTemp, Display, TEXT( "Gimbal rotator: %s" ),
+        //         *parent->gimbal->GetComponentRotation().ToString() );
     }
 
     // Update player rotation

@@ -50,8 +50,8 @@ private: // Variables
     FQuat LastGravityToWorldTransform;
     FQuat LastWorldToGravityTransform;
 
-    FQuat currentLastGravRotation;
-    FQuat currentRotation;
+    FQuat currLastGravRotation;
+    FQuat currRotation;
     FQuat desiredRotation;
 
     float startDistance;

@@ -197,9 +197,9 @@ void UActionCombat::UpdatePlayerRotation() {
     // Getting input vector {x: left/right, y: forward/backward, z: isJumping}
     FVector input = parent->GetLastMovementInput();
 
-    // Non-input vector equals (0.f, 1.0)
-    float dot = input.Y; // input.X * 0.0 + input.Y * 1.0
-    float det = input.X; // input.X * 1.0 - input.Y * 0.0
+    // fwd vector equals (0.f, 1.0)
+    float dot = input.Y; // input.X * fwd.x + input.Y * fwd.y
+    float det = input.X; // input.X * fwd.y - input.Y * fwd.x
 
     float angle = UKismetMathLibrary::Atan2( det, dot );
 
@@ -217,7 +217,8 @@ void UActionCombat::UpdatePlayerRotation() {
     // Debug messaging
     {
         // GEngine->AddOnScreenDebugMessage(
-        //     -1, 5.f, FColor::Green, "Adding rotation: " + addQuat.ToString() );
+        //     -1, 5.f, FColor::Green, "Adding rotation: " + addQuat.ToString()
+        //     );
 
         // UE_LOG( LogTemp, Display, TEXT( "Adding quaternion: %s" ),
         //         *addQuat.ToString() );

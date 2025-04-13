@@ -32,11 +32,13 @@ public: // Functions
 
     void SetCanUpdateCamera( bool Value );
 
-    const FQuat& GetTargetQuat() const;
+    const FQuat& GetTargetCameraOrientation() const;
 
-private:   // Functions
+private: // Functions
+    void UpdateCameraOrientation( float DeltaTime );
+
 protected: // Variables
-    UGravMovementComponent* movement;
+    UGravMovementComponent* gravMovement;
 
 public: // Variables
     // Camera components
@@ -51,7 +53,7 @@ public: // Variables
 
 private: // Variables
     // FRotator targetRot;
-    FQuat targetRot;
+    FQuat targetCameraOrientation; //!< Assumed to be normalized
     FVector targetUp;
 
     FRotator lastGimbalRot;

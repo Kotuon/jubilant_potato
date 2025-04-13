@@ -11,6 +11,7 @@ AGravPlayerCharacter::AGravPlayerCharacter(
               ACharacter::CharacterMovementComponentName ) ) {
     PrimaryActorTick.bCanEverTick = true;
 
+    // Create and attach each piece of the camera system
     cameraRoot = Cast< USceneComponent >(
         CreateDefaultSubobject< USceneComponent >( FName( "CameraRoot" ) ) );
     cameraRoot->SetupAttachment( GetRootComponent() );
@@ -23,59 +24,88 @@ AGravPlayerCharacter::AGravPlayerCharacter(
     camera = CreateDefaultSubobject< UCameraComponent >( FName( "Camera" ) );
     camera->SetupAttachment( springArm );
 
+    // Add listener for changing movement mode
     MovementModeChangedDelegate.AddUniqueDynamic(
         this, &AGravPlayerCharacter::MovementModeChanged );
+
+    // Init target camera rotation to current rotation
+    targetCameraOrientation = cameraRoot->GetComponentQuat();
 }
 
 void AGravPlayerCharacter::BeginPlay() {
     Super::BeginPlay();
 
-    movement = Cast< UGravMovementComponent >( GetCharacterMovement() );
+    // Store the movement component
+    gravMovement = Cast< UGravMovementComponent >( GetCharacterMovement() );
 }
 
 void AGravPlayerCharacter::Tick( float DeltaTime ) {
     Super::Tick( DeltaTime );
     //...
 
-    movement->UpdateRotation( DeltaTime );
+    // Update player rotation to match gravity
+    gravMovement->UpdateRotation( DeltaTime );
 
-    if ( !canUpdateCamera ) return;
+    // Update camera orientation if allowed
+    if ( canUpdateCamera ) {
+        UpdateCameraOrientation( DeltaTime );
+    }
+}
 
-    const FVector inverseGravity = movement->GetGravityDirection() * -1.f;
-    const FVector gimbalUp = gimbal->GetUpVector();
+void AGravPlayerCharacter::UpdateCameraOrientation( float DeltaTime ) {
+    const FVector gravity = gravMovement->GetGravityDirection();
+    const FVector inverseGravity = gravMovement->GetGravityDirection() * -1.f;
+    const FVector rootUp = cameraRoot->GetUpVector();
 
-    const float result = FVector::DotProduct( inverseGravity, gimbalUp );
+    const float result = FVector::DotProduct( inverseGravity, rootUp );
 
-    // If the camera is not aligned with the new gravity
-    // if ( result < 0.9999999f ) {
-    if ( !FMath::IsNearlyEqual( result, 1.f ) ) {
-        // If camera hasn't started updating
-        if ( !updatingCamera ) {
-            updatingCamera = true;
-            targetUp = inverseGravity;
-            targetRot = GetActorQuat();
-        } else {
-            const float update_result =
-                FVector::DotProduct( inverseGravity, targetUp );
-
-            // Check if the gravity has changed since starting update
-            if ( FMath::IsNearlyEqual( update_result, 1.f ) ) {
-                targetUp = inverseGravity;
-                targetRot = GetActorQuat();
-            }
-        }
-
-        // Setup quaternions for lerp
-        const FQuat startRot = cameraRoot->GetComponentQuat();
-        const FQuat endRot = targetRot;
-
-        // Update camera root rotation with lerp
-        cameraRoot->SetWorldRotation(
-            FQuat::FastLerp( startRot, endRot, 12.0 * DeltaTime ) );
-    } else {
+    // If the camera is aligned with the new gravity
+    if ( FMath::IsNearlyEqual( result, 1.f ) ) {
         updatingCamera = false;
         canUpdateCamera = false;
+
+        return;
     }
+
+    // Get current camera rotation
+    const FQuat startRot = cameraRoot->GetComponentQuat();
+
+    // If camera hasn't started updating
+    if ( !updatingCamera ) {
+        updatingCamera = true;
+        targetUp = inverseGravity;
+
+        // Calculate difference between two rotations
+        const FQuat addQuat = FQuat::FindBetweenVectors(
+                                  cameraRoot->GetUpVector(), inverseGravity )
+                                  .GetNormalized();
+
+        // Apply change to start rotation
+        targetCameraOrientation = addQuat * startRot;
+        targetCameraOrientation.Normalize();
+    } else {
+        const float updateResult =
+            FVector::DotProduct( inverseGravity, targetUp );
+
+        // Check if the gravity has changed since starting update
+        if ( FMath::IsNearlyEqual( updateResult, 1.f ) ) {
+            targetUp = inverseGravity;
+
+            // Calculate difference between two rotations
+            const FQuat addQuat =
+                FQuat::FindBetweenVectors( cameraRoot->GetUpVector(),
+                                           inverseGravity )
+                    .GetNormalized();
+
+            // Apply change to start rotation
+            targetCameraOrientation = addQuat * startRot;
+            targetCameraOrientation.Normalize();
+        }
+    }
+
+    // Update camera root rotation with lerp
+    cameraRoot->SetWorldRotation( FQuat::FastLerp(
+        startRot.GetNormalized(), targetCameraOrientation, 12.0 * DeltaTime ) );
 }
 
 void AGravPlayerCharacter::SetupPlayerInputComponent(
@@ -87,7 +117,7 @@ void AGravPlayerCharacter::MovementModeChanged( ACharacter* Character,
                                                 EMovementMode PrevMovementMode,
                                                 uint8 PrevCustomMode ) {
     if ( PrevMovementMode == MOVE_Falling &&
-         movement->MovementMode == MOVE_Walking ) {
+         gravMovement->MovementMode == MOVE_Walking ) {
         canUpdateCamera = true;
     }
 }
@@ -96,4 +126,6 @@ void AGravPlayerCharacter::SetCanUpdateCamera( bool Value ) {
     canUpdateCamera = Value;
 }
 
-const FQuat& AGravPlayerCharacter::GetTargetQuat() const { return targetRot; }
+const FQuat& AGravPlayerCharacter::GetTargetCameraOrientation() const {
+    return targetCameraOrientation;
+}

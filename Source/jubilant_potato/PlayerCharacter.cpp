@@ -60,6 +60,43 @@ void APlayerCharacter::BeginPlay() {
 void APlayerCharacter::Tick( float DeltaTime ) {
     Super::Tick( DeltaTime );
     //...
+
+    float angle = FMath::DegreesToRadians( gimbal->GetRelativeRotation().Yaw );
+    if ( angle < 0.f ) {
+        angle = 2 * PI + angle;
+    }
+
+    const FQuat& targetQuat = GetTargetCameraOrientation();
+
+    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
+                                      "UpVector: " +
+                                          gimbal->GetUpVector().ToString() );
+
+    GEngine->AddOnScreenDebugMessage(
+        -1, 0.f, FColor::Green, "Yaw: " + FString::SanitizeFloat( angle ) );
+
+    GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Cyan,
+                                      "TargetQuat: " + targetQuat.ToString() );
+
+    DrawDebugDirectionalArrow(
+        GetWorld(), GetActorLocation(),
+        GetActorLocation() + ( targetQuat.GetUpVector() * 500.f ), 10.f,
+        FColor::Red, false, 0.f, ( uint8 )0U, 2.f );
+
+    DrawDebugDirectionalArrow(
+        GetWorld(), GetActorLocation(),
+        GetActorLocation() + ( targetQuat.GetForwardVector() * 500.f ), 10.f,
+        FColor::Green, false, 0.f, ( uint8 )0U, 2.f );
+
+    const FQuat rotatedTarget =
+        FQuat( targetQuat.GetUpVector(), angle ).GetNormalized();
+
+    const FQuat outputQuat = rotatedTarget * targetQuat;
+
+    DrawDebugDirectionalArrow(
+        GetWorld(), GetActorLocation(),
+        GetActorLocation() + ( outputQuat.GetForwardVector() * 500.f ), 10.f,
+        FColor::Cyan, false, 0.f, ( uint8 )0U, 2.f );
 }
 
 // Called to bind functionality to input

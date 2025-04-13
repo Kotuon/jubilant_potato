@@ -41,14 +41,9 @@ public: // Functions
 
     virtual void SetGravityDirection( const FVector& GravityDir );
 
-    const FQuat& GetLastGravityToWorldTransform() const;
-    const FQuat& GetLastWorldToGravityTransform() const;
-
+private: // Functions
 private: // Variables
     AGravPlayerCharacter* parent;
-
-    FQuat LastGravityToWorldTransform;
-    FQuat LastWorldToGravityTransform;
 
     FQuat currLastGravRotation;
     FQuat currRotation;

@@ -70,7 +70,12 @@ void APlayerCharacter::Tick( float DeltaTime ) {
 
     GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
                                       "UpVector: " +
-                                          gimbal->GetUpVector().ToString() );
+                                          cameraRoot->GetUpVector().ToString() );
+
+    GEngine->AddOnScreenDebugMessage(
+        -1, 0.f, FColor::Green,
+        "GravUp  : " + ( GetCharacterMovement()->GetGravityDirection() * -1.f )
+                           .ToString() );
 
     GEngine->AddOnScreenDebugMessage(
         -1, 0.f, FColor::Green, "Yaw: " + FString::SanitizeFloat( angle ) );

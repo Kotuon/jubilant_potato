@@ -5,8 +5,8 @@
 #include "GravPlayerCharacter.h"
 
 void UGravMovementComponent::BeginPlay() {
-    LastGravityToWorldTransform = GetGravityToWorldTransform();
-    LastWorldToGravityTransform = GetWorldToGravityTransform();
+    // LastGravityToWorldTransform = GetGravityToWorldTransform();
+    // LastWorldToGravityTransform = GetWorldToGravityTransform();
 
     CharacterOwner->MovementModeChangedDelegate.AddUniqueDynamic(
         this, &UGravMovementComponent::MovementModeChanged );
@@ -72,11 +72,13 @@ void UGravMovementComponent::UpdateRotation( float DeltaTime ) {
             DrawDebugLine( GetWorld(), start, end, FColor::Red, false, 0.f,
                            ( uint8 )0U, 2.f );
 
-            FQuat newRotation = FQuat::FastLerp(
-                currRotation, desiredRotation,
-                1.f -
-                    FMath::Clamp( ( ( hitResult.Distance - 20.f ) / ( 400.f ) ),
-                                  0.f, 1.f ) );
+            const float alpha =
+                1.f - FMath::Clamp( ( ( hitResult.Distance - 20.f ) / 400.f ),
+                                    0.f, 1.f );
+
+            const FQuat newRotation =
+                FQuat::FastLerp( currRotation, desiredRotation, alpha )
+                    .GetNormalized();
 
             CharacterOwner->SetActorRotation( newRotation );
 
@@ -96,39 +98,44 @@ void UGravMovementComponent::UpdateRotation( float DeltaTime ) {
 }
 
 void UGravMovementComponent::SetGravityDirection( const FVector& GravityDir ) {
-    if ( FMath::IsNearlyZero(
-             1.f - FVector::DotProduct( GravityDir, GetGravityDirection() ) ) )
-        return;
+    const FVector& currGravityDir = GetGravityDirection();
 
-    const FQuat WorldToNegativeGravityTransform =
-        FQuat::FindBetweenNormals( FVector::UpVector, GravityDir );
-    LastWorldToGravityTransform = WorldToNegativeGravityTransform;
+    if ( GravityDir.Equals( currGravityDir ) ) return;
 
-    const FQuat NegativeGravityToWorldTransform =
-        WorldToNegativeGravityTransform.Inverse();
-    LastGravityToWorldTransform = NegativeGravityToWorldTransform;
+    // const FQuat WorldToNegativeGravityTransform =
+    //     FQuat::FindBetweenNormals( FVector::UpVector, GravityDir );
+
+    // const FQuat NegativeGravityToWorldTransform =
+    //     WorldToNegativeGravityTransform.Inverse();
+
+    // currRotation = CharacterOwner->GetActorQuat();
+
+    // if ( hasUpdatedRotationForNewGravity ) {
+    //     currLastGravRotation = ( GetWorldToGravityTransform() * currRotation
+    //     );
+    // }
+
+    // desiredRotation =
+    //     ( NegativeGravityToWorldTransform * currLastGravRotation );
+
+    const FQuat deltaRot =
+        FQuat::FindBetweenVectors( currGravityDir, GravityDir ).GetNormalized();
 
     currRotation = CharacterOwner->GetActorQuat();
 
-    if ( hasUpdatedRotationForNewGravity ) {
-        currLastGravRotation = ( GetWorldToGravityTransform() * currRotation );
-    }
-
-    desiredRotation =
-        ( NegativeGravityToWorldTransform * currLastGravRotation );
+    desiredRotation = deltaRot * currRotation;
 
     hasUpdatedRotationForNewGravity = false;
-
     gravIsDirty = true;
 
     Super::SetGravityDirection( GravityDir );
     //...
 }
 
-const FQuat& UGravMovementComponent::GetLastGravityToWorldTransform() const {
-    return LastGravityToWorldTransform;
-}
+// const FQuat& UGravMovementComponent::GetLastGravityToWorldTransform() const {
+//     return LastGravityToWorldTransform;
+// }
 
-const FQuat& UGravMovementComponent::GetLastWorldToGravityTransform() const {
-    return LastWorldToGravityTransform;
-}
+// const FQuat& UGravMovementComponent::GetLastWorldToGravityTransform() const {
+//     return LastWorldToGravityTransform;
+// }

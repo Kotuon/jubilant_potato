@@ -36,6 +36,8 @@ public: // Functions
 
 private: // Functions
     void UpdateCameraOrientation( float DeltaTime );
+    void SetCameraUpdateValues( const FVector& inverseGravity,
+                                const FQuat& startRot );
 
 protected: // Variables
     UGravMovementComponent* gravMovement;

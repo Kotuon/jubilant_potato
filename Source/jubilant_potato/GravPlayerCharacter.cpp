@@ -57,10 +57,10 @@ void AGravPlayerCharacter::UpdateCameraOrientation( float DeltaTime ) {
     const FVector inverseGravity = gravMovement->GetGravityDirection() * -1.f;
     const FVector rootUp = cameraRoot->GetUpVector();
 
-    const float result = FVector::DotProduct( inverseGravity, rootUp );
+    // const float result = FVector::DotProduct( inverseGravity, rootUp );
 
     // If the camera is aligned with the new gravity
-    if ( FMath::IsNearlyEqual( result, 1.f ) ) {
+    if ( inverseGravity.Equals( rootUp ) ) {
         updatingCamera = false;
         canUpdateCamera = false;
 
@@ -73,39 +73,31 @@ void AGravPlayerCharacter::UpdateCameraOrientation( float DeltaTime ) {
     // If camera hasn't started updating
     if ( !updatingCamera ) {
         updatingCamera = true;
-        targetUp = inverseGravity;
-
-        // Calculate difference between two rotations
-        const FQuat addQuat = FQuat::FindBetweenVectors(
-                                  cameraRoot->GetUpVector(), inverseGravity )
-                                  .GetNormalized();
-
-        // Apply change to start rotation
-        targetCameraOrientation = addQuat * startRot;
-        targetCameraOrientation.Normalize();
+        SetCameraUpdateValues( inverseGravity, startRot );
     } else {
-        const float updateResult =
-            FVector::DotProduct( inverseGravity, targetUp );
-
         // Check if the gravity has changed since starting update
-        if ( FMath::IsNearlyEqual( updateResult, 1.f ) ) {
-            targetUp = inverseGravity;
-
-            // Calculate difference between two rotations
-            const FQuat addQuat =
-                FQuat::FindBetweenVectors( cameraRoot->GetUpVector(),
-                                           inverseGravity )
-                    .GetNormalized();
-
-            // Apply change to start rotation
-            targetCameraOrientation = addQuat * startRot;
-            targetCameraOrientation.Normalize();
+        if ( !inverseGravity.Equals( targetUp ) ) {
+            SetCameraUpdateValues( inverseGravity, startRot );
         }
     }
 
     // Update camera root rotation with lerp
     cameraRoot->SetWorldRotation( FQuat::FastLerp(
-        startRot.GetNormalized(), targetCameraOrientation, 12.0 * DeltaTime ) );
+        startRot.GetNormalized(), targetCameraOrientation, 8.0 * DeltaTime ) );
+}
+
+void AGravPlayerCharacter::SetCameraUpdateValues( const FVector& inverseGravity,
+                                                  const FQuat& startRot ) {
+    targetUp = inverseGravity;
+
+    // Calculate difference between two rotations
+    const FQuat addQuat =
+        FQuat::FindBetweenVectors( cameraRoot->GetUpVector(), inverseGravity )
+            .GetNormalized();
+
+    // Apply change to start rotation
+    targetCameraOrientation = addQuat * startRot;
+    targetCameraOrientation.Normalize();
 }
 
 void AGravPlayerCharacter::SetupPlayerInputComponent(

@@ -18,20 +18,20 @@ protected: // Functions
     virtual void BeginPlay() override;
 
 public: // Functions
-    AEnemyController( const FObjectInitializer &ObjectInitializer );
+    AEnemyController( const FObjectInitializer& ObjectInitializer );
 
-    void OnPossess( APawn *InPawn ) override;
+    void OnPossess( APawn* InPawn ) override;
     void FindTarget();
 
     UFUNCTION()
-    void OnPerceptionTargetUpdate( AActor *actor, FAIStimulus stimulus);
+    void OnPerceptionTargetUpdate( AActor* actor, FAIStimulus stimulus );
 
 private: // Functions
     void StartEnemyTimer();
 
 public: // Variables
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Perception" )
-    UAIPerceptionComponent *sight;
+    UAIPerceptionComponent* sight;
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Perception" )
     float line_of_sight_timer = 4.f;
 
@@ -39,9 +39,9 @@ private: // Variables
     FTimerHandle find_target_time_handle;
     FTimerHandle check_los_countdown;
 
-    UBlackboardComponent *blackboard;
+    UBlackboardComponent* blackboard;
 
-    UWorld *world;
+    UWorld* world;
 
-    APawn *controlledPawn;
+    APawn* controlledPawn;
 };

@@ -1,18 +1,24 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "ActionCombat.h"
-#include "PlayerCharacter.h"                          // APlayerCharacter class
-#include "ActionManager.h"                            // UActionManager class
-#include "Animation/AnimMontage.h"                    // UAnimMontage class
-#include "TimerManager.h"                             // SetTimer()
-#include "TargetSystem.h"                             // UTargetSystem class
-#include "Enemy.h"                                    // AEnemy class
-#include "GameFramework/CharacterMovementComponent.h" // UCharacterMovementComponent class
-#include "ActionAim.h"                                // UActionAim class
-#include "Base_Projectile.h"                          // ABase_Projectile class
-#include "Camera/CameraComponent.h"                   // UCameraComponent class
+#include "PlayerCharacter.h"       // APlayerCharacter class
+#include "ActionManager.h"         // UActionManager class
+#include "Animation/AnimMontage.h" // UAnimMontage class
+#include "TimerManager.h"          // SetTimer()
+#include "TargetSystem.h"          // UTargetSystem class
+#include "Enemy.h"                 // AEnemy class
+#include "GravMovementComponent.h"
+#include "ActionAim.h"              // UActionAim class
+#include "Base_Projectile.h"        // ABase_Projectile class
+#include "Camera/CameraComponent.h" // UCameraComponent class
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/ProjectileMovementComponent.h" // UProjectileMovementComponent class
+
+#include "EnhancedInputSubsystems.h" // UEnhancedInputLocalPlayerSubsystem class
+#include "EnhancedInputComponent.h"  // UEnhancedInputComponent class
+
+#include "AttackData.h"
 
 // Sets default values for this component's properties
 UActionCombat::UActionCombat() {
@@ -25,7 +31,11 @@ void UActionCombat::BeginPlay() {
     Super::BeginPlay();
     // ...
 
+    targetSystem = parent->FindComponentByClass< UTargetSystem >();
+
     world = GetWorld();
+    movement = Cast< UGravMovementComponent >( parent->GetCharacterMovement() );
+    gimbal = parent->GetGimbal();
 
     TArray< UAction* > action_components;
     parent->GetComponents< UAction >( action_components );
@@ -36,73 +46,64 @@ void UActionCombat::BeginPlay() {
     }
 }
 
+void UActionCombat::BindAction( UEnhancedInputComponent* PEI ) {
+    AttackList = AttackDataAsset->GetAttackInfo().Array();
+
+    unsigned i = 0;
+    for ( auto& Attack : AttackList ) {
+        if ( Attack.InputAction ) {
+            PEI->BindActionInstanceLambda(
+                Attack.InputAction, ETriggerEvent::Triggered,
+                [this, Attack,
+                 i]( const FInputActionInstance& ActionInstance ) {
+                    if ( onCooldown ||
+                         ( currAttackId != -1 && currAttackId != i ) ) {
+                        return;
+                    }
+
+                    auto& AttackInfo = AttackList[i];
+                    if ( AttackInfo.hasTriggerConditions ) {
+                        if ( AttackInfo.hasVelocityCondition &&
+                             AttackInfo.minVelocity >
+                                 parent->GetVelocity().Length() ) {
+                            return;
+                        } else if ( AttackInfo.hasInAirCondition &&
+                                    !movement->IsFalling() ) {
+                            return;
+                        }
+                    }
+
+                    currAttackId = i;
+                    Start( ActionInstance.GetValue() );
+                } );
+        }
+        ++i;
+    }
+}
+
 void UActionCombat::Start( const FInputActionValue& Value ) {
-    if ( onCooldown || parent->GetCharacterMovement()->IsFalling() ) {
+    if ( onCooldown || movement->IsFalling() || aimAction->GetIsAiming() ) {
         return;
     }
 
-    if ( attackCount == 0 || canCombo ) {
+    if ( ( attackCount == 0 || canCombo ) &&
+         AttackList[currAttackId].attacks.Num() >= attackCount + 1 ) {
         attackCount += 1;
         canCombo = false;
         isAttacking = true;
 
-        TArray< TEnumAsByte< EObjectTypeQuery > > objectTypes;
-        objectTypes.Add( UEngineTypes::ConvertToObjectType( ECC_Pawn ) );
-
-        TArray< AActor*, FDefaultAllocator > ignoreTypes;
-        ignoreTypes.Add( parent );
-
-        FVector start = parent->camera->GetComponentLocation();
-        FVector end = start + ( parent->camera->GetForwardVector() * range );
-
-        FHitResult hitResult;
-        UKismetSystemLibrary::SphereTraceSingleForObjects(
-            world, start, end, 50.f, objectTypes, false, ignoreTypes,
-            EDrawDebugTrace::None, hitResult, false );
-
-        if ( hitResult.bBlockingHit ) {
-            if ( hitResult.GetActor()->ActorHasTag( "Enemy" ) ) {
-                AEnemy* target = Cast< AEnemy >( hitResult.GetActor() );
-                // target->ApplyDamage( damage_amount );
-                if ( currTarget != target && IsValid( currTarget ) ) {
-                    currTarget->EndTarget();
-                }
-                currTarget = target;
-                target->StartTarget();
-            }
-
-            parent->SetActorRotation( ( end - start ).Rotation() );
-        } else {
-            if ( IsValid( currTarget ) ) {
-                currTarget->EndTarget();
-                currTarget = nullptr;
-            }
-
-            FVector input = parent->GetLastMovementInput();
-
-            FVector searchDirection;
-
-            if ( abs( input.X ) + abs( input.Y ) > 0.f ) {
-                searchDirection =
-                    ( ( parent->gimbal->GetForwardVector() * input.Y ) +
-                      ( parent->gimbal->GetRightVector() * input.X ) )
-                        .GetSafeNormal();
-            } else {
-                searchDirection = parent->gimbal->GetForwardVector();
-            }
-            parent->SetActorRotation( searchDirection.Rotation() );
-        }
+        UpdatePlayerRotation();
 
         if ( attackCount == 1 ) {
-            parent->PlayAnimMontage( attack_montages[attackCount - 1] );
+            parent->PlayAnimMontage( AttackList[currAttackId]
+                                         .attacks[attackCount - 1]
+                                         .attackMontage );
         }
     }
 }
 
 void UActionCombat::End() {
     Super::End();
-
-    // parent->SetCanWalk( true );]
 
     if ( IsValid( currTarget ) ) {
         currTarget->EndTarget();
@@ -115,7 +116,10 @@ void UActionCombat::End() {
 
     onCooldown = true;
     parent->GetWorldTimerManager().SetTimer(
-        cooldownTimer, this, &UActionCombat::EndCooldown, cooldown, false );
+        cooldownTimer, this, &UActionCombat::EndCooldown,
+        AttackList[currAttackId].cooldown, false );
+
+    currAttackId = -1;
 }
 
 void UActionCombat::TickComponent(
@@ -125,16 +129,47 @@ void UActionCombat::TickComponent(
     // ...
 }
 
+void UActionCombat::StartCanComboWindow() {
+    startComboCount = attackCount;
+    startComboId = currAttackId;
+    canCombo = true;
+
+    parent->GetWorldTimerManager().SetTimer(
+        comboWindowTimer, this, &UActionCombat::EndCanComboWindow,
+        AttackList[currAttackId].comboWindow, false );
+}
+
+void UActionCombat::EndCanComboWindow() {
+    const int32 comboLength = AttackList[currAttackId].attacks.Num();
+
+    const bool shouldEndAttack =
+        ( startComboCount == attackCount || attackCount > comboLength );
+
+    if ( startComboId != currAttackId || ( isAttacking && shouldEndAttack ) ) {
+        End();
+        return;
+    }
+
+    parent->PlayAnimMontage(
+        AttackList[currAttackId].attacks[attackCount - 1].attackMontage );
+
+    canCombo = false;
+}
+
 void UActionCombat::SetCanCombo( bool CanCombo ) {
+    const int32 comboLength = AttackList[currAttackId].attacks.Num();
+
     if ( CanCombo ) {
         startComboCount = attackCount;
-    } else if ( startComboCount == attackCount ||
-                attackCount > attack_montages.Num() ) {
+        startComboId = currAttackId;
+    } else if ( startComboId != currAttackId ||
+                ( isAttacking && ( startComboCount == attackCount ||
+                                   attackCount > comboLength ) ) ) {
         End();
+        return;
     } else if ( !CanCombo ) {
-        if ( attackCount <= attack_montages.Num() ) {
-            parent->PlayAnimMontage( attack_montages[attackCount - 1] );
-        }
+        parent->PlayAnimMontage(
+            AttackList[currAttackId].attacks[attackCount - 1].attackMontage );
     }
 
     canCombo = CanCombo;
@@ -146,34 +181,64 @@ bool UActionCombat::GetIsAttacking() const { return isAttacking; }
 
 void UActionCombat::EndCooldown() { onCooldown = false; }
 
-void UActionCombat::SpawnProjectile( FVector SocketLocation,
-                                     FRotator SocketNormal ) {
-    FActorSpawnParameters spawnParams;
-    spawnParams.Owner = parent;
-    spawnParams.Instigator = parent->GetInstigator();
-    spawnParams.SpawnCollisionHandlingOverride =
-        ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-    ABase_Projectile* newProjectile = world->SpawnActor< ABase_Projectile >(
-        projectile_class, SocketLocation, SocketNormal, spawnParams );
-    if ( !newProjectile ) {
-        return;
+void UActionCombat::TargetEnemy( AEnemy* Target ) {
+    if ( currTarget != Target && IsValid( currTarget ) ) {
+        currTarget->EndTarget();
     }
-    newProjectile->parent = parent;
-    newProjectile->Tags.Add( parent->Tags[0] );
-    newProjectile->start_location = SocketLocation;
+    currTarget = Target;
+    Target->StartTarget();
+}
 
-    newProjectile->SetActorLocation( SocketLocation );
-    newProjectile->FireInDirection( SocketNormal.Vector() );
+void UActionCombat::UpdatePlayerRotation() {
+    // Getting input vector {x: left/right, y: forward/backward, z: isJumping}
+    FVector input = parent->GetLastMovementInput();
 
-    if ( IsValid( currTarget ) ) {
-        newProjectile->projectile_movement_component->bIsHomingProjectile =
-            true;
+    // fwd vector equals (0.f, 1.0)
+    float dot = input.Y; // input.X * fwd.x + input.Y * fwd.y
+    float det = input.X; // input.X * fwd.y - input.Y * fwd.x
 
-        newProjectile->projectile_movement_component->HomingTargetComponent =
-            currTarget->GetRootComponent();
-    } else {
-        newProjectile->projectile_movement_component->HomingTargetComponent =
-            nullptr;
+    float angle = UKismetMathLibrary::Atan2( det, dot );
+
+    // Up vector from the player model.
+    const FQuat& gimbalQuat = gimbal->GetComponentQuat();
+
+    // Quaternion for applying yaw rotation to player
+    const FQuat addQuat =
+        FQuat( gimbal->GetUpVector().GetSafeNormal(), angle ).GetNormalized();
+
+    // Calculate new player rotation
+    const FQuat outputQuat = addQuat * gimbalQuat;
+
+    // Debug messaging
+    {
+        // GEngine->AddOnScreenDebugMessage(
+        //     -1, 5.f, FColor::Green, "Adding rotation: " + addQuat.ToString()
+        //     );
+
+        // UE_LOG( LogTemp, Display, TEXT( "Adding quaternion: %s" ),
+        //         *addQuat.ToString() );
+        // UE_LOG( LogTemp, Display, TEXT( "Gimbal quaternion: %s" ),
+        //         *gimbalQuat.ToString() );
+        // UE_LOG( LogTemp, Display, TEXT( "Output quaternion: %s" ),
+        //         *outputQuat.ToString() );
+        // UE_LOG( LogTemp, Display, TEXT( "Gimbal rotator: %s" ),
+        //         *parent->gimbal->GetComponentRotation().ToString() );
     }
+
+    // Update player rotation
+    parent->SetActorRotation( outputQuat );
+}
+
+void UActionCombat::HitTargets() {
+    targetSystem->UpdateTarget(
+        AttackList[currAttackId].attacks[attackCount - 1].hitSize,
+        AttackList[currAttackId].attacks[attackCount - 1].hitRange, false );
+
+    TArray< AEnemy* >& targets = targetSystem->GetTargets();
+
+    for ( auto* target : targets ) {
+        target->ApplyDamage( damage_amount );
+    }
+
+    targetSystem->ClearTargets();
 }

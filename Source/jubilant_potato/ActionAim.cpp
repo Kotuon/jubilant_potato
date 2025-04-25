@@ -12,18 +12,21 @@ void UActionAim::BeginPlay() {
     Super::BeginPlay();
     //...
 
-    springArm = parent->springArm;
+    // Getting references to different camera components
+    springArm = parent->GetSpringArm();
+    gimbal = parent->GetGimbal();
 }
 
 void UActionAim::Start( const FInputActionValue& value ) {
+    // If aim input is triggered
     if ( value.Get< bool >() ) {
+        // Notify camera of aiming
         isAiming = true;
         springArm->SetIsAiming( true );
-        parent->SetStrafe( true );
-        parent->SetActorRotation( parent->gimbal->GetComponentRotation() );
 
-        GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
-                                          "Holding aim." );
+        // Make player strafe
+        parent->SetStrafe( true );
+        parent->SetActorRotation( gimbal->GetComponentRotation() );
     } else {
         End();
     }
@@ -32,10 +35,12 @@ void UActionAim::Start( const FInputActionValue& value ) {
 void UActionAim::End() {
     Super::End();
 
+    // Notify camera of cancelled aiming
     isAiming = false;
     springArm->SetIsAiming( false );
+
+    // Stop strafing
     parent->SetStrafe( false );
-    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red, "Released aim." );
 }
 
 void UActionAim::TickComponent(

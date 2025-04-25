@@ -10,22 +10,15 @@
 #include "ActionManager.h"
 #include "Action.h"
 
+#include "Blueprint/WidgetTree.h"
+#include "Blueprint/UserWidget.h"
+#include "Components/WidgetComponent.h"
+#include "Components/ProgressBar.h"
+
 APlayerCharacter::APlayerCharacter(
     const FObjectInitializer& ObjectInitializer )
-    : ACharacter( ObjectInitializer ) {
+    : AGravPlayerCharacter( ObjectInitializer ) {
     PrimaryActorTick.bCanEverTick = true;
-
-    cameraRoot = Cast< USceneComponent >(
-        CreateDefaultSubobject< USceneComponent >( FName( "CameraRoot" ) ) );
-    cameraRoot->SetupAttachment( GetRootComponent() );
-    gimbal = Cast< USceneComponent >(
-        CreateDefaultSubobject< USceneComponent >( FName( "Gimbal" ) ) );
-    gimbal->SetupAttachment( cameraRoot );
-    springArm = Cast< USmartSpringArm >(
-        CreateDefaultSubobject< USmartSpringArm >( FName( "SpringArm" ) ) );
-    springArm->SetupAttachment( gimbal );
-    camera = CreateDefaultSubobject< UCameraComponent >( FName( "Camera" ) );
-    camera->SetupAttachment( springArm );
 
     actionManager = Cast< UActionManager >(
         CreateDefaultSubobject< UActionManager >( FName( "ActionManager" ) ) );
@@ -38,15 +31,82 @@ void APlayerCharacter::BeginPlay() {
     //...
 
     UWorld* world = GetWorld();
+
+    resourceCurrAmount = resourceTotalAmount;
+
+    TArray< UWidgetComponent* > widgets;
+    GetComponents< UWidgetComponent >( widgets );
+    UWidgetComponent* hud = nullptr;
+
+    for ( UWidgetComponent* widget : widgets ) {
+        if ( widget->GetName() == "Hud" ) {
+            hud = widget;
+            break;
+        }
+    }
+
+    TArray< UWidget* > child_widgets;
+    hud->GetWidget()->WidgetTree->GetAllWidgets( child_widgets );
+    for ( UWidget* child : child_widgets ) {
+        if ( child->GetName() == "ProgressBar" ) {
+            resourceBar = Cast< UProgressBar >( child );
+            resourceBar->SetPercent( resourceCurrAmount / resourceTotalAmount );
+        }
+    }
 }
+
+#include "GravMovementComponent.h"
 
 void APlayerCharacter::Tick( float DeltaTime ) {
     Super::Tick( DeltaTime );
     //...
 
-    GEngine->AddOnScreenDebugMessage(
-        -1, 0.f, FColor::Green,
-        FString::SanitizeFloat( GetCharacterMovement()->MaxWalkSpeed ) );
+    // Debug drawing
+    {
+        // float angle =
+        //     FMath::DegreesToRadians( gimbal->GetRelativeRotation().Yaw );
+        // if ( angle < 0.f ) {
+        //     angle = 2 * PI + angle;
+        // }
+
+        // const FQuat& targetQuat = GetTargetCameraOrientation();
+
+        // GEngine->AddOnScreenDebugMessage(
+        //     -1, 0.f, FColor::Green,
+        //     "UpVector: " + cameraRoot->GetUpVector().ToString() );
+
+        // GEngine->AddOnScreenDebugMessage(
+        //     -1, 0.f, FColor::Green,
+        //     "GravUp  : " +
+        //         ( GetCharacterMovement()->GetGravityDirection() * -1.f )
+        //             .ToString() );
+
+        // GEngine->AddOnScreenDebugMessage(
+        //     -1, 0.f, FColor::Green, "Yaw: " + FString::SanitizeFloat( angle ) );
+
+        // GEngine->AddOnScreenDebugMessage(
+        //     -1, 0.f, FColor::Cyan, "TargetQuat: " + targetQuat.ToString() );
+
+        // DrawDebugDirectionalArrow(
+        //     GetWorld(), GetActorLocation(),
+        //     GetActorLocation() + ( targetQuat.GetUpVector() * 500.f ), 10.f,
+        //     FColor::Red, false, 0.f, ( uint8 )0U, 2.f );
+
+        // DrawDebugDirectionalArrow(
+        //     GetWorld(), GetActorLocation(),
+        //     GetActorLocation() + ( targetQuat.GetForwardVector() * 500.f ),
+        //     10.f, FColor::Green, false, 0.f, ( uint8 )0U, 2.f );
+
+        // const FQuat rotatedTarget =
+        //     FQuat( targetQuat.GetUpVector(), angle ).GetNormalized();
+
+        // const FQuat outputQuat = rotatedTarget * targetQuat;
+
+        // DrawDebugDirectionalArrow(
+        //     GetWorld(), GetActorLocation(),
+        //     GetActorLocation() + ( outputQuat.GetForwardVector() * 500.f ),
+        //     10.f, FColor::Cyan, false, 0.f, ( uint8 )0U, 2.f );
+    }
 }
 
 // Called to bind functionality to input
@@ -91,4 +151,55 @@ void APlayerCharacter::SetLastMovementInput( const FVector newInput ) {
 
 const FVector APlayerCharacter::GetLastMovementInput() const {
     return lastMovementInput;
+}
+
+void APlayerCharacter::SetLastCameraInput( const FVector2D newInput ) {
+    lastCameraInput = newInput;
+}
+
+const FVector2D APlayerCharacter::GetLastCameraInput() const {
+    return lastCameraInput;
+}
+
+bool APlayerCharacter::UseResource( const float Amount ) {
+    if ( resourceCurrAmount - Amount <= 0.f ) return false;
+
+    resourceCurrAmount =
+        FMath::Clamp( resourceCurrAmount - Amount, 0.f, resourceTotalAmount );
+    resourceBar->SetPercent( resourceCurrAmount / resourceTotalAmount );
+
+    return true;
+}
+
+void APlayerCharacter::UseResourceOnTimer( const float Amount ) {
+    FTimerDelegate resourceTickDelegate;
+
+    resourceTickDelegate.BindUFunction( this, FName( "TickResource" ), Amount );
+
+    GetWorldTimerManager().SetTimer( resourceTimer, resourceTickDelegate, 0.01f,
+                                     true );
+}
+
+void APlayerCharacter::ClearResourceTimer() {
+    GetWorldTimerManager().ClearTimer( resourceTimer );
+}
+
+void APlayerCharacter::TickResource( const float Amount ) {
+
+    if ( !UseResource( Amount ) ) {
+        ClearResourceTimer();
+        ResourceEmptyDelegate.Broadcast();
+    }
+}
+
+bool APlayerCharacter::AddResource( const float Amount ) {
+    if ( resourceCurrAmount >= resourceTotalAmount ) {
+        return false;
+    }
+
+    resourceCurrAmount =
+        FMath::Clamp( resourceCurrAmount + Amount, 0.f, resourceTotalAmount );
+    resourceBar->SetPercent( resourceCurrAmount / resourceTotalAmount );
+
+    return true;
 }

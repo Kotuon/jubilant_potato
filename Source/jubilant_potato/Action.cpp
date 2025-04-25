@@ -18,21 +18,16 @@ void UAction::BeginPlay() {
     parent = Cast< APlayerCharacter >( GetOwner() );
 }
 
-void UAction::Start( const FInputActionValue& value ) {
-}
-void UAction::Update() {
-}
-void UAction::End() {
-    manager->EndAction( type );
-}
+void UAction::Start( const FInputActionValue& value ) {}
+void UAction::Update() {}
+void UAction::End() { manager->EndAction( type ); }
 
-void UAction::StartNotifyWindow() {
-}
-void UAction::EndNotifyWindow() {
-}
+void UAction::StartNotifyWindow() {}
+void UAction::EndNotifyWindow() {}
 
 // Called every frame
-void UAction::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) {
+void UAction::TickComponent( float DeltaTime, ELevelTick TickType,
+                             FActorComponentTickFunction* ThisTickFunction ) {
     Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
     // ...
 }
@@ -45,11 +40,15 @@ void UAction::Print() const {
     else if ( type == EAction::A_Jump )
         name += "Jump";
 
-    GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Cyan, FString( "Found: " + name + " : " + FString::FromInt( uint8( type ) ) ) );
+    GEngine->AddOnScreenDebugMessage(
+        -1, 5.f, FColor::Cyan,
+        FString( "Found: " + name + " : " +
+                 FString::FromInt( uint8( type ) ) ) );
 }
 
 void UAction::BindAction( UEnhancedInputComponent* PEI ) {
     if ( IsValid( input_action ) ) {
-        PEI->BindAction( input_action, ETriggerEvent::Triggered, this, &UAction::Start );
+        PEI->BindAction( input_action, ETriggerEvent::Triggered, this,
+                         &UAction::Start );
     }
 }

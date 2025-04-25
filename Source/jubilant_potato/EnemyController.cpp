@@ -9,13 +9,18 @@
 #include "Perception/AIPerceptionComponent.h" // UAIPerceptionComponent class
 #include "Perception/AISense_Sight.h"         // UAISense_Sight class
 
-AEnemyController::AEnemyController( const FObjectInitializer &ObjectInitializer )
-    : Super( ObjectInitializer.SetDefaultSubobjectClass< UCrowdFollowingComponent >( TEXT( "PathFollowingComponent" ) ) ) {
+AEnemyController::AEnemyController(
+    const FObjectInitializer& ObjectInitializer )
+    : Super( ObjectInitializer
+                 .SetDefaultSubobjectClass< UCrowdFollowingComponent >(
+                     TEXT( "PathFollowingComponent" ) ) ) {
 
-    sight = Cast< UAIPerceptionComponent >( CreateDefaultSubobject< UAIPerceptionComponent >( FName( "Sight" ) ) );
+    sight = Cast< UAIPerceptionComponent >(
+        CreateDefaultSubobject< UAIPerceptionComponent >( FName( "Sight" ) ) );
     sight->SetDominantSense( UAISense_Sight::StaticClass() );
 
-    sight->OnTargetPerceptionUpdated.AddUniqueDynamic( this, &AEnemyController::OnPerceptionTargetUpdate );
+    sight->OnTargetPerceptionUpdated.AddUniqueDynamic(
+        this, &AEnemyController::OnPerceptionTargetUpdate );
 }
 
 void AEnemyController::BeginPlay() {
@@ -26,12 +31,13 @@ void AEnemyController::BeginPlay() {
     blackboard = UAIBlueprintHelperLibrary::GetBlackboard( controlledPawn );
 }
 
-void AEnemyController::OnPossess( APawn *InPawn ) {
+void AEnemyController::OnPossess( APawn* InPawn ) {
     Super::OnPossess( InPawn );
 
     controlledPawn = InPawn;
 
-    UBehaviorTree *behavior_tree_to_run = ( Cast< AEnemy >( InPawn ) )->enemy_behavior_tree;
+    UBehaviorTree* behavior_tree_to_run =
+        ( Cast< AEnemy >( InPawn ) )->enemy_behavior_tree;
 
     if ( !behavior_tree_to_run ) {
         GEngine->AddOnScreenDebugMessage( -1, 50.f, FColor::Green, "BAD" );
@@ -43,25 +49,31 @@ void AEnemyController::OnPossess( APawn *InPawn ) {
     if ( !IsValid( world ) ) {
         world = GetWorld();
     }
-    world->GetTimerManager().SetTimer( find_target_time_handle, this, &AEnemyController::FindTarget, 0.1f, false );
+    world->GetTimerManager().SetTimer( find_target_time_handle, this,
+                                       &AEnemyController::FindTarget, 0.1f,
+                                       false );
 }
 
 void AEnemyController::FindTarget() {
-    AActor *player_character = UGameplayStatics::GetPlayerCharacter( world, 0 );
+    AActor* player_character = UGameplayStatics::GetPlayerCharacter( world, 0 );
 
     blackboard->SetValueAsObject( "Target", player_character );
     blackboard->SetValueAsObject( "SelfActor", controlledPawn );
 }
 
-void AEnemyController::OnPerceptionTargetUpdate( AActor *actor, FAIStimulus stimulus ) {
+void AEnemyController::OnPerceptionTargetUpdate( AActor* actor,
+                                                 FAIStimulus stimulus ) {
 
-    // GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "Updating perception." );
+    // GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Green, "Updating
+    // perception." );
 
     if ( actor->ActorHasTag( "Player" ) && stimulus.WasSuccessfullySensed() ) {
         world->GetTimerManager().ClearTimer( check_los_countdown );
         blackboard->SetValueAsBool( "HasLineOfSight", true );
     } else {
-        world->GetTimerManager().SetTimer( check_los_countdown, this, &AEnemyController::StartEnemyTimer, line_of_sight_timer, false );
+        world->GetTimerManager().SetTimer( check_los_countdown, this,
+                                           &AEnemyController::StartEnemyTimer,
+                                           line_of_sight_timer, false );
     }
 }
 

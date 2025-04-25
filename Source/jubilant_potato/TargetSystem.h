@@ -39,5 +39,7 @@ private: // Variables
     TArray< AEnemy* > curr_targets;
     APlayerCharacter* parent;
 
+    USceneComponent* gimbal;
+
     UWorld* world;
 };

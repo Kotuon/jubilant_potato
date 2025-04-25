@@ -16,6 +16,8 @@ void UTargetSystem::BeginPlay() {
 
     parent = Cast< APlayerCharacter >( GetOwner() );
     world = GetWorld();
+
+    gimbal = parent->GetGimbal();
 }
 
 void UTargetSystem::TickComponent(
@@ -27,38 +29,37 @@ void UTargetSystem::TickComponent(
 
 void UTargetSystem::UpdateTarget( float Width, float Range,
                                   bool SingleTarget ) {
-    float search_value = 1.f - Width;
-
-    // GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Yellow,
-    //                                   FString::SanitizeFloat( search_value ) );
+    //
+    float searchValue = 1.f - Width;
 
     FVector input = parent->GetLastMovementInput();
 
-    FVector search_direction;
-
+    // Determine the direction to look based off movement inputs (if given)
+    FVector searchDirection = gimbal->GetForwardVector();
     if ( abs( input.X ) + abs( input.Y ) > 0.f ) {
-        search_direction = ( ( parent->gimbal->GetForwardVector() * input.Y ) +
-                             ( parent->gimbal->GetRightVector() * input.X ) )
-                               .GetSafeNormal();
-    } else {
-        search_direction = parent->gimbal->GetForwardVector();
+        searchDirection = ( ( gimbal->GetForwardVector() * input.Y ) +
+                            ( gimbal->GetRightVector() * input.X ) )
+                              .GetSafeNormal();
     }
 
+    // Draw search direction
     DrawDebugDirectionalArrow(
         GetWorld(), parent->GetActorLocation(),
-        parent->GetActorLocation() + ( search_direction * Range ), 10.f,
+        parent->GetActorLocation() + ( searchDirection * Range ), 10.f,
         FColor::Green, false, 1.f, ( uint8 )0U, 2.f );
 
-    TArray< AActor* > found_enemies;
+    // Get list of all enemies in world
+    TArray< AActor* > foundEnemies;
     UGameplayStatics::GetAllActorsOfClass( world, AEnemy::StaticClass(),
-                                           found_enemies );
+                                           foundEnemies );
 
+    // Determine the dot between search direction and direction to enemy
     TArray< float > found_dot_result;
     found_dot_result.Init( -1.f, 1 );
     TArray< int > found_enemy_index;
     found_enemy_index.Init( -1, 1 );
-    for ( int i = 0; i < found_enemies.Num(); ++i ) {
-        AEnemy* enemy = Cast< AEnemy >( found_enemies[i] );
+    for ( int i = 0; i < foundEnemies.Num(); ++i ) {
+        AEnemy* enemy = Cast< AEnemy >( foundEnemies[i] );
 
         float distance = FVector::Distance( enemy->GetActorLocation(),
                                             parent->GetActorLocation() );
@@ -71,17 +72,14 @@ void UTargetSystem::UpdateTarget( float Width, float Range,
             continue;
         }
 
-        FVector enemy_direction =
+        FVector enemyDirection =
             ( enemy->GetActorLocation() - parent->GetActorLocation() )
                 .GetSafeNormal();
 
         float dot_result =
-            FVector::DotProduct( search_direction, enemy_direction );
+            FVector::DotProduct( searchDirection, enemyDirection );
 
-        // GEngine->AddOnScreenDebugMessage(
-        //     -1, 5.f, FColor::Green, FString::SanitizeFloat( dot_result ) );
-
-        if ( dot_result > search_value ) {
+        if ( dot_result > searchValue ) {
             if ( SingleTarget ) {
                 if ( dot_result > found_dot_result[0] ) {
                     found_dot_result[0] = dot_result;
@@ -106,21 +104,15 @@ void UTargetSystem::UpdateTarget( float Width, float Range,
         }
     }
 
-    // GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red,
-    //                                   "---------------------" );
-
     curr_targets.Empty();
     if ( found_enemy_index[0] == -1 ) {
-        // return curr_targets;
         return;
     }
 
     for ( int index : found_enemy_index ) {
-        curr_targets.Add( Cast< AEnemy >( found_enemies[index] ) );
+        curr_targets.Add( Cast< AEnemy >( foundEnemies[index] ) );
         curr_targets.Last()->StartTarget();
     }
-
-    // return curr_targets;
 }
 
 TArray< AEnemy* >& UTargetSystem::GetTargets() { return curr_targets; }

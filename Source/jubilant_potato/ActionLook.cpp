@@ -10,8 +10,8 @@ void UActionLook::BeginPlay() {
     Super::BeginPlay();
     //...
 
-    gimbal = parent->gimbal;
-    springArm = parent->springArm;
+    gimbal = parent->GetGimbal();
+    springArm = parent->GetSpringArm();
 }
 
 void UActionLook::Start( const FInputActionValue& value ) {

@@ -16,25 +16,31 @@ void UActionDash::BeginPlay() {
     //...
 
     world = GetWorld();
+    gimbal = parent->GetGimbal();
 }
 
 void UActionDash::Start( const FInputActionValue& value ) {
+    // Update player variables
     parent->SetCanMove( false );
     isRunning = true;
 
-    const FVector parentLocation = parent->GetActorLocation();
-    startLocation = parentLocation;
+    // Get intial location
+    startLocation = parent->GetActorLocation();
 
+    // Find direction to dash using movement inputs
     FVector dashDirection =
-        parent->GetLastMovementInput().Y * parent->gimbal->GetForwardVector() +
-        parent->GetLastMovementInput().X * parent->gimbal->GetRightVector();
+        parent->GetLastMovementInput().Y * gimbal->GetForwardVector() +
+        parent->GetLastMovementInput().X * gimbal->GetRightVector();
 
+    // Default dash direction if no movement inputs
     if ( dashDirection.Length() <= 0.f ) {
-        dashDirection = parent->gimbal->GetForwardVector();
+        dashDirection = gimbal->GetForwardVector();
     }
 
-    endLocation = parentLocation + ( dashDirection * distance );
+    // Get end location
+    endLocation = startLocation + ( dashDirection * distance );
 
+    // Search for any obstacles to the dash
     TArray< TEnumAsByte< EObjectTypeQuery > > objectTypes;
     objectTypes.Add( UEngineTypes::ConvertToObjectType( ECC_WorldStatic ) );
 
@@ -43,18 +49,19 @@ void UActionDash::Start( const FInputActionValue& value ) {
 
     FHitResult hitResult;
     UKismetSystemLibrary::SphereTraceSingleForObjects(
-        world, parentLocation, endLocation, 50.f, objectTypes, false,
+        world, startLocation, endLocation, 50.f, objectTypes, false,
         ignoreTypes, EDrawDebugTrace::None, hitResult, false );
 
+    // Update end location if there is an obstacle
     if ( hitResult.bBlockingHit ) {
         endLocation =
             hitResult.ImpactPoint -
-            ( ( hitResult.ImpactPoint - parentLocation ).Normalize() * 50.f );
+            ( ( hitResult.ImpactPoint - startLocation ).Normalize() * 50.f );
     }
 
     dashTimer = 0.f;
 
-    // VFX
+    // Trigger VFX
     UNiagaraComponent* effectComponent =
         UNiagaraFunctionLibrary::SpawnSystemAtLocation(
             world, effect, startLocation, dashDirection.Rotation(),
@@ -62,6 +69,7 @@ void UActionDash::Start( const FInputActionValue& value ) {
 }
 
 void UActionDash::End() {
+    // Update player variables
     parent->SetCanMove( true );
     isRunning = false;
 }
@@ -71,12 +79,14 @@ void UActionDash::TickComponent(
     FActorComponentTickFunction* ThisTickFunction ) {
     if ( !isRunning ) return;
 
+    // Update the dash timer
     if ( dashTimer >= dashDuration - ( dashDuration * 0.2f ) ) {
         End();
         return;
     }
     dashTimer += DeltaTime;
 
+    // Continue interpolating the players location along dash vector
     FVector nextLocation =
         FMath::InterpEaseOut( parent->GetActorLocation(), endLocation,
                               dashTimer / dashDuration, 0.25 );

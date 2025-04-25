@@ -36,6 +36,7 @@ public: // Variables
 
 private: // Variables
     UWorld* world;
+    USceneComponent* gimbal;
 
     FVector endLocation;
     FVector startLocation;

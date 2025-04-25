@@ -35,6 +35,7 @@ void UActionCombat::BeginPlay() {
 
     world = GetWorld();
     movement = Cast< UGravMovementComponent >( parent->GetCharacterMovement() );
+    gimbal = parent->GetGimbal();
 
     TArray< UAction* > action_components;
     parent->GetComponents< UAction >( action_components );
@@ -126,11 +127,6 @@ void UActionCombat::TickComponent(
     FActorComponentTickFunction* ThisTickFunction ) {
     Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
     // ...
-
-    // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Green,
-    //                                   FString::FromInt( attackCount ) );
-    // GEngine->AddOnScreenDebugMessage( -1, 0.f, FColor::Red,
-    //                                   FString::FromInt( currAttackId ) );
 }
 
 void UActionCombat::StartCanComboWindow() {
@@ -204,12 +200,11 @@ void UActionCombat::UpdatePlayerRotation() {
     float angle = UKismetMathLibrary::Atan2( det, dot );
 
     // Up vector from the player model.
-    const FQuat& gimbalQuat = parent->gimbal->GetComponentQuat();
+    const FQuat& gimbalQuat = gimbal->GetComponentQuat();
 
     // Quaternion for applying yaw rotation to player
     const FQuat addQuat =
-        FQuat( parent->gimbal->GetUpVector().GetSafeNormal(), angle )
-            .GetNormalized();
+        FQuat( gimbal->GetUpVector().GetSafeNormal(), angle ).GetNormalized();
 
     // Calculate new player rotation
     const FQuat outputQuat = addQuat * gimbalQuat;
@@ -235,10 +230,6 @@ void UActionCombat::UpdatePlayerRotation() {
 }
 
 void UActionCombat::HitTargets() {
-    // GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Cyan,
-    //                                   "Current attack: " +
-    //                                       FString::FromInt( currAttackId ) );
-
     targetSystem->UpdateTarget(
         AttackList[currAttackId].attacks[attackCount - 1].hitSize,
         AttackList[currAttackId].attacks[attackCount - 1].hitRange, false );

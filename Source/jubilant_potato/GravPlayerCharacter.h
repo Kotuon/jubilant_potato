@@ -34,24 +34,31 @@ public: // Functions
 
     const FQuat& GetTargetCameraOrientation() const;
 
+    USmartSpringArm* GetSpringArm() const;
+    USceneComponent* GetGimbal() const;
+    UCameraComponent* GetCamera() const;
+
 private: // Functions
     void UpdateCameraOrientation( float DeltaTime );
     void SetCameraUpdateValues( const FVector& inverseGravity,
                                 const FQuat& startRot );
 
 protected: // Variables
-    UGravMovementComponent* gravMovement;
-
-public: // Variables
     // Camera components
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera",
+               meta = ( AllowPrivateAccess = "true" ) )
     USceneComponent* cameraRoot;
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera",
+               meta = ( AllowPrivateAccess = "true" ) )
     USceneComponent* gimbal;
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera",
+               meta = ( AllowPrivateAccess = "true" ) )
     USmartSpringArm* springArm;
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera" )
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Camera",
+               meta = ( AllowPrivateAccess = "true" ) )
     UCameraComponent* camera;
+
+    UGravMovementComponent* gravMovement;
 
 private: // Variables
     // FRotator targetRot;

@@ -10,7 +10,7 @@ void UActionMove::BeginPlay() {
     Super::BeginPlay();
     //...
 
-    gimbal = parent->gimbal;
+    gimbal = parent->GetGimbal();
 }
 
 void UActionMove::Start( const FInputActionValue& value ) {

@@ -27,6 +27,7 @@ public: // Functions
 public:  // Variables
 private: // Variables
     USmartSpringArm* springArm;
+    USceneComponent* gimbal;
 
     bool isAiming = false;
 };

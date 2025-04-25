@@ -69,6 +69,7 @@ public: // Variables
 private: // Variables
     TArray< FAttackInfo > AttackList;
 
+    USceneComponent* gimbal;
     UActionAim* aimAction;
     UWorld* world;
 

@@ -24,24 +24,30 @@ void UGravRush::BeginPlay() {
 
     movement = Cast< UGravMovementComponent >( parent->GetCharacterMovement() );
     originalGrav = movement->GetGravityDirection();
+
+    camera = parent->GetCamera();
 }
 
 void UGravRush::Start( const FInputActionValue& Value ) {
-    const FVector lastGrav = movement->GetGravityDirection();
-    const FVector nextGrav = parent->camera->GetForwardVector();
-
+    // Get new gravity direction and trigger the change
+    const FVector nextGrav = camera->GetForwardVector();
     TriggerGravShift( nextGrav );
 }
 
 void UGravRush::End() {
     Super::End();
     //...
+
+    GEngine->AddOnScreenDebugMessage( -1, 4.f, FColor::Green, "Cancel grav." );
+
+    // Reset gravity to default direction
     movement->SetGravityDirection( originalGrav.GetSafeNormal() );
     movement->SetMovementMode( MOVE_Falling );
     parent->SetCanMove( true );
 
     hasClicked = false;
 
+    // Reset timer
     parent->ClearResourceTimer();
 }
 
@@ -49,13 +55,6 @@ void UGravRush::TickComponent( float DeltaTime, ELevelTick TickType,
                                FActorComponentTickFunction* ThisTickFunction ) {
     Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
     //...
-    // if ( movement->MovementMode == MOVE_Walking ) {
-    //     movement->SetGravityDirection(
-    //         movement->CurrentFloor.HitResult.ImpactNormal * -1.f );
-    //     parent->SetCanUpdateCamera( true );
-    // }
-
-    // movement->SetGravityToGround();
 }
 
 void UGravRush::MovementModeChanged( ACharacter* Character,
@@ -63,35 +62,43 @@ void UGravRush::MovementModeChanged( ACharacter* Character,
                                      uint8 PrevCustomMode ) {}
 
 void UGravRush::TriggerGravShift( const FVector direction ) {
+    // Check if there is resource remaining
     if ( !parent->UseResource( startCost ) ) {
         return;
     }
+
+    // Set new direction of gravity
     movement->SetGravityDirection( direction.GetSafeNormal() );
     hasClicked = true;
 
+    // Start tick resource use
     parent->UseResourceOnTimer( tickCost );
 }
 
 void UGravRush::ResourceEmpty() {
+    // Callback for when resource runs out
     if ( hasClicked ) {
         End();
     }
 }
 
 void UGravRush::InvertGrav() {
+    GEngine->AddOnScreenDebugMessage( -1, 4.f, FColor::Green, "Invert grav." );
     TriggerGravShift( movement->GetGravityDirection() * -1.f );
 }
 
 void UGravRush::LeftGrav() {
-    TriggerGravShift( parent->camera->GetRightVector() * -1.f );
+    GEngine->AddOnScreenDebugMessage( -1, 4.f, FColor::Green, "Left grav." );
+    TriggerGravShift( camera->GetRightVector() * -1.f );
 }
 
 void UGravRush::RightGrav() {
-    TriggerGravShift( parent->camera->GetRightVector() );
+    GEngine->AddOnScreenDebugMessage( -1, 4.f, FColor::Green, "Right grav." );
+    TriggerGravShift( camera->GetRightVector() );
 }
 
 void UGravRush::BackGrav() {
-    TriggerGravShift( parent->camera->GetForwardVector() * -1.f );
+    TriggerGravShift( camera->GetForwardVector() * -1.f );
 }
 
 void UGravRush::GroundGrav() {

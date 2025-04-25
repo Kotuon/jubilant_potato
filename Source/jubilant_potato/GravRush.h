@@ -9,6 +9,7 @@
 class UGravMovementComponent;
 class UEnhancedInputComponent;
 class UInputAction;
+class UCameraComponent;
 
 UCLASS( ClassGroup = ( Custom ), meta = ( BlueprintSpawnableComponent ) )
 class JUBILANT_POTATO_API UGravRush : public UAction {
@@ -63,6 +64,8 @@ public: // Variables
     float tickCost = 1.f;
 
 private: // Variables
+    UCameraComponent* camera;
+
     UGravMovementComponent* movement;
     FVector originalGrav;
 

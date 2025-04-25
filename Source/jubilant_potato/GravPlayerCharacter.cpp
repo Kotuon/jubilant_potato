@@ -121,3 +121,11 @@ void AGravPlayerCharacter::SetCanUpdateCamera( bool Value ) {
 const FQuat& AGravPlayerCharacter::GetTargetCameraOrientation() const {
     return targetCameraOrientation;
 }
+
+USmartSpringArm* AGravPlayerCharacter::GetSpringArm() const {
+    return springArm;
+}
+
+USceneComponent* AGravPlayerCharacter::GetGimbal() const { return gimbal; }
+
+UCameraComponent* AGravPlayerCharacter::GetCamera() const { return camera; }

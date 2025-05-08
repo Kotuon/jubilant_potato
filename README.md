@@ -23,7 +23,7 @@ Unreal Engine 5.5
 
 ## Features
 
-* Fully Directional Gravity Manipulation: A physics-consistent system allowing gravity to shift in any direction, fully integrating into movement, animation, and combat.
+* _Fully Directional Gravity Manipulation:_ A physics-consistent system allowing gravity to shift in any direction, fully integrating into movement, animation, and combat.
 * Custom Ability Framework: A standalone system for defining and managing player abilities, designed to be modular and data-driven.
 * Data-Driven Combat System: Attacks and player actions are defined using data assets for rapid iteration and scalability.
 * Custom Camera and Targeting Systems: Designed to support unconventional orientations and gravity changes without disorienting the player.

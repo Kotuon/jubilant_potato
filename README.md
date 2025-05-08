@@ -14,7 +14,7 @@ Separate experimental branches explore integration with UE5’s Gameplay Ability
 
 ## Technologies
 
-Unreal Engine 5.5
+* Unreal Engine 5.5
 * Visual Studio Code
 * Niagara VFX
 * Animation Blueprints

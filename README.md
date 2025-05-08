@@ -1,6 +1,8 @@
-# Third Person Action Game
+# Gravity Manipulation Third Person Game
+![](https://github.com/Kotuon/jubilant_potato/blob/main/gravProject97.gif)
 
 ## Table of Contents
+
 * [Introduction](#introduction)
 * [Technology Used](#technology-used)
 * [Features](#features)
@@ -13,10 +15,12 @@ Currently I'm using a custom ability system that I started developed in [another
 I've used this project to experiment with UE5 motion matching and Gameplay ability system (GAS).
 
 ## Technology Used
+
 * Unreal Engine 5.4
 * Visual Studio Code
 
 ## Features
+
 * Custom ability system
 * Custom camera system
 * Custom targeting system

@@ -23,10 +23,10 @@ Unreal Engine 5.5
 
 ## Features
 
-* _Fully Directional Gravity Manipulation:_ A physics-consistent system allowing gravity to shift in any direction, fully integrating into movement, animation, and combat.
-* Custom Ability Framework: A standalone system for defining and managing player abilities, designed to be modular and data-driven.
-* Data-Driven Combat System: Attacks and player actions are defined using data assets for rapid iteration and scalability.
-* Custom Camera and Targeting Systems: Designed to support unconventional orientations and gravity changes without disorienting the player.
-* Experimental GAS and Motion Matching Branches: Implementations exploring hybrid animation and ability systems using UE5’s GAS and motion matching features.
-* Advanced Animation Handling: Includes animation blueprints, notify states, and gameplay-linked animation events.
-* Dynamic Niagara Effects: Particle systems that respond to gameplay context and player actions.
+* __Fully Directional Gravity Manipulation:__ A physics-consistent system allowing gravity to shift in any direction, fully integrating into movement, animation, and combat.
+* __Custom Ability Framework:__ A standalone system for defining and managing player abilities, designed to be modular and data-driven.
+* __Data-Driven Combat System:__ Attacks and player actions are defined using data assets for rapid iteration and scalability.
+* __Custom Camera and Targeting Systems:__ Designed to support unconventional orientations and gravity changes without disorienting the player.
+* __Experimental GAS and Motion Matching Branches:__ Implementations exploring hybrid animation and ability systems using UE5’s GAS and motion matching features.
+* __Advanced Animation Handling:__ Includes animation blueprints, notify states, and gameplay-linked animation events.
+* __Dynamic Niagara Effects:__ Particle systems that respond to gameplay context and player actions.

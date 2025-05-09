@@ -69,6 +69,21 @@ void UGravMovementComponent::UpdateRotation( float DeltaTime ) {
 
         // Rotate player model to match floor direction
         if ( overLand ) {
+            if ( !hasStartedRotation ) {
+                // Calculate delta rotaiton between current and new gravity
+                const FQuat deltaRot = FQuat::FindBetweenVectors(
+                                           -1.f * parent->GetActorUpVector(),
+                                           GetGravityDirection() )
+                                           .GetNormalized();
+
+                currRotation = CharacterOwner->GetActorQuat();
+
+                // Calculate new rotation
+                desiredRotation = deltaRot * currRotation;
+
+                hasStartedRotation = true;
+            }
+
             DrawDebugLine( GetWorld(), start, end, FColor::Red, false, 0.f,
                            ( uint8 )0U, 2.f );
 
@@ -104,19 +119,23 @@ void UGravMovementComponent::UpdateRotation( float DeltaTime ) {
 
 void UGravMovementComponent::SetGravityDirection( const FVector& GravityDir ) {
     // Local reference to current gravity
-    const FVector& currGravityDir = GetGravityDirection();
+    // const FVector& currGravityDir = GetGravityDirection();
+    lastGrav = GetGravityDirection();
 
     // Checking if the gravity has changed
-    if ( GravityDir.Equals( currGravityDir ) ) return;
+    if ( GravityDir.Equals( lastGrav ) ) return;
 
-    // Calculate delta rotaiton between current and new gravity
-    const FQuat deltaRot =
-        FQuat::FindBetweenVectors( currGravityDir, GravityDir ).GetNormalized();
+    hasStartedRotation = false;
 
-    currRotation = CharacterOwner->GetActorQuat();
+    // // Calculate delta rotaiton between current and new gravity
+    // const FQuat deltaRot =
+    //     FQuat::FindBetweenVectors( currGravityDir, GravityDir
+    //     ).GetNormalized();
 
-    // Calculate new rotation
-    desiredRotation = deltaRot * currRotation;
+    // currRotation = CharacterOwner->GetActorQuat();
+
+    // // Calculate new rotation
+    // desiredRotation = deltaRot * currRotation;
 
     // Update flags
     hasUpdatedRotationForNewGravity = false;

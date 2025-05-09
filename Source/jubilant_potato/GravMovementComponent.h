@@ -45,12 +45,15 @@ private: // Functions
 private: // Variables
     AGravPlayerCharacter* parent;
 
+    FVector lastGrav;
+    
     FQuat currLastGravRotation;
     FQuat currRotation;
     FQuat desiredRotation;
 
     float startDistance;
 
+    bool hasStartedRotation = false;
     bool gravIsDirty = false;
     bool hasUpdatedRotationForNewGravity = true;
     bool currentlyUpdatingRotation = false;

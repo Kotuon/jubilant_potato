@@ -23,7 +23,7 @@ void UGravRush::BeginPlay() {
     parent->ResourceEmptyDelegate.AddUObject( this, &UGravRush::ResourceEmpty );
 
     movement = Cast< UGravMovementComponent >( parent->GetCharacterMovement() );
-    originalGrav = movement->GetGravityDirection();
+    originalGrav = movement->GetGravityDirection().GetSafeNormal();
 
     camera = parent->GetCamera();
 }
@@ -41,9 +41,10 @@ void UGravRush::End() {
     GEngine->AddOnScreenDebugMessage( -1, 4.f, FColor::Green, "Cancel grav." );
 
     // Reset gravity to default direction
-    movement->SetGravityDirection( originalGrav.GetSafeNormal() );
-    movement->SetMovementMode( MOVE_Falling );
-    parent->SetCanMove( true );
+    // movement->SetGravityDirection( originalGrav.GetSafeNormal() );
+    // movement->SetMovementMode( MOVE_Falling );
+
+    TriggerGravShift( originalGrav );
 
     hasClicked = false;
 

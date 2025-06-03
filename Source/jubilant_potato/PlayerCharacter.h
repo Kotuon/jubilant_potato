@@ -37,6 +37,11 @@ public: // Functions
     void SetCanMove( bool CanMove_ );
     bool GetCanMove() const;
 
+    UFUNCTION( BlueprintCallable )
+    void SetCanLook( bool CanLook_ );
+    UFUNCTION( BlueprintCallable )
+    bool GetCanLook() const;
+
     void SetLastMovementInput( const FVector newInput );
     const FVector GetLastMovementInput() const;
 
@@ -80,6 +85,7 @@ private: // Variables
 
     float resourceCurrAmount;
 
+    bool canLook = true;
     bool shouldStrafe = false;
     bool canMove = true;
 };

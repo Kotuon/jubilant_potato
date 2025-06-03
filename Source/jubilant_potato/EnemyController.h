@@ -21,6 +21,8 @@ public: // Functions
     AEnemyController( const FObjectInitializer& ObjectInitializer );
 
     void OnPossess( APawn* InPawn ) override;
+
+    UFUNCTION( BlueprintCallable )
     void FindTarget();
 
     UFUNCTION()

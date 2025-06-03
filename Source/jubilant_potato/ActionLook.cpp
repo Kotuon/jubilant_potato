@@ -15,6 +15,8 @@ void UActionLook::BeginPlay() {
 }
 
 void UActionLook::Start( const FInputActionValue& value ) {
+    if ( !parent->GetCanLook() ) return;
+
     // Getting new input value and updating saved value
     const FVector2D inputValue = value.Get< FVector2D >();
     parent->SetLastCameraInput( inputValue );

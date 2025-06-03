@@ -145,6 +145,11 @@ void APlayerCharacter::SetCanMove( bool CanMove_ ) { canMove = CanMove_; }
 
 bool APlayerCharacter::GetCanMove() const { return canMove; }
 
+void APlayerCharacter::SetCanLook( bool CanLook_ ) { canLook = CanLook_; }
+
+bool APlayerCharacter::GetCanLook() const { return canLook; }
+
+
 void APlayerCharacter::SetLastMovementInput( const FVector newInput ) {
     lastMovementInput = newInput;
 }

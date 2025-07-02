@@ -46,7 +46,7 @@ private: // Variables
     AGravPlayerCharacter* parent;
 
     FVector lastGrav;
-    
+
     FQuat currLastGravRotation;
     FQuat currRotation;
     FQuat desiredRotation;

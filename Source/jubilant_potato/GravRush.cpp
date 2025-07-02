@@ -56,6 +56,9 @@ void UGravRush::TickComponent( float DeltaTime, ELevelTick TickType,
                                FActorComponentTickFunction* ThisTickFunction ) {
     Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
     //...
+
+    if ( hasClicked && movement->MovementMode == MOVE_Walking )
+        movement->SetGravityToGround();
 }
 
 void UGravRush::MovementModeChanged( ACharacter* Character,

@@ -58,8 +58,11 @@ void UActionJump::JumpTakeOff() {
     const FVector velocity = movement->Velocity;
     const float velocity_xy = velocity.Size2D();
 
+    const float scale = 3.f / 2.f;
+
     movement->JumpZVelocity = UKismetMathLibrary::MapRangeClamped(
-        velocity_xy, 400.f, 800.f, 700.f, 900.f );
+        velocity_xy, 400.f * scale, 800.f * scale, 700.f * scale,
+        900.f * scale );
     parent->Jump();
 
     movement->bNotifyApex = true;

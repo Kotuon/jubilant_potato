@@ -71,12 +71,15 @@ public: // Variables
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Resource" )
     float resourceTotalAmount = 1000.f;
 
+    
+    UPROPERTY(BlueprintReadOnly, Category = "Input")
+    FVector lastMovementInput;
+
 private: // Functions
     UFUNCTION()
     void TickResource( const float Amount );
 
 private: // Variables
-    FVector lastMovementInput;
     FVector2D lastCameraInput;
 
     UProgressBar* resourceBar;

@@ -3,6 +3,8 @@
 #include "SmartSpringArm.h"
 #include "Math/UnrealMathUtility.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h" // UCharacterMovementComponent class
+#include "Kismet/KismetMathLibrary.h"                 // Lerp
 
 void USmartSpringArm::BeginPlay() {
     Super::BeginPlay();
@@ -18,6 +20,7 @@ void USmartSpringArm::BeginPlay() {
     gimbal->SetWorldRotation( parent->GetActorRotation() );
 
     TargetArmLength = default_length;
+    default_offset = SocketOffset;
 }
 
 void USmartSpringArm::UpdateFromVelocity( float DeltaTime ) {
@@ -74,6 +77,18 @@ void USmartSpringArm::TickComponent(
 
     if ( !UpdateFromAiming( DeltaTime ) ) {
         // UpdateFromVelocity( DeltaTime );
+
+        const FVector vel{ parent->GetCharacterMovement()->Velocity.X,
+                           parent->GetCharacterMovement()->Velocity.Y, 0.f };
+
+        const float speed = vel.Length();
+        const float alpha = FMath::Clamp(
+            ( speed - 600.f ) /
+                ( parent->GetCharacterMovement()->MaxWalkSpeed - 600.f ),
+            0.f, 1.f );
+
+        SocketOffset =
+            UKismetMathLibrary::VLerp( default_offset, movement_offset, alpha );
     }
 }
 

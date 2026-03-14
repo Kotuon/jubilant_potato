@@ -16,7 +16,9 @@ protected:
     virtual void BeginPlay() override;
 
 public:
-    virtual void TickComponent( float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
+    virtual void
+    TickComponent( float DeltaTime, enum ELevelTick TickType,
+                   FActorComponentTickFunction* ThisTickFunction ) override;
 
     void SetIsAiming( bool IsAiming );
 
@@ -26,6 +28,9 @@ private: // Functions
     bool UpdateFromAiming( float DeltaTime );
 
 public:
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Movement" )
+    FVector movement_offset;
+
     UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Arm Lerp" )
     float default_length = 300.f;
 
@@ -42,6 +47,8 @@ public:
     float start_velocity = 601.f;
 
 private:
+    FVector default_offset;
+
     ACharacter* parent;
     USceneComponent* gimbal;
     float curr_time_velocity = 0.f;

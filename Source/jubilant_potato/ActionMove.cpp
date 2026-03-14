@@ -3,6 +3,8 @@
 #include "ActionMove.h"
 #include "PlayerCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "GravMovementComponent.h"
+#include "Camera/CameraComponent.h" // UCameraComponent class
 
 UActionMove::UActionMove() { type = EAction::A_Move; }
 
@@ -11,6 +13,7 @@ void UActionMove::BeginPlay() {
     //...
 
     gimbal = parent->GetGimbal();
+    movement = Cast< UGravMovementComponent >( parent->GetCharacterMovement() );
 }
 
 void UActionMove::Start( const FInputActionValue& value ) {
@@ -41,7 +44,17 @@ void UActionMove::Start( const FInputActionValue& value ) {
     const FVector fwd = outputQuat.GetForwardVector();
     const FVector right = outputQuat.GetRightVector();
 
-    // Apply movement to character
-    parent->AddMovementInput( fwd, inputValue.Y, false );
-    parent->AddMovementInput( right, inputValue.X, false );
+    if ( movement->MovementMode != MOVE_Flying ) {
+
+        // Apply movement to character
+        parent->AddMovementInput( fwd, inputValue.Y, false );
+        parent->AddMovementInput( right, inputValue.X, false );
+    } else {
+        movement->AddImpulse( parent->GetCamera()->GetForwardVector() * 50.f,
+                              true );
+    }
+
+    GEngine->AddOnScreenDebugMessage(
+        -1, 0.f, FColor::Red,
+        FString::SanitizeFloat( movement->Velocity.Length() ) );
 }

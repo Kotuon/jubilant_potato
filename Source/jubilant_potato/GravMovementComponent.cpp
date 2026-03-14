@@ -114,28 +114,31 @@ void UGravMovementComponent::UpdateRotation( float DeltaTime ) {
             DrawDebugLine( GetWorld(), start, end, FColor::Green, false, 0.f,
                            ( uint8 )0U, 2.f );
         }
+    } else if ( MovementMode == MOVE_Flying ) {
+        const FQuat deltaRot =
+            FQuat::FindBetweenVectors( parent->GetActorForwardVector(), Velocity )
+                .GetNormalized();
+
+        currRotation = CharacterOwner->GetActorQuat();
+        desiredRotation = deltaRot * currRotation;
+        // Get the new rotation
+        const FQuat newRotation =
+            FQuat::FastLerp( currRotation, desiredRotation, 0.5f )
+                .GetNormalized();
+
+        // Update character rotation
+        CharacterOwner->SetActorRotation( newRotation );
     }
 }
 
 void UGravMovementComponent::SetGravityDirection( const FVector& GravityDir ) {
     // Local reference to current gravity
-    // const FVector& currGravityDir = GetGravityDirection();
     lastGrav = GetGravityDirection();
 
     // Checking if the gravity has changed
     if ( GravityDir.Equals( lastGrav ) ) return;
 
     hasStartedRotation = false;
-
-    // // Calculate delta rotaiton between current and new gravity
-    // const FQuat deltaRot =
-    //     FQuat::FindBetweenVectors( currGravityDir, GravityDir
-    //     ).GetNormalized();
-
-    // currRotation = CharacterOwner->GetActorQuat();
-
-    // // Calculate new rotation
-    // desiredRotation = deltaRot * currRotation;
 
     // Update flags
     hasUpdatedRotationForNewGravity = false;

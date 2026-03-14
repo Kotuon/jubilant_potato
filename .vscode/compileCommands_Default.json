@@ -5,7 +5,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\Action.h",
@@ -13,7 +13,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionAim.cpp",
@@ -21,7 +21,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionAim.h",
@@ -29,7 +29,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionCombat.cpp",
@@ -37,7 +37,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionCombat.h",
@@ -45,7 +45,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionDash.cpp",
@@ -53,7 +53,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionDash.h",
@@ -61,7 +61,23 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionFly.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
+		],
+		"directory": "C:\\UE_5.6\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionFly.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
+		],
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionJump.cpp",
@@ -69,7 +85,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionJump.h",
@@ -77,7 +93,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionLook.cpp",
@@ -85,7 +101,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionLook.h",
@@ -93,7 +109,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionManager.cpp",
@@ -101,7 +117,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionManager.h",
@@ -109,7 +125,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionMove.cpp",
@@ -117,7 +133,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionMove.h",
@@ -125,7 +141,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionSlide.cpp",
@@ -133,7 +149,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionSlide.h",
@@ -141,7 +157,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionSprint.cpp",
@@ -149,7 +165,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionSprint.h",
@@ -157,7 +173,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionStun.cpp",
@@ -165,7 +181,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionStun.h",
@@ -173,7 +189,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\ActionTypes.h",
@@ -181,7 +197,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\AttackData.cpp",
@@ -189,7 +205,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\AttackData.h",
@@ -197,7 +213,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\Base_Projectile.cpp",
@@ -205,7 +221,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\Base_Projectile.h",
@@ -213,7 +229,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\Enemy.cpp",
@@ -221,7 +237,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\Enemy.h",
@@ -229,7 +245,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\EnemyController.cpp",
@@ -237,7 +253,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\EnemyController.h",
@@ -245,7 +261,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\GravMovementComponent.cpp",
@@ -253,7 +269,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\GravMovementComponent.h",
@@ -261,7 +277,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\GravPlayerCharacter.cpp",
@@ -269,7 +285,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\GravPlayerCharacter.h",
@@ -277,7 +293,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\GravRush.cpp",
@@ -285,7 +301,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\GravRush.h",
@@ -293,7 +309,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\PlayerCharacter.cpp",
@@ -301,7 +317,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\PlayerCharacter.h",
@@ -309,7 +325,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\PlayerGameplayAbilitiesDataAsset.cpp",
@@ -317,7 +333,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\PlayerGameplayAbilitiesDataAsset.h",
@@ -325,7 +341,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\SmartSpringArm.cpp",
@@ -333,7 +349,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\SmartSpringArm.h",
@@ -341,7 +357,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\TargetSystem.cpp",
@@ -349,7 +365,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\TargetSystem.h",
@@ -357,7 +373,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\jubilant_potato.Build.cs",
@@ -365,7 +381,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\jubilant_potato.cpp",
@@ -373,7 +389,7 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	},
 	{
 		"file": "C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\Source\\jubilant_potato\\jubilant_potato.h",
@@ -381,6 +397,6 @@
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\Kelson\\Documents\\Projects\\jubilant_potato\\.vscode\\compileCommands_Default\\jubilant_potato.1.rsp"
 		],
-		"directory": "C:\\UE_5.5\\Engine\\Source"
+		"directory": "C:\\UE_5.6\\Engine\\Source"
 	}
 ]

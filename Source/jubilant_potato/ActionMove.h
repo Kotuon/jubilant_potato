@@ -7,6 +7,7 @@
 #include "ActionMove.generated.h"
 
 class USceneComponent;
+class UGravMovementComponent;
 
 UCLASS( ClassGroup = ( Custom ), meta = ( BlueprintSpawnableComponent ) )
 class JUBILANT_POTATO_API UActionMove : public UAction {
@@ -20,4 +21,5 @@ public:
 
 private:
     USceneComponent* gimbal;
+    UGravMovementComponent* movement;
 };

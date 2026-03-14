@@ -45,7 +45,8 @@ void UActionJump::Start( const FInputActionValue& value ) {
     //     return;
     // }
     // has_jumped = true;
-    parent->PlayAnimMontage( jump_montage );
+    // parent->PlayAnimMontage( jump_montage );
+    JumpTakeOff();
 }
 
 void UActionJump::End() {

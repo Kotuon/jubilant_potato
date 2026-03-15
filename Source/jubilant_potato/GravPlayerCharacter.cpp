@@ -42,6 +42,7 @@ void AGravPlayerCharacter::BeginPlay() {
 void AGravPlayerCharacter::Tick( float DeltaTime ) {
     Super::Tick( DeltaTime );
     //...
+    canUpdateCamera = true;
 
     // Update player rotation to match gravity
     gravMovement->UpdateRotation( DeltaTime );
@@ -68,7 +69,7 @@ void AGravPlayerCharacter::UpdateCameraOrientation( float DeltaTime ) {
     }
 
     // Get current camera rotation
-    const FQuat startRot = cameraRoot->GetComponentQuat();
+    const FQuat startRot = cameraRoot->GetComponentQuat().GetNormalized();
 
     // If camera hasn't started updating
     if ( !updatingCamera ) {
@@ -82,8 +83,9 @@ void AGravPlayerCharacter::UpdateCameraOrientation( float DeltaTime ) {
     }
 
     // Update camera root rotation with lerp
-    cameraRoot->SetWorldRotation( FQuat::FastLerp(
-        startRot.GetNormalized(), targetCameraOrientation, 8.0 * DeltaTime ) );
+    cameraRoot->SetWorldRotation(
+        FQuat::FastLerp( startRot, targetCameraOrientation, 4.0 * DeltaTime )
+            .GetNormalized() );
 }
 
 void AGravPlayerCharacter::SetCameraUpdateValues( const FVector& inverseGravity,

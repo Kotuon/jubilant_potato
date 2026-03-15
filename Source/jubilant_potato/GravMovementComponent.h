@@ -42,6 +42,10 @@ public: // Functions
     virtual void SetGravityDirection( const FVector& GravityDir );
 
 private: // Functions
+    void StartRotation();
+    void SetNewRotation( const float alpha );
+    void UpdateRotationFlags();
+
 private: // Variables
     AGravPlayerCharacter* parent;
 
@@ -52,6 +56,8 @@ private: // Variables
     FQuat desiredRotation;
 
     float startDistance;
+    float timer;
+    float timeToRotate = 1.f;
 
     bool hasStartedRotation = false;
     bool gravIsDirty = false;

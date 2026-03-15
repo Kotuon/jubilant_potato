@@ -56,6 +56,39 @@ bool UGravMovementComponent::ShouldRemainVertical() const {
     return IsMovingOnGround();
 }
 
+void UGravMovementComponent::StartRotation() {
+    // Calculate delta rotaiton between current and new gravity
+    const FQuat deltaRot =
+        FQuat::FindBetweenVectors( -1.f * parent->GetActorUpVector(),
+                                   GetGravityDirection() )
+            .GetNormalized();
+
+    currRotation = CharacterOwner->GetActorQuat();
+
+    // Calculate new rotation
+    desiredRotation = deltaRot * currRotation;
+
+    timer = 0.f;
+    hasStartedRotation = true;
+}
+
+void UGravMovementComponent::SetNewRotation( const float alpha ) {
+    // Get the new rotation
+    const FQuat newRotation =
+        FQuat::FastLerp( currRotation, desiredRotation, alpha ).GetNormalized();
+
+    // Update character rotation
+    CharacterOwner->SetActorRotation( newRotation );
+}
+
+void UGravMovementComponent::UpdateRotationFlags() {
+    // Update flags
+    if ( !hasUpdatedRotationForNewGravity ) {
+        hasUpdatedRotationForNewGravity = true;
+        currentlyUpdatingRotation = true;
+    }
+}
+
 void UGravMovementComponent::UpdateRotation( float DeltaTime ) {
     if ( MovementMode == MOVE_Falling &&
          ( !hasUpdatedRotationForNewGravity || currentlyUpdatingRotation ) ) {
@@ -67,67 +100,29 @@ void UGravMovementComponent::UpdateRotation( float DeltaTime ) {
         bool overLand = GetWorld()->LineTraceSingleByChannel(
             hitResult, start, end, ECollisionChannel::ECC_Visibility );
 
-        // Rotate player model to match floor direction
-        if ( overLand ) {
-            if ( !hasStartedRotation ) {
-                // Calculate delta rotaiton between current and new gravity
-                const FQuat deltaRot = FQuat::FindBetweenVectors(
-                                           -1.f * parent->GetActorUpVector(),
-                                           GetGravityDirection() )
-                                           .GetNormalized();
+        if ( overLand && !hasStartedRotation ) {
+            timeToRotate = 0.25f;
+        } else if ( !hasStartedRotation ) {
+            timeToRotate = 1.f;
+        }
 
-                currRotation = CharacterOwner->GetActorQuat();
-
-                // Calculate new rotation
-                desiredRotation = deltaRot * currRotation;
-
-                hasStartedRotation = true;
-            }
-
-            DrawDebugLine( GetWorld(), start, end, FColor::Red, false, 0.f,
-                           ( uint8 )0U, 2.f );
-
-            // Calculate rotation delta based on distance from floor
-            const float alpha =
-                1.f - FMath::Clamp( ( ( hitResult.Distance - 20.f ) / 400.f ),
-                                    0.f, 1.f );
-
-            // Get the new rotation
-            const FQuat newRotation =
-                FQuat::FastLerp( currRotation, desiredRotation, alpha )
-                    .GetNormalized();
-
-            // Update character rotation
-            CharacterOwner->SetActorRotation( newRotation );
-
-            // Update flags
-            if ( !hasUpdatedRotationForNewGravity ) {
-                hasUpdatedRotationForNewGravity = true;
-                currentlyUpdatingRotation = true;
-            }
-
-            // Check if player has rotated enough
-            if ( ( hitResult.Distance / ( 400.f ) ) <= 0.f )
-                currentlyUpdatingRotation = false;
-
-        } else {
+        { // DEBUG ///////////////////////////////////
             DrawDebugLine( GetWorld(), start, end, FColor::Green, false, 0.f,
                            ( uint8 )0U, 2.f );
+            ///////////////////////////////////////////}
         }
-    } else if ( MovementMode == MOVE_Flying ) {
-        const FQuat deltaRot =
-            FQuat::FindBetweenVectors( parent->GetActorForwardVector(), Velocity )
-                .GetNormalized();
 
-        currRotation = CharacterOwner->GetActorQuat();
-        desiredRotation = deltaRot * currRotation;
-        // Get the new rotation
-        const FQuat newRotation =
-            FQuat::FastLerp( currRotation, desiredRotation, 0.5f )
-                .GetNormalized();
+        if ( !hasStartedRotation ) StartRotation();
 
-        // Update character rotation
-        CharacterOwner->SetActorRotation( newRotation );
+        timer += DeltaTime;
+
+        const float alpha = FMath::Clamp( timer / timeToRotate, 0.f, 1.f );
+
+        SetNewRotation( alpha );
+
+        UpdateRotationFlags();
+
+        if ( timer >= timeToRotate ) currentlyUpdatingRotation = false;
     }
 }
 
